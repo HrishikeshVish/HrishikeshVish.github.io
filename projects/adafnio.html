@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta property="og:title" content="AdaFNIO"/>
+  <meta property="og:url" content="https://guytevet.github.io/mdm-page/"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+
+
+  <title>AdaFNIO</title>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-EWRYSDM25P"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-EWRYSDM25P');
+</script>
+  
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+  <link rel="icon" href="static/figures/icon2.png">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+</head>
+
+<body>
+
+
+<section class="publication-header">
+  <div class="hero-body">
+    <div class="container is-max-widescreen">
+      <!-- <div class="columns is-centered"> -->
+        <div class="column has-text-centered">
+          <h4 class="title is-3 publication-title">AdaFNIO: A Physics-Informed Adaptive Fourier Neural Interpolation Operator for Synthetic Frame Generation</h4>
+          <div class="is-size-3 publication-authors">
+            Preprint (Arxiv)
+          </div>
+        </div>
+    </div>
+  </div>
+
+</section>
+
+<section class="publication-author-block">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><a href="https://hrishikeshvish.github.io/" target="_blank">Hrishikesh Viswanath</a>,</span>
+            <span class="author-block"><a href="" target="_blank">Md Ashiqur Rahman</a>,</span>
+            <span class="author-block"><a href="" target="_blank">Rashmi Bhaskara</a>,</span>
+            <span class="author-block"><a href="" target="_blank">Aniket Bera</a>,</span>
+            
+            
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Purdue University, West Lafayette, IN, USA</span> 
+            <!-- <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span> -->
+          </div>
+          
+
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2211.10791.pdf" target="_blank"
+                  class="external-link button is-normal is-rounded">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+
+              
+              <!-- PDF Link. -->
+<!--              <span class="link-block">-->
+<!--                <a href="static/source/MotionCLIP.pdf" target="_blank"-->
+<!--                  class="external-link button is-normal is-rounded">-->
+<!--                  <span class="icon">-->
+<!--                    <i class="fas fa-file-pdf"></i>-->
+<!--                  </span>-->
+<!--                  <span>Paper</span>-->
+<!--                </a>-->
+<!--              </span>-->
+<!--                            </span>-->
+              <!-- </span> -->
+              <!-- Colab Link. -->
+              <span class="link-block">
+                <a href="https://github.com/IDEAS-Lab-Purdue/AdaFNIO" target="_blank"
+                class="external-link button is-normal is-rounded">
+                <span class="icon">
+                  <i class="fab fa-github"></i>
+                </span>
+                <span>Code</span>
+              </a>
+
+              </span>
+
+              <span class="link-block">
+                <a href="" target="_blank"
+                class="external-link button is-normal is-rounded">
+                <span class="icon">
+                  <i class="fas fa-rocket"></i>
+                </span>
+                <span>Demo</span>
+              </a>
+
+              </span>
+              <!-- </span> -->
+              <!-- Colab Link. -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 
+<section class="hero is-small">
+  <!~~ <div class="hero-body"> ~~>
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <!~~ <div id="results-carousel" class="carousel results-carousel"> ~~>
+      <div class="container">
+      <div class="item">
+      <div class="column is-centered has-text-centered">
+        <img src="static/figures/teaser.png" alt="MotionCLIP"/>
+      </div>
+
+    </div>
+  </div>
+ <!~~  </div> ~~>
+  </div>
+  </div>
+ <!~~  </div> ~~>
+</section>
+ -->
+
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <div class="item">
+          <p style="margin-bottom: 30px">
+<!-- 
+        <video poster="" id="tree" autoplay controls muted loop height="100%">
+          <source src="static/figures/MDM-page.mp4"
+          type="video/mp4">
+        </video>
+ -->
+        <iframe width="720" height="405" src="https://www.youtube.com/embed/35D7nB49-gA?si=rSU7il7n4LRoagK9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </p>
+        </div>
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            We present, AdaFNIO - Adaptive Fourier Neural Interpolation Operator, a neural operator-based architecture to perform synthetic frame generation. 
+            Current deep learning-based methods rely on local convolutions for feature learning and suffer from not being scale-invariant, 
+            thus requiring training data to be augmented through random flipping and re-scaling. On the other hand, \textbf{AdaFNIO} leverages 
+            the principles of physics to learn the features in the frames, independent of input resolution, through token mixing and global 
+            convolution in the Fourier spectral domain by using Fast Fourier Transform (FFT). We show that \textbf{AdaFNIO} can produce 
+            visually smooth and accurate results. To evaluate the visual quality of our interpolated frames, we calculate the structural 
+            similarity index (SSIM) and Peak Signal to Noise Ratio (PSNR) between the generated frame and the ground truth frame. We provide 
+            the quantitative performance of our model on Vimeo-90K dataset, DAVIS, UCF101 and DISFA+ dataset. Lastly, we apply the model to 
+            in-the-wild videos such as photosynthesis, brain MRI recordings and red blood cell animations</p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+
+
+
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container">
+
+      <div class="column is-centered has-text-centered">
+        <img src="static/figures/ADAFNIO.png" alt="cars peace"/>
+      </div>
+     
+    
+  </div>
+</div>
+</div>
+</section>
+
+
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+<!--         <h2 class="title is-3">How does it work?</h2> -->
+        <div class="content has-text-justified">
+          <p>
+            The model
+is powerful, resolution invariant, and discretization invari-
+ant, and achieves state-of-the-art performance on unseen
+datasets. The model has proven effective in capturing infor-
+mation in tiny regions of the image (tokens) and generalizing
+well in larger images.
+</p>
+        <div class="columns is-centered has-text-centered">
+            <div class="item">
+          <p style="margin-bottom: 30px">
+<!--
+        <video poster="" id="tree" autoplay controls muted loop height="100%">
+          <source src="static/figures/MDM-page.mp4"
+          type="video/mp4">
+        </video>
+ --><br><br>
+
+        </p>
+        </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section> 
+
+
+<!-- 
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container">
+
+      <div class="column is-centered has-text-centered">
+        <img src="static/figures/sampling.png" alt="cars peace"/>
+      </div>
+     
+    
+  </div>
+</div>
+</div>
+</section>
+ -->
+
+ <section class="hero is-small">
+    <div class="hero-body">
+      <div class="container">
+  
+        <div class="column is-centered has-text-centered">
+          <img src="static/figures/sci_images.png" alt="cars peace" style="width:60%;"/>
+        </div>
+    </div>
+    </div>
+</section>
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Performance on scientific simulation videos</h2>
+          <p>
+            In the above figure, The leftmost column is a real-time recording of photosynthesis. The middle frame is an animation of 
+            plant cells, while the rightmost one is a simulation of red
+            blood cells within the body
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section> 
+
+<section class="hero is-small">
+    <div class="hero-body">
+      <div class="container">
+  
+        <div class="column is-centered has-text-centered">
+          <img src="static/figures/ResInvariance.png" alt="cars peace" style="width:90%;"/>
+        </div>
+    </div>
+    </div>
+</section>
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Resolution Invariance</h2>
+          <p>
+            The above figure highlights the resolution invari-
+            ance property exhibited by the architecture. The models were
+            trained on 256x256 patches of the Vimeo90K dataset but
+            tested against high-resolution stock footage of the Japanese
+            landscape. In this figure, the top row is the generated out-
+            put and the bottom row is the ground truth. The left row is
+            of 480p resolution, the center one 720p and the right one
+            1080p
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section> 
+
+
+<section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>
+        @article{viswanath2022nio,
+            title={NIO: Lightweight neural operator-based architecture for video frame interpolation},
+            author={Viswanath, Hrishikesh and Rahman, Md Ashiqur and Bhaskara, Rashmi and Bera, Aniket},
+            journal={arXiv preprint arXiv:2211.10791},
+            year={2022}
+          }</code></pre>
+    </div>
+</section>
+
+
+
+
+<footer class="footer">
+ <!--  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+      href="https://homes.cs.washington.edu/~kpar/nerfies/videos/nerfies_paper.pdf">
+      <i class="fas fa-file-pdf"></i>
+    </a>
+    <a class="icon-link" href="https://github.com/keunhong" class="external-link" disabled>
+      <i class="fab fa-github"></i>
+    </a>
+  </div> -->
+  <div class="columns is-centered">
+    <div class="column is-8">
+      <div class="content">
+        <p>
+          This website is licensed under a <a rel="license"
+          href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+        Commons Attribution-ShareAlike 4.0 International License</a>.
+      </p>
+      <p>
+        Website source code based on the <a href="https://nerfies.github.io/"> Nerfies</a> project page. If you want to reuse their <a
+        href="https://github.com/nerfies/nerfies.github.io">source code</a>, please credit them appropriately.
+      </p>
+    </div>
+  </div>
+</div>
+</div>
+</footer>
+
+
+  <script type="text/javascript">
+    var sc_project=12351448; 
+    var sc_invisible=1; 
+    var sc_security="c676de4f"; 
+  </script>
+  <script type="text/javascript"
+  src="https://www.statcounter.com/counter/counter.js"
+  async></script>
+  <noscript><div class="statcounter"><a title="Web Analytics"
+    href="https://statcounter.com/" target="_blank"><img
+    class="statcounter"
+    src="https://c.statcounter.com/12351448/0/c676de4f/1/"
+    alt="Web Analytics"></a></div></noscript>
+    <!-- End of Statcounter Code -->
+
+  </body>
+  </html>
