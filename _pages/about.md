@@ -7,7 +7,7 @@ subtitle:
 profile:
   align: left
   image: prof_pic.jpg
-  image_circular: false # crops the image to make it circular
+  image_circular: true # crops the image to make it circular
   address: >
     <p> HAAS 175 </p>
     <p> Purdue University, West Lafayette </p>
@@ -26,9 +26,9 @@ profile:
     <div class=""><i class='fab fa-youtube' style='color:red;'></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="https://youtube.com/@sapientminds23">YouTube</a></div>
 
 news: true  # includes a list of news items
-latest_posts: true  # includes a list of the newest posts
+latest_posts: false  # includes a list of the newest posts
 selected_papers: true # includes a list of papers marked as "selected={true}"
-social: true  # includes social icons at the bottom of the page
+social: false  # includes social icons at the bottom of the page
 ---
 I am a PhD student advised by Dr. Aniket Bera at IDEAS Lab, Purdue University, Department of CS. My research interests are to work on optimization of AI models, the integration of reliable AI methods into computer graphics, robotics and computer vision applications to accelerate their performance. Broadly put, I want to answer two important research questions – “How can we make AI more explainable and trustworthy?” and “How can we apply AI to solve problems that are difficult to solve using conventional methods?”
 
