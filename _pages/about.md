@@ -12,6 +12,18 @@ profile:
     <p> HAAS 175 </p>
     <p> Purdue University, West Lafayette </p>
     <p> United States </p>
+    <p class="pt-4"><i class='fas fa-map-marker-alt'></i>&nbsp;&nbsp;&nbsp;West Lafayette, IN, USA <br> 
+                    <i class='fas fa-university'></i>&nbsp;&nbsp;&nbsp;PhD Student, IDEAS Lab, Purdue University <br> 
+                    <i class='fas fa-chalkboard'></i>&nbsp;&nbsp;&nbsp;Graduate Teaching Assistant (2022-) <br> 
+                    <i class='fas fa-user-tie'></i>&nbsp;&nbsp;&nbsp;Purdue CS Grad Student Board (2022-)</p>
+    <div class="pt-5 menur"><i class='fas fa-address-book'></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="assets/HrishikeshRE.pdf">Curriculum Vitae</a></div>
+    <div class=""><i class="fa fa-file-text" style="color:#15C39A;"></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="assets/research_statement.pdf">Research Statement</a></div>
+    <div class=""><i class='fas fa-graduation-cap' style='color:#1DA1F2;' ></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="https://scholar.google.com/citations?user=nzKRVqEAAAAJ&hl=en">Google Scholar</a></div>
+    <div class=""><i class='fas fa-envelope' style='color:#0A66C2;'></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="mailto:hviswan@purdue.edu">Email Address</a></div>
+    <div class=""><i class='fab fa-github' style='color:black;'></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="https://github.com/HrishikeshVish">Github profile</a></div>
+    <div class=""><i class='fab fa-linkedin' style='color:#0A66C2;'></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="https://www.linkedin.com/in/hrishivish23/">Linkedin</a></div>
+    <div class=""><i class='fab fa-twitter' style='color:#1DA1F2;'></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="https://twitter.com/hrishivish23">Twitter</a></div>
+    <div class=""><i class='fab fa-youtube' style='color:red;'></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="https://youtube.com/@sapientminds23">YouTube</a></div>
 
 news: true  # includes a list of news items
 latest_posts: true  # includes a list of the newest posts
