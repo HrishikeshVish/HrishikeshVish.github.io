@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Moto. Etc.
+subtitle: PhD Student @ <a href='https://ideas.cs.purdue.edu'> IDEAS Lab</a>, Graduate Teaching Assistant @ Purdue CS, WebMaster @ CS Graduate Student Board
 
 profile:
   align: right
@@ -27,3 +27,5 @@ During the summer of 2022, I interned at ResconAI, a JHU Startup. I had the priv
 I was an Undergrad at PES University , Bangalore, India from 2017 - 2021, where I majored in Computer Science and Engineering. My undergraduate research projects were done under the guidance of Dr. Natarajan S and Srinivas KS. In Spring 2021, I interned at Cisco Systems, Bangalore.
 
 I love Hiking and exploring the countryside. I'm a space enthusiast and follow Neil DeGrasse Tyson. I collect comics specifically DC Comics (New 52) and Franco-Belgian BD. I listen to a lot of Rock and Metal and am a huge fan of Guns N' Roses, Michael Jackson and Metallica.
+
+
