@@ -2,10 +2,10 @@
 layout: about
 title: about
 permalink: /
-subtitle: PhD Student @ <a href='https://ideas.cs.purdue.edu'> IDEAS Lab</a>, Graduate Teaching Assistant @ Purdue CS, WebMaster @ CS Graduate Student Board
+subtitle: 
 
 profile:
-  align: right
+  align: left
   image: prof_pic.jpg
   image_circular: false # crops the image to make it circular
   address: >
