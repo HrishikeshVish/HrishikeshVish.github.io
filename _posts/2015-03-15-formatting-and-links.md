@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Reading List
-date:   2023-10-04 16:40:16
+date: 2023-10-04 16:40:16
 description: march & april, looking forward to summer
 tags: formatting links
 categories: sample-posts
