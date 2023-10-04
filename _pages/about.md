@@ -24,6 +24,8 @@ profile:
     <div class=""><i class='fab fa-linkedin' style='color:#0A66C2;'></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="https://www.linkedin.com/in/hrishivish23/">Linkedin</a></div>
     <div class=""><i class='fab fa-twitter' style='color:#1DA1F2;'></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="https://twitter.com/hrishivish23">Twitter</a></div>
     <div class=""><i class='fab fa-youtube' style='color:red;'></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="https://youtube.com/@sapientminds23">YouTube</a></div>
+    <p></p>
+    <br><br>
 
 news: true  # includes a list of news items
 latest_posts: false  # includes a list of the newest posts
