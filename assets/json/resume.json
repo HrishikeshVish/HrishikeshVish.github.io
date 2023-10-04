@@ -1,61 +1,99 @@
 {
   "basics": {
-    "name": "Albert Einstein",
-    "label": "Scientist",
+    "name": "Hrishikesh Viswanath",
+    "label": "PhD Student",
     "image": "",
-    "email": "albert@einstein.de",
-    "phone": "(912) 123-4567",
-    "url": "https://alshedivat.github.io/al-folio/",
-    "summary": "A German-born theoretical physicist, widely ranked among the greatest and most influential scientists of all time",
+    "email": "hviswan@purdue.edu",
+    "phone": "",
+    "url": "https://hrishikeshvish.github.io",
+    "summary": "PhD student working at IDEAS Lab, advised by Dr. Aniket Bera",
     "location": {
-      "address": "2712 Broadway St",
-      "postalCode": "CA 94115",
-      "city": "San Francisco",
+      "address": "HAAS 175, Purdue University",
+      "postalCode": "IN 47907",
+      "city": "West Lafayette",
       "countryCode": "US",
-      "region": "California"
+      "region": "Indiana"
     },
     "profiles": [
       {
         "network": "Twitter",
-        "username": "AlbertEinstein",
-        "url": "https://twitter.com/AlbertEinstein"
+        "username": "hrishivish23",
+        "url": "https://twitter.com/hrishivish23"
       }
     ]
   },
   "work": [
     {
-      "name": "Institute for Advanced Study, Princeton University",
-      "position": "Professor of Theoretical Physics",
-      "url": "https://example.com",
-      "startDate": "1933-01-01",
-      "endDate": "1955-01-01",
-      "summary": "Teaching at Palmer Physical Laboratory (now 302 Frist Campus Center). While not a professor at Princeton, I associated with the physics professors and continued to give lectures on campus.",
+      "name": "Cisco Systems Inc.",
+      "position": "Technical Undergraduate Intern",
+      "url": "",
+      "startDate": "2021-01-18",
+      "endDate": "2021-06-30",
+      "summary": "Built an NLP based Chatbot to automate analysis of logs, failure detection and recovery",
       "highlights": [
-        "Relativity"
+        "Django",
+        "MongoDB",
+        "FLASK",
+        "ReactJS",
+        "Webex"
       ]
     }
   ],
   "volunteer": [],
   "education": [
     {
-      "institution": "University of Zurich, Zurich, Switzerland",
-      "url": "https://www.uzh.ch/",
-      "area": "Software Development",
+      "institution": "Purdue University, West Lafayette",
+      "url": "https://purdue.edu",
+      "area": "Computer Science",
       "studyType": "PhD",
-      "startDate": "1905-01-01",
-      "endDate": "1905-01-01",
+      "startDate": "2023-01-01",
+      "endDate": "2026-12-31",
       "score": "",
       "courses": [
-        "Theory of Relativity"
+        ""
+      ]
+    },
+    {
+      "institution": "Purdue University, West Lafayette",
+      "url": "https://purdue.edu",
+      "area": "Computer Science",
+      "studyType": "Master of Science",
+      "startDate": "2021-08-18",
+      "endDate": "2023-05-31",
+      "score": "",
+      "courses": [
+        "Statistical Machine Learning",
+        "Data Mining",
+        "Randomized Algorithms",
+        "Artificial Intelligence",
+        "Distributed Systems",
+        "Interpretability in ML"
+      ]
+    },
+    {
+      "institution": "PES University, Bangalore",
+      "url": "https://pes.edu",
+      "area": "Computer Science and Engineering",
+      "studyType": "Bachelor of Technology",
+      "startDate": "2017-08-01",
+      "endDate": "2021-05-31",
+      "score": "",
+      "courses": [
+        "Advanced Algorithms",
+        "Topics in Deep Learning",
+        "Social Network Analysis",
+        "Artificial Intelligence",
+        "Algorithms for Information Retrieval",
+        "Linear Algebra"
       ]
     }
   ],
   "awards": [
     {
-      "title": "Nobel Prize in Physics",
-      "date": "1921-11-01",
-      "awarder": "Royal Swedish Academy of Sciences",
-      "summary": "The Nobel Prizes are five separate prizes that, according to Alfred Nobel's will of 1895, are awarded to 'those who, during the preceding year, have conferred the greatest benefit to humankind.'"
+      "title": "",
+      "date": "",
+      "awarder": "",
+      "summary": ""
     }
   ],
   "certificates": [],
@@ -63,12 +101,12 @@
   "skills": [],
   "languages": [
     {
-      "language": "German",
+      "language": "English",
       "fluency": "Native speaker"
     },
     {
-      "language": "English",
-      "fluency": "Fluent"
+      "language": "French",
+      "fluency": "Basic Proficiency"
     }
   ],
   "interests": [],
