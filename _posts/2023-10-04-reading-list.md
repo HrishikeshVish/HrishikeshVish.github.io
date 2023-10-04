@@ -2,9 +2,9 @@
 layout: post
 title:  Reading List
 date:   2023-10-04 16:40:16
-description: march & april, looking forward to summer
-tags: formatting links
-categories: sample-posts
+description: List of books for grad CS
+tags: 
+categories: reading-list
 featured: true
 ---
 <div class="row pt-5 allstuff">

@@ -1,10 +1,10 @@
 ---
 layout: post
 title:  Machine Learning Essentials
-date: 2023-10-4 21:01:00
-description: this is what included images could look like
-tags: formatting images
-categories: sample-posts
+date: 2023-10-04 21:01:00
+description: Resources to learn ML
+tags: 
+categories:
 thumbnail: assets/img/9.jpg
 featured: true
 ---
