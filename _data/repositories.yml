@@ -1,12 +1,10 @@
 github_users:
-  - torvalds
-  - alshedivat
+  - HrishikeshVish
+  - IDEAS-Lab-Purdue
 
 github_repos:
-  - alshedivat/al-folio
-  - twbs/bootstrap
-  - jekyll/jekyll
-  - jquery/jquery
-  - FortAwesome/Font-Awesome
-  - jpswalsh/academicons
-  - mathjax/MathJax
+  - HrishikeshVish/AdaFNIO
+  - HrishikeshVish/Fairpy
+  - HrishikeshVish/fourier_neural_operator
+  - HrishikeshVish/PESUniversity_Projects
+  - IDEAS-Lab-Purdue/AffectEcho

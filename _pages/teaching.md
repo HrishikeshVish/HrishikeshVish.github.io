@@ -7,7 +7,7 @@ nav: true
 nav_order: 5
 ---
 
-<div class="py-2">
+<div class="py-2" style="font-family:Garamond, Verdana, Geneva, Tahoma, sans-serif">
 <p class="header pt-5" id="teaching"><h3>Teaching</h3></p>
 <div class="py-2">
 <p class="paper my-2 pl-2">
