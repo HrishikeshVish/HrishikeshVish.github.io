@@ -9,9 +9,7 @@ profile:
   image: prof_pic.jpg
   image_circular: false # crops the image to make it circular
   address: >
-    <p> HAAS 175 </p>
-    <p> Purdue University, West Lafayette </p>
-    <p> United States </p>
+    <p> HAAS 175, Purdue CS </p>
     <p class="pt-4"><i class='fas fa-map-marker-alt'></i>&nbsp;&nbsp;&nbsp;West Lafayette, IN, USA <br> 
                     <i class='fas fa-university'></i>&nbsp;&nbsp;&nbsp;PhD Student, IDEAS Lab, Purdue University <br> 
                     <i class='fas fa-chalkboard'></i>&nbsp;&nbsp;&nbsp;Graduate Teaching Assistant (2022-) <br> 
