@@ -8,29 +8,29 @@ nav_order: 5
 ---
 
 <div class="py-2">
-<p class="header pt-5" id="teaching">Teaching</p>
+<p class="header pt-5" id="teaching"><h3>Teaching</h3></p>
 <div class="py-2">
 <p class="paper my-2 pl-2">
-    <span class="papertitle">Graduate Teaching Assistant, Purdue University</span><br>
+    <span class="papertitle"><h4>Graduate Teaching Assistant, Purdue University</h4></span><br>
     CS251: Data Structures and Algorithms (Fall 23)<br>
 </p>
 </div>
 <div class="py-2">
 <p class="paper my-2 pl-2">
-    <span class="papertitle">Co-Instructor, GTA at Purdue University</span><br>
+    <span class="papertitle"><h4>Co-Instructor, GTA at Purdue University</h4></span><br>
     CS490/590: Introduction to AR/VR (Spring 23)<br>
 </p>
 </div>
 <div class="py-2">
 <p class="paper my-2 pl-2">
-    <span class="papertitle">Graduate Teaching Assistant at Purdue University</span><br>
+    <span class="papertitle"><h4>Graduate Teaching Assistant at Purdue University</h4></span><br>
     CS502: Compiling and Programming Systems (Fall 22)<br>
     CS502: Compiling and Programming Systems (Spring 22)<br>
 </p>
 </div>
 <div class="py-2">
 <p class="paper my-2 pl-2">
-    <span class="papertitle">Peer Teacher at PES University</span><br>
+    <span class="papertitle"><h4>Peer Teacher at PES University</h4></span><br>
     CS204: Web Technologies I (Fall 2018)
 </p>
 </div>
@@ -38,10 +38,10 @@ nav_order: 5
 
 <div class="py-2">
 
-<p class="header pt-5" id="social_clubs">Social Clubs</p>
+<p class="header pt-5" id="social_clubs"><h3>Social Clubs</h3></p>
 <div class="py-2">
 <p class="paper my-2 pl-2">
-    <span class="papertitle">2023-24</span><br>
+    <span class="papertitle"><h4>2023-24</h4></span><br>
     Purdue SEARCH (Fall 23)<br>
     Purdue CS Graduate Student Board (Fall 23) <br>
     Purdue French Club and Francophone Student Association (Fall 23)<br>
@@ -51,7 +51,7 @@ nav_order: 5
 </div>
 <div class="py-2">
 <p class="paper my-2 pl-2">
-    <span class="papertitle">2022-23</span><br>
+    <span class="papertitle"><h4>2022-23</h4></span><br>
     Purdue Japan Student Association (Spring 23)<br>
     Purdue French Student Association (Spring 23)<br>
     Purdue CS Graduate Student Board (Fall 22) <br>
@@ -60,7 +60,7 @@ nav_order: 5
 </div>
 <div class="py-2">
 <p class="paper my-2 pl-2">
-    <span class="papertitle">2021-22</span><br>
+    <span class="papertitle"><h4>2021-22</h4></span><br>
     ML Journal Reading club (Fall 21) <br>
     IEEE Computer Society, Purdue (Fall 21) <br>
     Purdue Vinyl Club (Fall 21) <br>
