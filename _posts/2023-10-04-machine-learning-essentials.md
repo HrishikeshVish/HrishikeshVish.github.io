@@ -8,7 +8,7 @@ categories:
 thumbnail: assets/img/9.jpg
 featured: true
 ---
-<div class="col-md-8 pt-5 about">
+<div class="col-md-8 pt-5 about" style="font-family:Garamond, Verdana, Geneva, Tahoma, sans-serif">
 <br><br><br>
 <p class="h4"></p>
 

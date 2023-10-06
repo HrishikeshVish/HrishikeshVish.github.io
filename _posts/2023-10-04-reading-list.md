@@ -7,7 +7,7 @@ tags:
 categories: reading-list
 featured: true
 ---
-<div class="row pt-5 allstuff">
+<div class="row pt-5 allstuff" style="font-family:Garamond, Verdana, Geneva, Tahoma, sans-serif">
 
 <div class="col-md-4 pt-5">
 
@@ -26,7 +26,7 @@ featured: true
 </div>
 </div>
 
-<div class="col-md-8 pt-5 about">
+<div class="col-md-8 pt-5 about" style="font-family:Garamond, Verdana, Geneva, Tahoma, sans-serif">
 
 <p class="h4"></p>
 
