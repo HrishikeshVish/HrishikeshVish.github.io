@@ -71,32 +71,32 @@ nav_order: 5
 
 <div class="row text-center py-4" style="font-family:Garamond, Verdana, Geneva, Tahoma, sans-serif">
 <div class="mx-auto mt-2">
-    <img class="img-fluid instilogo p-1" src="images/skps.png">
+    <img class="img-fluid instilogo p-1" src="assets/img/skps.png">
     <div class="institution">SKPS</div>
     <div class="years">2008 - 2015</div>
 </div>
 <div class="mx-auto mt-2">
-    <img class="img-fluid instilogo p-1" src="images/pesu-full.png">
+    <img class="img-fluid instilogo p-1" src="assets/img/pesu-full.png">
     <div class="institution">PES University</div>
     <div class="years">2017 - 2021</div>
 </div>
 <div class="mx-auto mt-2">
-    <img class="img-fluid instilogo p-1" src="images/cisco-nbg.png">
+    <img class="img-fluid instilogo p-1" src="assets/img/cisco-nbg.png">
     <div class="institution">Cisco Systems</div>
     <div class="years">2021</div>
 </div>
 <div class="mx-auto mt-2">
-    <img class="img-fluid instilogo p-1" src="images/purdue-nbg.png">
+    <img class="img-fluid instilogo p-1" src="assets/img/purdue-nbg.png">
     <div class="institution">Purdue University</div>
     <div class="years">2021 - Present</div>
 </div>
 <div class="mx-auto mt-2">
-    <img class="img-fluid instilogo p-2" src="images/csociety.png">
+    <img class="img-fluid instilogo p-2" src="assets/img/csociety.png">
     <div class="institution">IEEE Computer Society Purdue</div>
     <div class="years">S2021</div>
 </div>
 <div class="mx-auto mt-2">
-    <img class="img-fluid instilogo p-1" src="images/rescon-nobg.png">
+    <img class="img-fluid instilogo p-1" src="assets/img/rescon-nobg.png">
     <div class="institution">ResconAI</div>
     <div class="years">S2022</div>
 </div>
