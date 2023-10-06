@@ -104,7 +104,7 @@ nav_order: 5
     <div class="years">S2021</div>
 </div>
 <div class="mx-auto mt-2">
-    <img class="img-fluid instilogo p-1" src="/assets/assets/img/rescon-nobg.png">
+    <img class="img-fluid instilogo p-1" src="/assets/img/rescon-nobg.png">
     <div class="institution">ResconAI</div>
     <div class="years">S2022</div>
 </div>
