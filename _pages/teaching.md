@@ -68,7 +68,15 @@ nav_order: 5
 </p>
 </div>
 </div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<style>
+    .instilogo {
+    height: 50px;
+    filter: grayscale(100%);
+    }
 
+</style>
 <div class="row text-center py-4" style="font-family:Garamond, Verdana, Geneva, Tahoma, sans-serif">
 <div class="mx-auto mt-2">
     <img class="img-fluid instilogo p-1" src="/assets/img/skps.png">
