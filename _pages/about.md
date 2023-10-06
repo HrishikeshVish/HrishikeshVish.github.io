@@ -14,8 +14,8 @@ profile:
                     <i class='fas fa-university'></i>&nbsp;&nbsp;&nbsp;PhD Student, IDEAS Lab, Purdue University <br> 
                     <i class='fas fa-chalkboard'></i>&nbsp;&nbsp;&nbsp;Graduate Teaching Assistant (2022-) <br> 
                     <i class='fas fa-user-tie'></i>&nbsp;&nbsp;&nbsp;Purdue CS Grad Student Board (2022-)</p>
-    <div class="pt-5 menur"><small><i class='fas fa-address-book'></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="assets/HrishikeshRE.pdf">Curriculum Vitae</a></small></div>
-    <div class=""><small><i class="fa fa-file-text" style="color:#15C39A;"></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="assets/research_statement.pdf">Research Statement</a></small></div>
+    <div class="pt-5 menur"><small><i class='fas fa-address-book'></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="assets/pdf/HrishikeshRE.pdf">Curriculum Vitae</a></small></div>
+    <div class=""><small><i class="fa fa-file-text" style="color:#15C39A;"></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="assets/pdf/research_statement.pdf">Research Statement</a></small></div>
     <div class=""><small><i class='fas fa-graduation-cap' style='color:#1DA1F2;' ></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="https://scholar.google.com/citations?user=nzKRVqEAAAAJ&hl=en">Google Scholar</a></small></div>
     <div class=""><small><i class='fas fa-envelope' style='color:#0A66C2;'></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="mailto:hviswan@purdue.edu">Email Address</a></small></div>
     <div class=""><small><i class='fab fa-github' style='color:black;'></i>&nbsp;&nbsp;&nbsp;<a class="menulink" target="_blank" href="https://github.com/HrishikeshVish">Github profile</a></small></div>

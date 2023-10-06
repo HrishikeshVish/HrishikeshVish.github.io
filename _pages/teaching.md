@@ -36,7 +36,7 @@ nav_order: 5
 </div>
 </div>
 
-<div class="py-2">
+<div class="py-2" style="font-family:Garamond, Verdana, Geneva, Tahoma, sans-serif">
 
 <p class="header pt-5" id="social_clubs"><h3>Social Clubs</h3></p>
 <div class="py-2">
@@ -66,5 +66,38 @@ nav_order: 5
     Purdue Vinyl Club (Fall 21) <br>
     Bridges International, Purdue (Fall 21) <br>
 </p>
+</div>
+</div>
+
+<div class="row text-center py-4" style="font-family:Garamond, Verdana, Geneva, Tahoma, sans-serif">
+<div class="mx-auto mt-2">
+    <img class="img-fluid instilogo p-1" src="images/skps.png">
+    <div class="institution">SKPS</div>
+    <div class="years">2008 - 2015</div>
+</div>
+<div class="mx-auto mt-2">
+    <img class="img-fluid instilogo p-1" src="images/pesu-full.png">
+    <div class="institution">PES University</div>
+    <div class="years">2017 - 2021</div>
+</div>
+<div class="mx-auto mt-2">
+    <img class="img-fluid instilogo p-1" src="images/cisco-nbg.png">
+    <div class="institution">Cisco Systems</div>
+    <div class="years">2021</div>
+</div>
+<div class="mx-auto mt-2">
+    <img class="img-fluid instilogo p-1" src="images/purdue-nbg.png">
+    <div class="institution">Purdue University</div>
+    <div class="years">2021 - Present</div>
+</div>
+<div class="mx-auto mt-2">
+    <img class="img-fluid instilogo p-2" src="images/csociety.png">
+    <div class="institution">IEEE Computer Society Purdue</div>
+    <div class="years">S2021</div>
+</div>
+<div class="mx-auto mt-2">
+    <img class="img-fluid instilogo p-1" src="images/rescon-nobg.png">
+    <div class="institution">ResconAI</div>
+    <div class="years">S2022</div>
 </div>
 </div>
