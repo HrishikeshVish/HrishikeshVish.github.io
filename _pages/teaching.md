@@ -73,7 +73,7 @@ nav_order: 5
 <style>
     .instilogo {
     height: 50px;
-    filter: grayscale(100%);
+    filter: grayscale(20%);
     }
 
 </style>
