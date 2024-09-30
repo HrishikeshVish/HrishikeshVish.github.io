@@ -1,6 +1,6 @@
 // Initialize font properties
-const fontname = "Ubuntu";
-const fontweights = [300, 400]
+const fontname = "Garamond";
+const fontweights = [800, 900]
 
 // Color properties
 const basecolor = "#777";
@@ -13,7 +13,7 @@ const highlightcolor = "#111";
 
 // Body properties
 const bodyfontweight = 300;
-const bodyfontsize = "12pt";
+const bodyfontsize = "12.5pt";
 const backgroundcolor = "#fff";
 
 // Link properties
