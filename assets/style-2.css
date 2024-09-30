@@ -50,9 +50,9 @@ td {
 }
 
 .profilepic {
-    height: 500px;
+    width: 300px;
     border: none;
-    border-radius: 1%;
+    border-radius: 0px;
     /* filter: grayscale(100%); */
 }
 
@@ -75,8 +75,8 @@ td {
     }
 
     .profilepic {
-        width: 90px;
-        border-radius: 40%;
+        width: 250px;
+        border-radius: 0%;
         padding-top: 0px !important;
         padding-bottom: 0px !important;
         /* filter: grayscale(100%); */
