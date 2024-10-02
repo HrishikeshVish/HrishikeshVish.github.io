@@ -2,6 +2,16 @@ body {
     font-family:'Times New Roman', Times, serif;
 }
 
+.publink{
+    border: 1.2px black solid;
+    padding: 5px;
+    border-radius:2px;
+}
+
+.publink:hover{
+    background-color: #d1e0e0;
+    color: #0059b3;
+}
 
 .instilogo {
     height: 50px;
@@ -52,8 +62,9 @@ td {
 .profilepic {
     width: 300px;
     border: none;
-    border-radius: 0px;
-    /* filter: grayscale(100%); */
+    border-radius: 30px;
+    filter: grayscale(100%); 
+    box-shadow: 3px 3px 5px lightgray;
 }
 
 @media (min-width: 768px) {
