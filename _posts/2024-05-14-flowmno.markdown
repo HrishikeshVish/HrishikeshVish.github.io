@@ -1,0 +1,12 @@
+---
+layout: post
+title:  "Trajectory prediction for robot navigation using flow-guided markov neural operator"
+date:   2024-05-14 22:21:59 +00:00
+image: /images/flowmno.png
+categories: research
+author: "Hrishikesh Viswanath"
+venue: 2024 IEEE International Conference on Robotics and Automation (ICRA)
+authors: "Rashmi Bhaskara*, <strong>Hrishikesh Viswanath*</strong>, Aniket Bera"
+arxiv: https://arxiv.org/abs/2309.09137
+---
+An Optical Flow-Integrated Markov Neural Operator that models pedestrian trajectory prediction as a Markovian process, eliminating the need for historical state storage. 

@@ -1,0 +1,13 @@
+---
+layout: post
+title:  "Physics-informed adaptive fourier neural interpolation operator for synthetic frame generation"
+date:   2025-01-09 22:21:59 +00:00
+image: /images/adafnio.png
+categories: research
+author: "Hrishikesh Viswanath"
+venue: US Patent App. 18/758,927
+authors: "<strong>Hrishikesh Viswanath*</strong>, Md Ashiqur Rahman, Rashmi Bhaskara, Aniket Bera"
+patent: https://patents.google.com/patent/US20250014144A1/
+
+---
+We introduce a resolution-independent neural operator architecture for synthetic frame generation that leverages global convolutions in the Fourier spectral domain via Fast Fourier Transform (FFT).

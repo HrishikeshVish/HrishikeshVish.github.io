@@ -1,0 +1,13 @@
+---
+layout: post
+title:  "FairPy: A Toolkit for Evaluation of Prediction Biases and their Mitigation in Large Language Models"
+date:   2023-02-10 22:21:59 +00:00
+image: /images/fairpy.png
+categories: research
+author: "Hrishikesh Viswanath"
+venue: Arxiv
+authors: "<strong>Hrishikesh Viswanath</strong>, Tianyi Zhang"
+arxiv: https://arxiv.org/pdf/2302.05508
+code: https://github.com/HrishikeshVish/Fairpy
+---
+We present a comprehensive survey and a modular toolkit of mathematical frameworks for quantifying and mitigating prediction bias in Large Language Models (LLMs). 

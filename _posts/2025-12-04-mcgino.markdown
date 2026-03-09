@@ -1,0 +1,12 @@
+---
+layout: post
+title:  "Gradient-Free Physics-informed Operator Learning using Walk-on-Spheres"
+date:   2025-12-04 22:21:59 +00:00
+image: /images/mcgino.png
+categories: research
+author: "Hrishikesh Viswanath"
+venue: NeurIPS 2025 AI for Science Workshop
+authors: "<strong>Hrishikesh Viswanath*</strong>, Hong Chul Nam*, Julius Berner, Anima Anandkumar, Aniket Bera"
+arxiv: https://openreview.net/pdf?id=cnMHdAhuod
+---
+A PINO technique for training operators using Monte-Carlo Walk-on-Spheres

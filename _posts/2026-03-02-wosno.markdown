@@ -1,0 +1,13 @@
+---
+layout: post
+title:  "Operator Learning Using Weak Supervision from Walk-on-Spheres"
+date:   2026-03-02 22:21:59 +00:00
+image: /images/wosno.png
+categories: research
+author: "Hrishikesh Viswanath"
+venue: Arxiv
+authors: "<strong>Hrishikesh Viswanath*</strong>, Hong Chul Nam*, Julius Berner, Anima Anandkumar, Aniket Bera"
+arxiv: https://arxiv.org/pdf/2603.01193
+code: https://github.com/neuraloperator/WoS-NO
+---
+A mesh-free training scheme that amortizes the cost of Monte Carlo walks by using the Walk-on-Spheres algorithm to provide cheap, unbiased stochastic supervision for neural operators.

@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "Learning Lagrangian Interaction Dynamics with Sampling-Based Model Order Reduction"
+date:   2026-02-26 22:21:59 +00:00
+image: /images/giorom.png
+categories: research
+author: "Hrishikesh Viswanath"
+venue: Transactions on Machine Learning Research
+authors: "<strong>Hrishikesh Viswanath</strong>, Yue Chang, Aleksey Panas, Julius Berner, Peter Yichen Chen, Aniket Bera"
+arxiv: https://arxiv.org/abs/2407.03925
+code: https://github.com/HrishikeshVish/GIOROM
+website: /giorom/index.html
+---
+A sampling-based framework that evolves Lagrangian systems directly in physical space using data-driven neural PDE operators and learnable kernel ROM parameterization

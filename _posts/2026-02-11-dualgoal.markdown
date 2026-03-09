@@ -1,0 +1,13 @@
+---
+layout: post
+title:  "Physics Informed Viscous Value Representations"
+date:   2026-02-11 22:21:59 +00:00
+image: /images/dualgoal.png
+categories: research
+author: "Hrishikesh Viswanath"
+venue: Arxiv
+authors: "<strong>Hrishikesh Viswanath</strong>, Juanwu Lu, S. Talha Bukhari, Damon Conover, Ziran Wang, Aniket Bera"
+arxiv: https://arxiv.org/pdf/2602.23280
+code: https://github.com/HrishikeshVish/phys-fk-value-GCRL
+---
+We introduce a physics-informed regularization for offline GCRL derived from the Hamilton-Jacobi-Bellman (HJB) equation's viscosity solution. By applying the Feynman-Kac theorem, we recast value estimation as a stable Monte Carlo expectation, ensuring geometric consistency and superior performance in high-dimensional navigation and manipulation tasks.
