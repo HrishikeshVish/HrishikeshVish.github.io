@@ -2,7 +2,7 @@
 layout: post
 title:  "Neural Operator: Is data all you need to model the world? An insight into the paradigm of data-driven scientific ML"
 date:   2026-04-09 22:21:59 +00:00
-image: /images/nosurvey.png
+image: /images/nosurvey.jpg
 categories: research
 author: "Hrishikesh Viswanath"
 venue: IEEE Transactions on Pattern Analysis and Machine Inteligence
