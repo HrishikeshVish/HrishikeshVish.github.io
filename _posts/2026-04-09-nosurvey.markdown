@@ -7,7 +7,7 @@ categories: research
 author: "Hrishikesh Viswanath"
 venue: IEEE Transactions on Pattern Analysis and Machine Inteligence
 authors: "<strong>Hrishikesh Viswanath</strong>, Md Ashiqur Rahman, Abhijeet Vyas, Andrey Shor, Beatriz Medeiros, Stephanie Hernandez, Suhas Eswarappa Prameela, Aniket Bera"
-arxiv: https://arxiv.org/pdf/2301.13331
+arxiv: https://ieeexplore.ieee.org/document/11478340/
 paper: https://ieeexplore.ieee.org/document/11478340/
 ---
 A survey of advances and challenges in data-driven Scientific ML
