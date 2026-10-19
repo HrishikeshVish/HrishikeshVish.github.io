@@ -5,7 +5,7 @@ date:   2026-04-09 22:21:59 +00:00
 image: /images/nosurvey.jpg
 categories: research
 author: "Hrishikesh Viswanath"
-venue: IEEE Transactions on Pattern Analysis and Machine Inteligence
+venue: IEEE Transactions on Pattern Analysis and Machine Intelligence
 authors: "<strong>Hrishikesh Viswanath</strong>, Md Ashiqur Rahman, Abhijeet Vyas, Andrey Shor, Beatriz Medeiros, Stephanie Hernandez, Suhas Eswarappa Prameela, Aniket Bera"
 arxiv: https://ieeexplore.ieee.org/document/11478340/
 paper: https://ieeexplore.ieee.org/document/11478340/

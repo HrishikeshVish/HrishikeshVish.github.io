@@ -20,7 +20,6 @@
 
   <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/style.css" />
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
-  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
 
 </head>
 
@@ -47,15 +46,15 @@
               <p>
                   Outside the lab, I was the 2024 Vice President of Purdue SEARCH. I mentored our NASA SUITS team to the competition finals, earning a NASA Artemis I mission flag that flew around the moon.
               </p>
-              <p style="text-align:center">
-                  <a href="mailto:hviswan@purdue.edu">Email</a> &nbsp;/&nbsp;
-                  <a href="pdfs/cv.pdf">CV</a> &nbsp;/&nbsp;
-                  <a href="https://scholar.google.com/citations?user=nzKRVqEAAAAJ&hl=en">Scholar</a> &nbsp;/&nbsp;
-                  <a href="https://github.com/HrishikeshVish">Github</a>
+              <p class="links">
+                  <a class="pill" href="mailto:hviswan@purdue.edu">Email</a>
+                  <a class="pill" href="pdfs/cv.pdf">CV</a>
+                  <a class="pill" href="https://scholar.google.com/citations?user=nzKRVqEAAAAJ&hl=en">Scholar</a>
+                  <a class="pill" href="https://github.com/HrishikeshVish">Github</a>
                 </p>
             </td>
             <td style="padding:2.5%;width:40%;max-width:40%">
-              <a href="images/hrishivish.jpeg"><img style="width:75%;max-width:75%;object-fit: cover; border-radius: 50%;" alt="profile photo" src="images/hrishivish.jpeg" class="hoverZoomLink"></a>
+              <a href="images/hrishivish.jpeg"><img class="profile hoverZoomLink" alt="profile photo" src="images/hrishivish.jpeg"></a>
             </td>
           </tr>
         </table>
@@ -92,7 +91,7 @@
           {% if cat == 'research' %}
           <tr>
             <td style="padding:2.5%;width:25%;vertical-align:middle;min-width:120px">
-              <img src="/tn{{post.image}}" alt="project image" style="width:auto; height:auto; max-width:100%;" />
+              {% if post.website %}<a href="{{post.website}}">{% endif %}<img class="thumb" src="/tn{{post.image}}" alt="{{post.title}}" />{% if post.website %}</a>{% endif %}
             </td>
             <td style="padding:2.5%;width:75%;vertical-align:middle">
               <h3>{{post.title}}</h3>
@@ -100,29 +99,19 @@
               {{post.authors}}
 
               <br>
-              <em>{{post.venue}}</em>, {{ post.date | date: "%Y" }}
+              <span class="venue">{{post.venue}}, {{ post.date | date: "%Y" }}</span>
               <br>
-              {% if post.arxiv %}
-              <a href="{{post.arxiv}}">arxiv</a> /
-              {% endif %}
-              {% if post.video %}
-              <a href="{{post.video}}">video</a> /
-              {% endif %}
-              {% if post.code %}
-              <a href="{{post.code}}">code</a> /
-              {% endif %}
-              {% if post.poster %}
-              <a href="{{post.poster}}">poster</a> /
-              {% endif %}
-              {% if post.slides %}
-              <a href="{{post.slides}}">slides</a> /
-              {% endif %}
-              {% if post.website %}
-              <a href="{{post.website}}">website</a> /
-              {% endif %}
-              {% if post.youtube %}
-              <a href="{{post.youtube}}">youtube</a> /
-              {% endif %}
+              <span class="pills">
+              {% if post.website %}<a class="pill" href="{{post.website}}">project page</a>{% endif %}
+              {% if post.paper %}<a class="pill" href="{{post.paper}}">paper</a>{% endif %}
+              {% if post.arxiv and post.arxiv != post.paper %}<a class="pill" href="{{post.arxiv}}">arxiv</a>{% endif %}
+              {% if post.patent %}<a class="pill" href="{{post.patent}}">patent</a>{% endif %}
+              {% if post.code %}<a class="pill" href="{{post.code}}">code</a>{% endif %}
+              {% if post.video %}<a class="pill" href="{{post.video}}">video</a>{% endif %}
+              {% if post.poster %}<a class="pill" href="{{post.poster}}">poster</a>{% endif %}
+              {% if post.slides %}<a class="pill" href="{{post.slides}}">slides</a>{% endif %}
+              {% if post.youtube %}<a class="pill" href="{{post.youtube}}">youtube</a>{% endif %}
+              </span>
               <p></p>
               {{ post.excerpt }}
             </td>
