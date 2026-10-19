@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Neural Implicit Energy Optimization for LiDAR Mapping"
-date:   2026-10-19 22:21:59 +00:00
+date:   2026-10-19 00:00:00 +00:00
 image: /images/nieo.png
 categories: research
 author: "Hrishikesh Viswanath"
