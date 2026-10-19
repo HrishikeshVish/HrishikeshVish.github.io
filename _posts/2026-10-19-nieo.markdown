@@ -1,0 +1,13 @@
+---
+layout: post
+title:  "Neural Implicit Energy Optimization for LiDAR Mapping"
+date:   2026-10-19 22:21:59 +00:00
+image: /images/nieo.png
+categories: research
+author: "Hrishikesh Viswanath"
+venue: IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)
+authors: "<strong>Hrishikesh Viswanath</strong>, Md Ashiqur Rahman, Chi Lin, Damon Conover, Aniket Bera"
+code: https://github.com/HrishikeshVish/nieo
+website: /nieo/index.html
+---
+LiDAR mapping as energy optimization over the curvature of a neural signed distance field
