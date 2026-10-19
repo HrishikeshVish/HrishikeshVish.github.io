@@ -9,5 +9,6 @@ venue: IEEE Robotics and Automation Letters
 authors: "Juntong Peng, <strong>Hrishikesh Viswanath</strong>, Aniket Bera"
 arxiv: https://arxiv.org/abs/2309.08896
 code: https://github.com/IDEAS-Lab-Purdue/GATAR
+website: /gatar/index.html
 ---
 A decentralized graph neural operator approach for robust and scalable task allocation in heterogeneous UGV-UAV teams. 

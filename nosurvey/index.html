@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Neural Operator: Is data all you need to model the world? | IEEE TPAMI</title>
+  <meta name="description" content="A survey of data-driven and physics-informed neural operators for scientific machine learning: architectures, benchmarks, applications and open problems. IEEE TPAMI 2026.">
+  <meta property="og:title" content="Neural Operator: Is data all you need to model the world?">
+  <meta property="og:description" content="An insight into the paradigm of data-driven scientific ML. IEEE Transactions on Pattern Analysis and Machine Intelligence, 2026.">
+  <meta property="og:image" content="https://hrishikeshvish.github.io/nosurvey/nosurvey_data/logo.jpg">
+  <link rel="icon" type="image/jpeg" href="nosurvey_data/logo.jpg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+  <link rel="stylesheet" href="/project.css">
+  <style>
+    .logo { border-radius: 50%; object-fit: cover; }
+    h1.acronym { letter-spacing: 1px; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+    .axes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 10px; }
+    .card { background: var(--accent-soft); border-radius: 10px; padding: 14px 16px; font-size: 15.5px; }
+    .card h4 { margin: 0 0 6px; font-size: 17px; color: var(--accent); }
+    .card ul { margin: 0; padding-left: 18px; }
+    .card li { margin-bottom: 6px; }
+    table.arch { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 12px; }
+    table.arch th, table.arch td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+    table.arch th { color: var(--muted); font-weight: 700; }
+    table.arch td:first-child { font-weight: 700; white-space: nowrap; }
+    .codes { columns: 3; column-gap: 24px; font-size: 15px; padding-left: 18px; margin: 8px 0 0; }
+    .lead + .lead { margin-top: 12px; }
+    .question { text-align: center; font-size: 22px; font-style: italic; max-width: 760px; margin: 0 auto 16px; }
+    @media (max-width: 720px) {
+      .grid2, .axes { grid-template-columns: 1fr; }
+      .codes { columns: 1; }
+      table.arch td:first-child { white-space: normal; }
+    }
+  </style>
+</head>
+<body style="--accent:#1b7fa6; --accent-soft:#e6f3f8">
+<div class="wrap">
+  <a class="home" href="/">← Back to Home</a>
+
+  <header>
+    <img class="logo" src="nosurvey_data/logo.jpg" alt="Particle-based fluid simulation">
+    <h1 class="acronym">Neural <span>Operator</span></h1>
+    <div class="title">Is data all you need to model the world? An insight into the paradigm of data-driven scientific ML</div>
+    <div class="venue">IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI), 2026</div>
+
+    <div class="authors">
+      <span><a href="https://hrishikeshvish.github.io/">Hrishikesh Viswanath</a><sup>1*</sup></span>
+      <span>Md Ashiqur Rahman<sup>1</sup></span>
+      <span>Abhijeet Vyas<sup>1</sup></span>
+      <span>Andrey Shor<sup>1</sup></span>
+      <span>Beatriz Medeiros<sup>2</sup></span>
+      <span>Stephanie Hernandez</span>
+      <span>Suhas Eswarappa Prameela<sup>3</sup></span>
+      <span><a href="https://ideas.cs.purdue.edu">Aniket Bera</a><sup>1</sup></span>
+    </div>
+    <div class="affil">
+      <span><sup>1</sup>Department of Computer Science, Purdue University, West Lafayette, IN, USA</span>
+      <span><sup>2</sup>Department of Engineering, University of Cambridge, Cambridge, United Kingdom</span><br>
+      <span><sup>3</sup>Department of Materials Science and Engineering, Department of Metallurgical Engineering and Department of Mechanical Engineering, University of Utah, UT, USA</span><br>
+      <span><sup>*</sup>Corresponding author</span>
+    </div>
+
+    <div class="buttons">
+      <a class="btn" href="https://ieeexplore.ieee.org/document/11478340/">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 12h8v2H8zm0 4h8v2H8z"/></svg>
+        Paper (IEEE)
+      </a>
+      <a class="btn" href="#bibtex">
+        <svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>
+        BibTeX
+      </a>
+    </div>
+  </header>
+
+  <section>
+    <h2>Abstract</h2>
+    <p class="lead">
+      Numerical approximations of partial differential equations (PDEs) are routinely employed to formulate the solution of physics, engineering,
+      and mathematical problems involving functions of several variables, such as the propagation of heat or sound, fluid flow, elasticity,
+      electrostatics, electrodynamics, and more. While this has led to solving many complex phenomena, there are some limitations. Conventional
+      approaches such as Finite Element Methods (FEMs) and Finite Difference Methods (FDMs) require considerable time and are computationally
+      expensive. In contrast, data-driven machine learning-based methods, such as neural networks, provide a faster, fairly accurate alternative,
+      and, in particular, focus on neural operators, which have certain advantages such as discretization invariance and resolution invariance.
+      This article aims to provide a comprehensive insight into how data-driven approaches can complement conventional techniques to solve
+      engineering and physics problems, while also noting some of the open problems of machine learning-based approaches. We will note how these
+      new computational approaches can bring immense advantages in tackling many problems in fundamental and applied physics.
+    </p>
+  </section>
+
+  <section>
+    <h2>Scope of the Survey</h2>
+    <figure>
+      <img src="nosurvey_data/flowchart.png" alt="Flowchart of conventional and ML-based approaches to solving PDEs">
+      <figcaption>The logical flow of how PDEs can be solved using various methods, highlighting existing ML techniques and the families of
+        neural operator-based techniques.</figcaption>
+    </figure>
+    <p class="lead" style="margin-top:16px">
+      The survey covers data-driven and physics-informed neural operators within the broader realm of scientific ML. It evaluates these models
+      along three axes (<strong>scalability</strong>, <strong>generalizability</strong>, and <strong>sensitivity to training data quality</strong>)
+      and discusses the open problems in each. It then reviews benchmark datasets and controlled settings, and three classes of applied problems:
+      large-scale forecasting and long-range temporal problems, modeling heterogeneous systems, and inverse problems.
+    </p>
+  </section>
+
+  <section>
+    <h2>What Is a Neural Operator?</h2>
+    <p class="lead">
+      Instead of learning the solution to one discretized instance of a PDE, operator learning learns the map between infinite-dimensional
+      function spaces,
+    </p>
+    <div class="eq">$$\mathcal{G}: \mathcal{A} \to \mathcal{U}, \qquad \text{trained on pairs } \{a_i, u_i\}_{i=1}^{N}.$$</div>
+    <p class="lead">
+      Its defining property is <strong>discretization invariance</strong>: a model trained at one resolution can be evaluated at any other.
+      This enables rapid inference, orders of magnitude faster than classical solvers, and mesh independence, for example training on a
+      \(40 \times 40\) grid and evaluating on \(256 \times 256\) without retraining ("zero-shot super-resolution").
+    </p>
+
+    <h3>Taxonomy of architectures</h3>
+    <p>
+      The field originated with two paradigms. <strong>Branch–trunk</strong> architectures (DeepONet) encode the input function and the query
+      coordinates with two sub-networks and take their dot product. <strong>Integral kernel</strong> architectures iterate the transformation
+    </p>
+    <div class="eq">$$(K_a u)(x) = \int_D \kappa\big(x, y, a(x), a(y)\big)\, u(y)\, dy,$$</div>
+    <p>
+      approximated by message passing on graphs (GNO) or as a multiplication in Fourier space after an FFT, truncated at \(k_{max}\) modes (FNO).
+      Task-specific variants followed: geometry-aware operators for irregular domains (Geo-FNO, GINO); transformer and generative backbones
+      (AFNO, IPOT, GNOT, Transolver; GANO, DSNO); physics-informed neural operators that add a PDE residual to regularize the operator (PINO);
+      multiwavelet operators for localized high-frequency features (MWNO); and foundation-style pre-trained and modular frameworks (CoDANO, UPT).
+    </p>
+
+    <figure>
+      <img src="nosurvey_data/operator_outputs.jpg" alt="Ground truth vs. neural operator predictions on five problems">
+      <figcaption>Ground truth (top) vs. operator predictions (bottom): airfoil flow by Geo-FNO (Liu et al.), Darcy flow by GANO (Rahman et al.),
+        Kolmogorov flow by PINO (Li et al.), Navier–Stokes by FNO (Li et al.), and weather forecasting by FourCastNet (Pathak et al.).</figcaption>
+    </figure>
+
+    <h3>Seminal architectures at a glance</h3>
+    <table class="arch">
+      <tr><th>Model</th><th>Advantages</th><th>Limitations</th></tr>
+      <tr><td>Fourier neural operator</td><td>Faster; resolution and discretization invariant; data driven; doesn't need to know the underlying PDE; zero-shot super-resolution</td><td>Aliasing errors; only works on rectangular domains with uniform meshes; overfits with deeper networks</td></tr>
+      <tr><td>DeepONet</td><td>Approximates mappings between infinite-dimensional Banach spaces; learns oscillatory continuous functions</td><td>Requires a high amount of training data; not resolution invariant (fixed input discretization)</td></tr>
+      <tr><td>Graph neural operator</td><td>Learns long-range dependencies in graph-like data; linear time complexity; discretization invariant</td><td>Outperformed by FNO on all PDEs with regular meshes</td></tr>
+      <tr><td>PINO</td><td>Overcomes the limitations of purely physics-based and purely data-driven approaches; combines coarse- and high-resolution data</td><td>Not rigorously tested on high-dimensional PDEs</td></tr>
+      <tr><td>Geo-FNO</td><td>Geometry aware; accepts irregular meshes and point clouds</td><td>Only tested on regular homeomorphic topologies</td></tr>
+      <tr><td>Multiwavelet NO</td><td>Compact representation; resolution-independent solutions</td><td>Cannot generalize to high-frequency signals from low-frequency ones</td></tr>
+    </table>
+    <p class="baselines">Condensed from the survey's comparison table, which also covers GANO/UNO, Adaptive FNO, Implicit FNO and Spectral NO.</p>
+  </section>
+
+  <section>
+    <h2>Open Problems</h2>
+    <p class="lead">Neural operators are not yet a panacea. The survey organizes the challenges of moving from theoretical universality to practical deployment along three axes.</p>
+    <div class="axes">
+      <div class="card">
+        <h4>Data sensitivity &amp; robustness</h4>
+        <ul>
+          <li><strong>Grid sensitivity:</strong> aliasing errors when the inference grid differs significantly from the training grid.</li>
+          <li><strong>Noise accumulation:</strong> errors compound over long auto-regressive rollouts.</li>
+          <li><strong>Data requirements:</strong> scarce or noisy data can lead to spurious minima that violate physical laws.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Generalizability &amp; stability</h4>
+        <ul>
+          <li><strong>Physics-informed optimization:</strong> PDE losses can fail on high convection or stiff reaction–diffusion terms.</li>
+          <li><strong>Geometric generalization:</strong> extrapolating to unseen, topologically distinct large-scale domains remains open.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Scalability &amp; cost</h4>
+        <ul>
+          <li><strong>Parameterization trade-off:</strong> larger models generalize better, at a steep training cost.</li>
+          <li><strong>Training vs. inference:</strong> reducing the break-even point against classical solvers.</li>
+          <li><strong>Curse of dimensionality:</strong> high-dimensional PDEs (e.g. Boltzmann) remain prohibitive.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Benchmarks</h2>
+    <p class="lead">
+      Eulerian benchmarks (Darcy flow, Poisson and heat equations, Burgers', Kolmogorov flow, Kármán vortex street) test mappings between fields;
+      Lagrangian benchmarks test physical interactions on dynamic, unstructured graphs, bridging scientific ML and computer graphics.
+    </p>
+    <figure>
+      <img src="nosurvey_data/the_well.jpg" alt="Simulations from The Well">
+      <figcaption>Simulating fluid flow over complex settings is a challenging task, as illustrated by The Well (Ohana et al.).</figcaption>
+    </figure>
+    <div class="grid2" style="align-items:center">
+      <figure>
+        <img src="nosurvey_data/gns.jpg" alt="GNS dataset">
+        <figcaption>The GNS dataset (Sanchez-Gonzalez et al.): fluids and deformable materials simulated with MPM and SPH.</figcaption>
+      </figure>
+      <figure>
+        <img src="nosurvey_data/meshgraphnets.jpg" alt="MeshGraphNets datasets">
+        <figcaption>Eulerian, Lagrangian and mesh-based simulation datasets from MeshGraphNets (Pfaff et al.).</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Applications</h2>
+
+    <h3>Forecasting dynamic systems</h3>
+    <p>The central challenge is stability and mitigating error accumulation over long temporal rollouts, from planetary weather (FourCastNet) and urban microclimates to turbulence.</p>
+    <div class="grid2">
+      <figure>
+        <img src="nosurvey_data/cityffd.jpg" alt="CityFFD urban microclimate data">
+        <figcaption>The scale of the CityFFD dataset, as used by Peng et al. to model urban microclimates with FNOs.</figcaption>
+      </figure>
+      <figure>
+        <img src="nosurvey_data/kolmogorov.jpg" alt="Kolmogorov flow by the Markov neural operator">
+        <figcaption>Kolmogorov flow simulated by the Markov neural operator from a Gaussian random field initial condition; the energy spectrum
+          converges to the \(k^{-5/3}\) cascade rate. Reproduced from Li et al.</figcaption>
+      </figure>
+    </div>
+    <figure>
+      <img src="nosurvey_data/amr.jpg" alt="AMR Transformer on adaptive meshes">
+      <figcaption>Forecasting on adaptive meshes, with grid resolution varying across time-steps, is an open challenge. AMR-Transformer (Xu et al.)
+        proposes a data-driven adaptive octree-based learning technique for this class of problems.</figcaption>
+    </figure>
+
+    <h3>Heterogeneous and complex media</h3>
+    <p>Here the difficulty is spatial heterogeneity: sharp discontinuities at multi-material interfaces and shocks, in porous media, inelastic impact and composite manufacturing.</p>
+    <div class="grid2">
+      <figure>
+        <img src="nosurvey_data/cure_fem_fno.jpg" alt="Degree of cure, FEM vs FNO">
+        <figcaption>Degree of cure predicted by FEM vs. by FNO.</figcaption>
+      </figure>
+      <figure>
+        <img src="nosurvey_data/cure_profiles.jpg" alt="Degree of cure profiles">
+        <figcaption>Degree of cure predicted by FNO and FEM at x = 35 mm and 21 mm.</figcaption>
+      </figure>
+    </div>
+    <p class="baselines">Thermochemical curing of composites with residual FNOs (Chen et al.).</p>
+
+    <h3>Inverse problems, design and optimization</h3>
+    <p>Operators are differentiable, which makes them natural surrogates for inverse problems and design, from bio-molecular design to physics-informed planning and surface reconstruction.</p>
+    <div class="grid2" style="max-width:700px; margin:0 auto">
+      <figure>
+        <img src="nosurvey_data/value_gcivl.png" alt="Value function, GCIVL">
+        <figcaption>(a) GCIVL</figcaption>
+      </figure>
+      <figure>
+        <img src="nosurvey_data/value_gcivl_pinn.png" alt="Value function, GCIVL with PINN">
+        <figcaption>(b) GCIVL + PINN</figcaption>
+      </figure>
+    </div>
+    <p class="baselines">Value function over a maze-like environment: PINN constraints improve its contours. Reproduced from Viswanath et al.</p>
+    <figure style="max-width:520px; margin-left:auto; margin-right:auto">
+      <img src="nosurvey_data/surface_recon.jpg" alt="Level-set contours, Eikonal vs p-Poisson">
+      <figcaption>Level-set contours from different physics-informed strategies (Eikonal vs. \(p\)-Poisson), as presented by Park et al.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Is Data All You Need?</h2>
+    <p class="question">"It is increasingly apparent that the future lies in synergy."</p>
+    <p class="lead">
+      Neural operators trade a one-time training cost for very fast evaluation. In the survey's worked example, Bayesian inversion of Navier–Stokes
+      with function-space MCMC, a conventional solver takes 2.2&nbsp;s per evaluation and an FNO 0.005&nbsp;s, after roughly 12 hours of training. For
+      100,000 evaluations on a cloud GPU instance, that is under $40 for the FNO, training included, against about $187 for the conventional
+      solver. For a small number of evaluations, the conventional solver remains more efficient.
+    </p>
+    <p class="lead">
+      Numerical solvers are still needed to produce the training data, and the quality of that data bounds the operator. The survey's answer to its
+      central question is therefore not replacement but complementarity: data-driven surrogates working in tandem with traditional solvers. It points
+      to active learning, meta-learning and in-context learning to reduce data requirements, and to integrating operators into FEM software packages
+      to make them accessible to physics researchers.
+    </p>
+
+    <h3>Code for the surveyed architectures</h3>
+    <ul class="codes">
+      <li><a href="https://github.com/neural-operator/fourier_neural_operator">FNO</a></li>
+      <li><a href="https://github.com/NVlabs/FourCastNet">FourCastNet</a></li>
+      <li><a href="https://github.com/kazizzad/GANO">GANO</a></li>
+      <li><a href="https://github.com/neural-operator/Geo-FNO">Geo-FNO</a></li>
+      <li><a href="https://github.com/neural-operator/graph-pde">GNO</a></li>
+      <li><a href="https://github.com/gaurav71531/mwt-operator">MWT-NO</a></li>
+      <li><a href="https://github.com/neural-operator/PINO">PINO</a></li>
+      <li><a href="https://github.com/vlsf/sno">SNO</a></li>
+      <li><a href="https://github.com/ashiq24/UNO">UNO</a></li>
+    </ul>
+  </section>
+
+  <section id="bibtex">
+    <h2>Citation</h2>
+<pre class="bib">@article{viswanath2026neural,
+  title   = {Neural Operator: Is data all you need to model the world? An insight into the paradigm of data-driven scientific ML},
+  author  = {Viswanath, Hrishikesh and Rahman, Md Ashiqur and Vyas, Abhijeet and Shor, Andrey and Medeiros, Beatriz and
+             Hernandez, Stephanie and Eswarappa Prameela, Suhas and Bera, Aniket},
+  journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  year    = {2026}
+}</pre>
+  </section>
+
+  <footer>
+    Figures marked with an author name are reproduced from the cited works, as in the article. Page layout inspired by
+    <a href="https://www.matthewtancik.com/nerf">NeRF</a>.
+  </footer>
+</div>
+</body>
+</html>

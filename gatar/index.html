@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GATAR | Graph-based Decentralized Task Allocation for Multi-Robot Target Localization</title>
+  <meta name="description" content="GATAR: a graph attention task allocator for decentralized target localization with heterogeneous teams of UGVs and UAVs. IEEE RA-L 2024.">
+  <meta property="og:title" content="GATAR: Graph-based Decentralized Task Allocation for Multi-Robot Target Localization">
+  <meta property="og:description" content="Decentralized task allocation for heterogeneous UGV/UAV teams with a graph neural operator. IEEE RA-L 2024.">
+  <meta property="og:image" content="https://hrishikeshvish.github.io/gatar/gatar_data/logo.png">
+  <link rel="icon" type="image/png" href="gatar_data/logo.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+  <link rel="stylesheet" href="/project.css">
+  <style>
+    .teaser-img { max-width: 520px; margin: 0 auto; }
+    table.res { border-collapse: collapse; margin: 16px auto 0; font-size: 15.5px; }
+    table.res th, table.res td { padding: 6px 16px; text-align: center; border-bottom: 1px solid var(--rule); }
+    table.res th { border-bottom: 2px solid var(--ink); }
+    table.res td:first-child, table.res th:first-child { text-align: left; }
+    table.res tr.ours td { font-weight: 700; background: var(--accent-soft); }
+  </style>
+</head>
+<body style="--accent:#6b1f63; --accent-soft:#f5eaf3;">
+<div class="wrap">
+  <a class="home" href="/">← Back to Home</a>
+
+  <header>
+    <img class="logo" src="gatar_data/logo.png" alt="GATAR logo: a ground robot inside its sensing radius">
+    <h1 class="acronym"><span>G</span>AT<span>A</span>R</h1>
+    <div class="title">Graph-based Decentralized Task Allocation for Multi-Robot Target Localization</div>
+    <div class="venue">IEEE Robotics and Automation Letters (RA-L) 2024</div>
+
+    <div class="authors">
+      <span>Juntong Peng</span>
+      <span><a href="https://hrishikeshvish.github.io/">Hrishikesh Viswanath</a></span>
+      <span><a href="https://ideas.cs.purdue.edu">Aniket Bera</a></span>
+    </div>
+    <div class="affil">
+      <span>Department of Computer Science, Purdue University</span>
+    </div>
+
+    <div class="buttons">
+      <a class="btn" href="https://ieeexplore.ieee.org/document/10681021">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 12h8v2H8zm0 4h8v2H8z"/></svg>
+        Paper
+      </a>
+      <a class="btn" href="https://arxiv.org/abs/2309.08896">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 12h8v2H8zm0 4h8v2H8z"/></svg>
+        arXiv
+      </a>
+      <a class="btn" href="https://github.com/IDEAS-Lab-Purdue/GATAR">
+        <svg viewBox="0 0 24 24"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.2 1.9 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg>
+        Code
+      </a>
+      <a class="btn" href="#bibtex">
+        <svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>
+        BibTeX
+      </a>
+    </div>
+  </header>
+
+  <section class="teaser">
+    <figure class="teaser-img">
+      <img src="gatar_data/overview.png" alt="System overview: UAVs and UGVs localizing targets around obstacles">
+      <figcaption>By exploiting comparative advantages, a collaborative multi-robot system localizes targets efficiently. The UAV can fly over the
+        ground obstacle while the UGV must navigate around it, so the target inside the U-shaped obstacle is better assigned to the UAV.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Abstract</h2>
+    <p class="lead">
+      We introduce a new graph neural operator-based approach for task allocation in a system of heterogeneous robots composed of Unmanned
+      Ground Vehicles (UGVs) and Unmanned Aerial Vehicles (UAVs). The proposed model, GATAR, or <strong>G</strong>raph <strong>A</strong>ttention
+      <strong>T</strong>ask <strong>A</strong>llocato<strong>R</strong> aggregates information from neighbors in the multi-robot system, with the aim of
+      achieving globally optimal target localization. Being decentralized, our method is highly robust and adaptable to situations where the
+      number of robots and the number of tasks may change over time. We also propose a heterogeneity-aware preprocessing technique to model the
+      heterogeneity of the system. The experimental results demonstrate the effectiveness and scalability of the proposed approach in a range of
+      simulated scenarios generated by varying the number of UGVs and UAVs and the number and location of the targets. We show that a single
+      model can handle a heterogeneous robot team with a number of robots ranging between 2 and 12 while outperforming the baseline architectures.
+    </p>
+  </section>
+
+  <section>
+    <h2>Method</h2>
+    <figure>
+      <img src="gatar_data/pipeline.png" alt="GATAR architecture and heterogeneity-aware preprocessing">
+      <figcaption>The model takes the observable environment, targets, obstacles and robots as input, aggregates information through the
+        V-cycle graph attention network, and outputs the x-y location of the target assigned to each robot, which can be used for path planning.</figcaption>
+    </figure>
+
+    <h3>Heterogeneity-aware observation preprocessing</h3>
+    <p>
+      Robots differ in <em>perception</em> (whether ground obstacles occlude their line of sight) and <em>mobility</em> (whether ground
+      obstacles impede them). Each robot encodes both into a four-channel spatial feature map: a reward map that favours regions reachable by
+      short paths, a Gaussian target map centred on each observed target, a Boolean map of observed obstacles, and the pixel-wise product of
+      the reward and target maps. The reward for robot \(i\) moving to a location \(l\) in its observed region \(E_i\) is
+    </p>
+    <div class="eq">$$R_{i,l} = \frac{v_i}{d_{i,l} + \epsilon},$$</div>
+    <p>where \(v_i\) is the robot's velocity and \(d_{i,l}\) the length of the shortest path to \(l\).</p>
+
+    <h3>Graph Attention Task Allocator</h3>
+    <p>
+      Robots exchange their local features with every neighbor inside a communication radius. To capture long-range information with linear
+      complexity, GATAR adapts the V-cycle of the Multipole Graph Kernel Network: the radius graph is decomposed into levels, information is
+      passed down and back up through them, and each level uses multi-head graph attention to weight a varying number of neighbors. The
+      residual V-cycle structure also counters over-smoothing, which would otherwise assign the same task to every robot in a neighborhood.
+      The model is trained with supervision from a centralized greedy expert, and runs fully decentralized at test time.
+    </p>
+  </section>
+
+  <section>
+    <h2>Results</h2>
+
+    <h3>Task allocation on a real-world map</h3>
+    <figure>
+      <img src="gatar_data/qualitative.jpg" alt="Task allocation around Columbus Circle, New York City">
+      <figcaption>A grid world built from a bird's-eye image of Columbus Circle by Central Park, Manhattan. Red points are randomly distributed
+        targets; blue squares and green triangles are UGVs and UAVs initially located around the roundabout; grey squares are obstacles such as
+        buildings and shrubs.</figcaption>
+    </figure>
+
+    <h3>Communication range and team size</h3>
+    <figure>
+      <img src="gatar_data/comm_range.png" alt="Effect of communication range and comparison with greedy and random allocation">
+      <figcaption>(a) 90th-percentile and (b) median distance from the predicted targets to the expert's targets as the communication range
+        grows. (c) 90th-percentile distance of GATAR against greedy and random task allocation, across team compositions from 1 UAV + 1 UGV
+        to 6 UAVs + 6 UGVs.</figcaption>
+    </figure>
+
+    <h3>Against learned baselines</h3>
+    <table class="res">
+      <tr><th>Method</th><th>90-pct. dist. ↓</th><th>median dist. ↓</th><th>mean dist. ↓</th></tr>
+      <tr class="ours"><td>GATAR</td><td>4.3928</td><td>0.8156</td><td>1.6308</td></tr>
+      <tr><td>GNN</td><td>4.5618</td><td>0.8755</td><td>1.7180</td></tr>
+      <tr><td>GNN + V-Cycle</td><td>4.6152</td><td>0.8452</td><td>1.6996</td></tr>
+      <tr><td>MAGAT</td><td>5.4553</td><td>0.8588</td><td>1.8746</td></tr>
+    </table>
+    <p class="baselines">Distance between predicted and expert-assigned targets, 6 UAVs + 6 UGVs.</p>
+  </section>
+
+  <section id="bibtex">
+    <h2>Citation</h2>
+<pre class="bib">@article{peng2024graph,
+  title   = {Graph-based Decentralized Task Allocation for Multi-Robot Target Localization},
+  author  = {Peng, Juntong and Viswanath, Hrishikesh and Bera, Aniket},
+  journal = {IEEE Robotics and Automation Letters},
+  year    = {2024}
+}</pre>
+  </section>
+
+  <footer>
+    Page layout inspired by <a href="https://www.matthewtancik.com/nerf">NeRF</a>.
+  </footer>
+</div>
+</body>
+</html>

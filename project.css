@@ -1,0 +1,123 @@
+/* Shared style for project pages (nieo/, giorom/, gatar/, nosurvey/).
+   Typography and borders follow the ICLR-template papers: Computer Modern
+   serif body, small-caps title and section heads, typewriter labels, thin
+   black rounded frames, booktabs tables. Layout inspired by
+   https://www.matthewtancik.com/nerf */
+@import url("https://cdn.jsdelivr.net/npm/computer-modern@0.1.2/cmu-serif.css");
+@import url("https://cdn.jsdelivr.net/npm/computer-modern@0.1.2/cmu-typewriter-text.css");
+
+:root {
+  --ink: #111111;
+  --muted: #555555;
+  --accent: #2f4aa8;       /* per-page override: set --accent / --accent-soft on <body style> */
+  --accent-soft: #eef0fa;
+  --rule: #d4d4d4;
+  --frame: #c9c9c9;        /* light sub-panel frame */
+  --radius: 12px;
+  --serif: "CMU Serif", "Latin Modern Roman", "Times New Roman", Times, serif;
+  --mono: "CMU Typewriter Text", "Latin Modern Mono", "Courier New", monospace;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: #fff; color: var(--ink);
+  font-family: var(--serif); font-weight: 500;
+  font-size: 18.5px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+strong, b, th { font-weight: 700; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+
+/* running head, like the template's header line */
+.home {
+  display: block; margin-top: 18px; padding-bottom: 6px;
+  border-bottom: 1px solid var(--ink); font-size: 15px; color: var(--ink);
+}
+
+header { text-align: center; padding: 30px 0 8px; }
+.logo { width: 110px; height: 110px; display: block; margin: 0 auto 8px; }
+h1.acronym {
+  font-size: 66px; font-weight: 500; font-variant: small-caps;
+  letter-spacing: 1.5px; margin: 0; line-height: 1.05;
+}
+h1.acronym span { color: var(--accent); }
+.title {
+  font-size: 27px; font-weight: 500; font-variant: small-caps; letter-spacing: 0.3px;
+  margin: 10px auto 0; max-width: 820px; line-height: 1.25;
+}
+.venue { margin: 14px 0 0; font-family: var(--mono); font-size: 16.5px; color: var(--accent); }
+.authors { margin: 18px auto 0; font-size: 19.5px; max-width: 840px; }
+.authors span { white-space: nowrap; margin: 0 10px; }
+.affil { margin-top: 6px; font-size: 15.5px; color: var(--muted); }
+.affil span { margin: 0 10px; white-space: nowrap; }
+sup { font-size: 0.65em; }
+
+/* buttons: the template's rounded label boxes */
+.buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin: 24px 0 8px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 7px 18px;
+  border: 1.5px solid var(--ink); border-radius: 10px; background: #fff;
+  color: var(--ink); font-family: var(--mono); font-size: 15.5px;
+}
+.btn:hover { background: var(--ink); color: #fff; text-decoration: none; }
+.btn svg { width: 17px; height: 17px; fill: currentColor; }
+.btn.disabled { border-style: dashed; border-color: #9a9a9a; color: #9a9a9a; pointer-events: none; }
+
+section { padding: 26px 0; border-top: 1px solid var(--rule); }
+section:first-of-type { border-top: 0; }
+h2 {
+  font-size: 30px; font-weight: 500; font-variant: small-caps; letter-spacing: 0.5px;
+  margin: 0 0 14px; text-align: center;
+}
+h3 { font-size: 20.5px; font-weight: 700; margin: 26px 0 8px; }
+h4 { font-weight: 700; }
+p { margin: 0 0 14px; }
+.lead { max-width: 860px; margin: 0 auto; text-align: justify; hyphens: auto; }
+
+figure { margin: 18px 0 0; }
+figure img, figure video {
+  width: 100%; height: auto; display: block;
+  border: 1px solid var(--frame); border-radius: var(--radius); background: #fff;
+}
+figcaption { font-size: 15.5px; color: var(--muted); margin-top: 8px; text-align: center; }
+/* the template's black outer frame, for the hero figure */
+.teaser figure {
+  border: 1.5px solid var(--ink); border-radius: 16px; padding: 14px; margin-top: 4px;
+}
+.teaser figure img, .teaser figure video { border: 0; border-radius: 8px; }
+.label { font-family: var(--mono); font-size: 15px; text-align: center; display: block; margin-bottom: 6px; }
+
+.two { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; align-items: center; }
+.eq {
+  border: 1.5px solid var(--ink); border-radius: var(--radius); background: #fff;
+  padding: 4px 14px; margin: 14px 0; overflow-x: auto;
+}
+ul.hl { max-width: 860px; margin: 0 auto; padding-left: 22px; }
+ul.hl li { margin-bottom: 6px; }
+.baselines { font-size: 15.5px; color: var(--muted); text-align: center; max-width: 860px; margin: 10px auto 0; }
+
+/* booktabs: heavy top/bottom rules, light mid rule, no row lines */
+table.res, table.arch { border-collapse: collapse; border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); }
+table.res th, table.res td, table.arch th, table.arch td { border-bottom: 0 !important; }
+table.res thead th, table.arch thead th, table.res tr:first-child th, table.arch tr:first-child th {
+  border-bottom: 0.8px solid var(--ink) !important; color: var(--ink);
+}
+table.res tr.ours td { background: var(--accent-soft); }
+
+/* boxed cards (open problems etc.) */
+.card { background: #fff !important; border: 1.5px solid var(--ink); border-radius: var(--radius); }
+.card h4 { font-family: var(--mono); font-weight: 500 !important; }
+
+pre.bib {
+  font-family: var(--mono); background: #fff; border: 1.5px solid var(--ink); border-radius: var(--radius);
+  padding: 16px; font-size: 14px; line-height: 1.45; overflow-x: auto; margin: 0;
+}
+footer { padding: 26px 0 48px; border-top: 1px solid var(--rule); font-size: 15px; color: var(--muted); text-align: center; }
+
+@media (max-width: 720px) {
+  h1.acronym { font-size: 48px; }
+  .title { font-size: 21px; }
+  .authors { font-size: 17px; }
+  .two { grid-template-columns: 1fr; }
+}
