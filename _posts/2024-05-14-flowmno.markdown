@@ -8,5 +8,6 @@ author: "Hrishikesh Viswanath"
 venue: 2024 IEEE International Conference on Robotics and Automation (ICRA)
 authors: "Rashmi Bhaskara*, <strong>Hrishikesh Viswanath*</strong>, Aniket Bera"
 arxiv: https://arxiv.org/abs/2309.09137
+website: /flowmno/index.html
 ---
 An Optical Flow-Integrated Markov Neural Operator that models pedestrian trajectory prediction as a Markovian process, eliminating the need for historical state storage. 

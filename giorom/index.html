@@ -4,28 +4,36 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>GIOROM | Learning Lagrangian Interaction Dynamics with Sampling-Based Model Order Reduction</title>
-  <meta name="description" content="GIOROM evolves Lagrangian systems on sparse particle samples with neural PDE operators and recovers the full field with a learnable kernel ROM. TMLR 2026.">
+  <meta name="description" content="GIOROM evolves Lagrangian systems on a sparse set of particles with a neural PDE operator and recovers the full field with a learnable kernel-integral ROM. TMLR 2026, Expert Certification.">
   <meta property="og:title" content="GIOROM: Learning Lagrangian Interaction Dynamics with Sampling-Based Model Order Reduction">
   <meta property="og:description" content="Sampling-based model order reduction for Lagrangian dynamics. TMLR 2026, Expert Certification.">
   <meta property="og:image" content="https://hrishikeshvish.github.io/giorom/giorom_data/logo.png">
   <link rel="icon" type="image/png" href="giorom_data/logo.png">
   <link rel="stylesheet" href="/project.css">
   <style>
-    .simgrid { display: grid; grid-template-columns: 140px repeat(3, 1fr); gap: 10px; align-items: center; margin-top: 18px; }
-    .simgrid .lbl { font-weight: 700; font-size: 15px; line-height: 1.3; }
-    .simgrid .lbl small { display: block; font-weight: 400; color: var(--muted); }
-    .simgrid video { width: 100%; display: block; border-radius: 6px; }
-    .flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 10px; align-items: center; max-width: 760px; margin: 0 auto; }
+    .flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 8px; align-items: center; max-width: 680px; margin: 0 auto; }
     .flow figure { margin: 0; }
-    .teaser .flow { border: 1.5px solid var(--ink); border-radius: 16px; padding: 18px 14px 8px; }
-    .teaser .flow figure { border: 0; padding: 0; }
     .flow video { border: 0; border-radius: 0; }
-    .flow figcaption { font-family: var(--mono); font-size: 14px; color: var(--ink); }
-    .flow .arrow { font-size: 30px; color: var(--accent); padding-bottom: 28px; }
+    .flow figcaption { font-family: var(--mono); font-size: 13px; color: var(--ink); }
+    .flow .arrow { font-size: 26px; color: var(--accent); padding-bottom: 24px; }
+    .simgrid { display: grid; grid-template-columns: 120px repeat(3, 1fr); gap: 8px; align-items: center; margin-top: 12px; }
+    .simgrid .lbl { font-family: var(--mono); font-size: 13px; line-height: 1.3; }
+    .simgrid .lbl small { display: block; color: var(--muted); }
+    .simgrid video { width: 100%; display: block; border: 1px solid var(--frame); border-radius: 10px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 900px; margin: 14px auto 0; }
+    .stat { background: var(--accent-soft); border-radius: var(--radius); padding: 10px 12px; text-align: center; }
+    .stat b { display: block; font-size: 23px; color: var(--accent); font-weight: 700; line-height: 1.15; }
+    .stat span { font-size: 13px; color: var(--muted); line-height: 1.3; display: block; margin-top: 3px; }
+    table.res { margin: 12px auto 0; font-size: 14px; }
+    table.res th, table.res td { padding: 4px 13px; text-align: center; }
+    table.res td:first-child, table.res th:first-child { text-align: left; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
     @media (max-width: 720px) {
       .simgrid { grid-template-columns: 1fr 1fr; }
-      .simgrid .lbl { grid-column: 1 / -1; margin-top: 8px; }
-      .flow { gap: 4px; } .flow .arrow { font-size: 20px; }
+      .simgrid .lbl { grid-column: 1 / -1; margin-top: 6px; }
+      .stats, .grid2 { grid-template-columns: 1fr 1fr; }
+      table.res { font-size: 12.5px; }
+      table.res th, table.res td { padding: 3px 6px; }
     }
   </style>
 </head>
@@ -40,12 +48,18 @@
     <div class="venue">Transactions on Machine Learning Research (TMLR) 2026 &middot; Expert Certification</div>
 
     <div class="authors">
-      <span><a href="https://hrishikeshvish.github.io/">Hrishikesh Viswanath</a></span>
-      <span>Yue Chang</span>
-      <span>Aleksey Panas</span>
-      <span>Julius Berner</span>
-      <span>Peter Yichen Chen</span>
-      <span><a href="https://ideas.cs.purdue.edu">Aniket Bera</a></span>
+      <span><a href="https://hrishikeshvish.github.io/">Hrishikesh Viswanath</a><sup>1</sup></span>
+      <span>Yue Chang<sup>2</sup></span>
+      <span>Aleksey Panas<sup>2</sup></span>
+      <span>Julius Berner<sup>3</sup></span>
+      <span>Peter Yichen Chen<sup>4</sup></span>
+      <span><a href="https://ideas.cs.purdue.edu">Aniket Bera</a><sup>1</sup></span>
+    </div>
+    <div class="affil">
+      <span><sup>1</sup>Purdue University</span>
+      <span><sup>2</sup>University of Toronto</span>
+      <span><sup>3</sup>NVIDIA</span>
+      <span><sup>4</sup>Massachusetts Institute of Technology</span>
     </div>
 
     <div class="buttons">
@@ -69,22 +83,14 @@
   </header>
 
   <section class="teaser">
-    <div class="flow">
-      <figure>
-        <video src="giorom_data/neuraloperator.mp4" autoplay loop muted playsinline></video>
-        <figcaption>Neural operator on a sparse sample</figcaption>
-      </figure>
-      <div class="arrow">&rarr;</div>
-      <figure>
-        <video src="giorom_data/neuralfield.mp4" autoplay loop muted playsinline></video>
-        <figcaption>Kernel ROM upsampling</figcaption>
-      </figure>
-      <div class="arrow">&rarr;</div>
-      <figure>
-        <video src="giorom_data/rendered.mp4" autoplay loop muted playsinline></video>
-        <figcaption>Rendered simulation</figcaption>
-      </figure>
-    </div>
+    <figure>
+      <img src="giorom_data/fig_overview.png" alt="GIOROM overview">
+      <figcaption><strong>Geometry-informed reduced-order modeling in physical space.</strong> Rather than evolving a global latent
+        representation, GIOROM advances a reduced set of Lagrangian particles directly in physical space with a neural autoregressive PDE
+        operator \(\phi_\Theta\), which predicts accelerations \(\mathbf{A}_t\) from a short history of velocities
+        \(\mathbf{V}_{t-w:t}\). A learnable kernel-based ROM parametrizes the solution manifold, so the field can be queried at
+        arbitrary locations from local geometric information around the evolved particles.</figcaption>
+    </figure>
   </section>
 
   <section>
@@ -97,64 +103,205 @@
       highly dynamic behaviors such as fluids. We propose a sampling-based reduction framework that evolves Lagrangian systems directly in
       physical space, over the particles themselves, reducing the number of active degrees of freedom via data-driven neural PDE operators.
       To enable querying at arbitrary spatial locations, we introduce a learnable kernel parameterization that uses local spatial information
-      from time-evolved sample particles to infer the underlying solution manifold. Empirically, our approach achieves a 6.6–32&times;
+      from time-evolved sample particles to infer the underlying solution manifold. Empirically, our approach achieves a 6.6&times;–32&times;
       reduction in input dimensionality while maintaining high-fidelity evaluations across diverse Lagrangian regimes, including fluid flows,
       granular media, and elastoplastic dynamics. We refer to this framework as GIOROM (<strong>G</strong>eometry-<strong>I</strong>nf<strong>O</strong>rmed
       <strong>R</strong>educed-<strong>O</strong>rder <strong>M</strong>odeling).
     </p>
+    <div class="stats">
+      <div class="stat"><b>6.6–32&times;</b><span>fewer active degrees of freedom than the full particle system</span></div>
+      <div class="stat"><b>2–3.5&times;</b><span>faster 200-step rollouts than GNS on the same graph</span></div>
+      <div class="stat"><b>7&nbsp;MB</b><span>constant structure memory, vs. up to 1.37&nbsp;GB for graph kernels</span></div>
+      <div class="stat"><b>&asymp;2M</b><span>particles reconstructed from a 1–3% sample</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sampling-Based Reduction</h2>
+    <p class="lead">
+      Classical ROMs project the state onto a fixed global basis and evolve its coefficients with reduced forms of the governing
+      equations; neural-field ROMs then decode the latent state back to the full field. These global latents struggle with complex,
+      fast-evolving local dynamics such as fluids, and still need the PDE to time-step. GIOROM instead evolves a small set of
+      representative particles embedded in the physical domain with a data-driven Lagrangian solver, which preserves locality and needs
+      no explicit governing equations, then reconstructs the full field from those particles with a discretization-invariant kernel.
+    </p>
+    <figure>
+      <img src="giorom_data/fig_intro.png" alt="Global latent ROM vs. GIOROM">
+      <figcaption>(a) Prior discretization-invariant methods evolve a global latent state \(\hat{\mathbf{x}}\) with PDE time-steppers and
+        decode the full field with a neural decoder \(g\), which requires the explicit PDE. (b) GIOROM uses a data-driven neural stepper to
+        compute sparse field estimates \(\{\hat{u}^i\}_{i=1}^r\), from which a kernel \(\kappa\) parameterizes the solution manifold over
+        local spatial regions.</figcaption>
+    </figure>
   </section>
 
   <section>
     <h2>Method</h2>
+
+    <h3>Kernel-integral ROM</h3>
+    <p>
+      Instead of a projection onto a global basis, the reduced-order model is a continuous integral operator with a learnable kernel
+      \(\psi\). Given particle samples \(v \approx u\) produced by the time-stepper, the field at a query point \(x\) is a normalized,
+      locally weighted aggregation of nearby samples, a continuous analogue of Nadaraya–Watson kernel regression:
+    </p>
+    <div class="eq">$$u(x,t) = \frac{\int_\Omega \psi(x, y)\, v(y,t)\, d\mu(y)}{\int_\Omega \psi(x, y)\, d\mu(y)} .$$</div>
+    <p>
+      Evaluating this over radius graphs scales poorly, so the samples are projected onto a fixed grid with trilinear basis functions,
+      giving a feature field \(F_{grid}\) and a density field \(D_{grid}\), and the operator is approximated by stochastic interpolation
+      around \(x\), where \(\xi \sim \mathcal{N}(0, \sigma^2 I)\) acts as a Monte Carlo Gaussian smoothing kernel:
+    </p>
+    <div class="eq">$$\bar{u}(x) = \frac{\mathbb{E}_{\xi}\left[\mathcal{I}(F_{grid}, x + \xi)\right]}{\mathbb{E}_{\xi}\left[\mathcal{I}(D_{grid}, x + \xi)\right] + \epsilon} .$$</div>
+
+    <h3>Time-stepping on the reduced sample set</h3>
+    <p>
+      The sparse particles are advanced by a neural PDE operator that adapts the UPT encode–process–decode architecture to autoregressive
+      particle dynamics, with interaction-network encoder and decoder on a radius graph over the sample and a transformer processor in
+      latent space:
+      \(\phi_\Theta := IN^{dec} \circ NOT^{process} \circ IN^{enc}\). From a window of velocities \(\mathbf{v}_{t-w:t}\) it predicts
+      per-particle accelerations, and positions follow by Euler integration. Mean aggregation in message passing makes the graph layers
+      behave like a Monte Carlo approximation of kernel integrals, so the operator stays consistent as the sample changes; training on
+      several random subgraphs per domain makes it invariant to the sampling ratio. The framework is agnostic to the choice of time-stepper.
+    </p>
     <figure>
-      <img src="giorom_data/giorom_pipeline_plasticine.png" alt="GIOROM pipeline">
-      <figcaption>The neural operator \(\mathcal{G}_\theta\) predicts the acceleration of a Lagrangian system at time \(t_k\) from the past \(w\)
-        velocity instances; positions follow by Euler integration. The kernel ROM evaluates the deformation field at arbitrary locations.</figcaption>
-    </figure>
-    <figure>
-      <img src="giorom_data/diff_archs.png" alt="Aggregation in GNS, GINO and GIOROM">
-      <figcaption>How each architecture aggregates information: (a) local neighbourhood aggregation (GNS), (b) an integral transform on a
-        latent grid (GINO), and (c) GIOROM, which combines local neighbourhood aggregation (interaction operator) with an integral transform
-        on a weighted latent grid.</figcaption>
-    </figure>
-    <figure>
-      <img src="giorom_data/graph_techniques.png" alt="Graph construction on the sparse sample">
-      <figcaption>Building a graph on the sparse sample: (a) full-order graph, (b) a sampled radius graph splits into several components,
-        (c) randomly and farthest-point sampled radius graphs stay a single component, (d) a randomly sampled Delaunay graph.</figcaption>
+      <img src="giorom_data/fig_flow.png" alt="Single-step flow diagram">
+      <figcaption>One step of inference: kernel-integral ROM, time-stepping on the sample, and reconstruction of the next state.</figcaption>
     </figure>
   </section>
 
   <section>
     <h2>Results</h2>
-    <p class="lead">Simulations across materials and regimes.</p>
+
+    <h3>Reconstruction against neural ROMs</h3>
+    <div class="grid2">
+      <figure>
+        <img src="giorom_data/fig_rom_comps.jpg" alt="ROM comparison on fluid in a container">
+        <figcaption>Fluid in a container. PCA (rollout MSE 0.083), autoencoder (0.091), LiCROM (0.033) and CROM (0.079) drift from
+          the true fluid boundary, overshooting the container; GIOROM stays faithful at 0.0091.</figcaption>
+      </figure>
+      <figure>
+        <img src="giorom_data/fig_kernel_disc_inv.jpg" alt="Discretization convergence on 2 million particles">
+        <figcaption>Discretization convergence on &asymp;2 million particles: from random samples of 62K and 20K particles (3% and 1%), rollout
+          MSE is 0.0097 and 0.0088.</figcaption>
+      </figure>
+    </div>
+    <table class="res">
+      <thead>
+        <tr><th>Rel. \(L_2\) error (%) &darr;</th><th>Plasticine-3D</th><th>Sand-3D</th><th>Water-3D</th><th>Elasticity-3D</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>PCA</td><td>16.15</td><td>13.37</td><td>15.84</td><td>39.41</td></tr>
+        <tr><td>DINo</td><td>31.83</td><td>45.36</td><td>58.97</td><td>41.18</td></tr>
+        <tr><td>CORAL</td><td>21.85</td><td>25.80</td><td>53.71</td><td>46.24</td></tr>
+        <tr><td>CoLoRA</td><td>9.08</td><td>12.31</td><td>54.54</td><td>9.83</td></tr>
+        <tr><td>CROM</td><td>3.19</td><td>4.21</td><td>24.00</td><td>4.25</td></tr>
+        <tr><td>LiCROM</td><td>2.31</td><td>3.44</td><td>22.01</td><td>3.43</td></tr>
+        <tr><td>GKI</td><td>3.69</td><td>8.46</td><td>15.16</td><td>7.66</td></tr>
+        <tr class="ours"><td><strong>GIOROM</strong></td><td><strong>1.98</strong></td><td><strong>2.68</strong></td><td><strong>9.24</strong></td><td><strong>2.04</strong></td></tr>
+      </tbody>
+    </table>
+    <p class="baselines">Unseen trajectories, 32 effective active degrees of freedom. GIOROM's peak memory is 17–268&nbsp;MB, against
+      462–2970&nbsp;MB for the graph-kernel baseline GKI and &asymp;400–630&nbsp;MB for the latent-ODE ROMs.</p>
+
+    <h3>Effect of the reduced space</h3>
+    <figure>
+      <img src="giorom_data/fig_rom_space.png" alt="Error against reduced-space size per regime">
+      <figcaption>Error against reduced-space size, from highly dynamic fluids (Water-3D) to minimal deformation (Plasticine-3D) and
+        elasticity. GIOROM matches global bases on topologically stable regimes; below about 8 effective degrees of freedom the Lagrangian
+        sample is so sparse that kernel neighbourhoods go empty and accuracy drops.</figcaption>
+    </figure>
+
+    <h3>Against a full-order solver</h3>
+    <table class="res">
+      <thead>
+        <tr><th>System</th><th>\(N\)</th><th>\(r\)</th><th>Scale</th><th>Rollout MSE (Ours)</th><th>Rollout MSE (GNS)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Water-3D</td><td>55k</td><td>1.7k</td><td>32&times;</td><td>38.6</td><td>17.4</td></tr>
+        <tr><td>Water-2D</td><td>1k</td><td>0.12k</td><td>8.3&times;</td><td>6.70</td><td>7.55</td></tr>
+        <tr><td>Sand-3D</td><td>32k</td><td>1k</td><td>32&times;</td><td>0.25</td><td>0.31</td></tr>
+        <tr><td>Sand-2D</td><td>2k</td><td>0.3k</td><td>6.6&times;</td><td>1.34</td><td>1.21</td></tr>
+        <tr><td>Goop-2D</td><td>1.9k</td><td>0.2k</td><td>9.5&times;</td><td>0.94</td><td>0.55</td></tr>
+        <tr><td>Plasticine</td><td>5k</td><td>1.1k</td><td>4.5&times;</td><td>0.50</td><td>0.71</td></tr>
+        <tr><td>Elasticity</td><td>78k</td><td>2.6k</td><td>30&times;</td><td>0.20</td><td>0.30</td></tr>
+        <tr><td>Multi-material 2D</td><td>2k</td><td>0.25k</td><td>8&times;</td><td>9.43</td><td>12.1</td></tr>
+      </tbody>
+    </table>
+    <p class="baselines">Rollout MSE (&times;10<sup>&minus;3</sup>) computed on the full particle set, with GIOROM evolving a graph up
+      to 32&times; smaller than GNS. Errors stay within the same order of magnitude as the full-order oracle.</p>
+
+    <table class="res">
+      <thead>
+        <tr><th>200-step rollout, 7056 points</th><th>radius 0.040</th><th>0.060</th><th>0.080</th><th>0.100</th></tr>
+      </thead>
+      <tbody>
+        <tr class="ours"><td><strong>GIOROM</strong></td><td><strong>20.1&nbsp;s</strong></td><td><strong>47.6&nbsp;s</strong></td><td><strong>89.7&nbsp;s</strong></td><td><strong>109.3&nbsp;s</strong></td></tr>
+        <tr><td>GNS</td><td>43.5&nbsp;s</td><td>111.6&nbsp;s</td><td>226.2&nbsp;s</td><td>386.0&nbsp;s</td></tr>
+      </tbody>
+    </table>
+    <p class="baselines">A transformer processor replaces recursive message passing, so the speedup widens from about 2&times; to 3.5&times; as connectivity grows.</p>
+
+    <h3>Scalability</h3>
+    <figure>
+      <img src="giorom_data/fig_scalability.png" alt="Memory and time overheads of graph kernels vs. grid projection">
+      <figcaption>(a) A radius-graph integral transform grows from 2.8&nbsp;MB to 1.37&nbsp;GB as the radius increases, while grid
+        projection stays at 7&nbsp;MB. (b, c) As the particle count grows, graph construction dominates GKI's runtime (97% at 35K
+        particles) and its memory grows linearly; grid projection stays nearly flat.</figcaption>
+    </figure>
+    <figure>
+      <img src="giorom_data/fig_sparsity.png" alt="Effect of sparsity on rollout error">
+      <figcaption>Elasticity, 78K particles. Rollout error stays near \(10^{-4}\) from 0.125&times; down to 0.031&times; of the full
+        system, i.e. up to 32&times; compression, and degrades only below that; at 0.007&times;, raising the graph radius past 0.15 no
+        longer helps. Time and peak GPU memory include rebuilding the graph at every step.</figcaption>
+    </figure>
+
+    <h3>Rollouts</h3>
+    <div class="flow">
+      <figure>
+        <video src="giorom_data/neuraloperator.mp4" autoplay loop muted playsinline></video>
+        <figcaption>Operator on the sparse sample</figcaption>
+      </figure>
+      <div class="arrow">&rarr;</div>
+      <figure>
+        <video src="giorom_data/neuralfield.mp4" autoplay loop muted playsinline></video>
+        <figcaption>Kernel ROM upsampling</figcaption>
+      </figure>
+      <div class="arrow">&rarr;</div>
+      <figure>
+        <video src="giorom_data/rendered.mp4" autoplay loop muted playsinline></video>
+        <figcaption>Rendered simulation</figcaption>
+      </figure>
+    </div>
     <div class="simgrid">
-      <div class="lbl">Full-order simulations</div>
+      <div class="lbl">full-order</div>
       <video src="giorom_data/owl_fom_1.mp4" autoplay loop muted playsinline></video>
       <video src="giorom_data/owl_fom_2.mp4" autoplay loop muted playsinline></video>
       <video src="giorom_data/owl_fom_3.mp4" autoplay loop muted playsinline></video>
 
-      <div class="lbl">Ground-truth comparisons <small>yellow: ground truth</small></div>
+      <div class="lbl">vs. ground truth <small>yellow: ground truth</small></div>
       <video src="giorom_data/gt_comp_owl.mp4" autoplay loop muted playsinline></video>
       <video src="giorom_data/gt_comp_plasticine.mp4" autoplay loop muted playsinline></video>
       <video src="giorom_data/gt_comp_water.mp4" autoplay loop muted playsinline></video>
 
-      <div class="lbl">ROM simulations</div>
+      <div class="lbl">reduced-order</div>
       <video src="giorom_data/plasticine_rom_1.mp4" autoplay loop muted playsinline></video>
       <video src="giorom_data/plasticine_rom_2.mp4" autoplay loop muted playsinline></video>
       <div></div>
     </div>
-
-    <h3>3D simulations</h3>
     <figure>
-      <img src="giorom_data/3d_sims.png" alt="3D simulations">
-      <figcaption>Ground truth against ours on water, sand and elasticity, with time running downward.</figcaption>
+      <img src="giorom_data/fig_long_rollouts.jpg" alt="Long-horizon rollouts">
+      <figcaption>Rollouts until equilibrium. Top: water, 1000 steps over 55K particles (MSE \(1.1\times10^{-2}\)). Middle: elastic
+        collisions (jelly), 500 steps over 84K particles (\(6.4\times10^{-5}\)). Bottom: phase transition in a plasticine-like material
+        (chocolate), 2000 steps over 24K particles (\(3.2\times10^{-4}\)).</figcaption>
     </figure>
+  </section>
 
-    <h3>Discretization invariance</h3>
-    <figure>
-      <img src="giorom_data/disc_invar.png" alt="Discretization invariance">
-      <figcaption>Consistent results across diverse spatial discretizations.</figcaption>
-    </figure>
+  <section>
+    <h2>Limitations</h2>
+    <p class="lead">
+      In ultra-sparse regimes, when the sampled particle count leaves almost no active grid voxels, the estimator becomes ill-conditioned
+      and the network falls back on its prior without local physical guidance. Like other learned ROMs, GIOROM degrades under extreme
+      out-of-distribution conditions. It currently targets continuous systems with consistent time discretizations and Euler integration;
+      discontinuities, unbounded flows, higher-order integrators and adaptive time-stepping are left to future work.
+    </p>
   </section>
 
   <section id="bibtex">

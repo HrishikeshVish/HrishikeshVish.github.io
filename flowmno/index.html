@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FlowMNO | Trajectory Prediction for Robot Navigation using Flow-Guided Markov Neural Operator</title>
+  <meta name="description" content="FlowMNO: an optical-flow-integrated Markov neural operator for pedestrian trajectory prediction in robot navigation. ICRA 2024.">
+  <meta property="og:title" content="FlowMNO: Trajectory Prediction for Robot Navigation using Flow-Guided Markov Neural Operator">
+  <meta property="og:description" content="Pedestrian trajectory prediction as a Markov process, with optical flow and a Markov neural operator. ICRA 2024.">
+  <meta property="og:image" content="https://hrishikeshvish.github.io/flowmno/flowmno_data/logo.png">
+  <link rel="icon" type="image/png" href="flowmno_data/logo.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+  <link rel="stylesheet" href="/project.css">
+  <style>
+    .logo { border-radius: 14px; }
+    table.res { margin: 16px auto 0; font-size: 14px; }
+    table.res th, table.res td { padding: 6px 14px; text-align: center; }
+    table.res td:first-child, table.res th:first-child { text-align: left; }
+    table.res tr.ours td { font-weight: 700; }
+    .tablewrap { overflow-x: auto; }
+  </style>
+</head>
+<body style="--accent:#5a4e8c; --accent-soft:#efedf6">
+<div class="wrap">
+  <a class="home" href="/">← Back to Home</a>
+
+  <header>
+    <img class="logo" src="flowmno_data/logo.png" alt="FlowMNO logo">
+    <h1 class="acronym">Flow<span>MNO</span></h1>
+    <div class="title">Trajectory Prediction for Robot Navigation using Flow-Guided Markov Neural Operator</div>
+    <div class="venue">IEEE International Conference on Robotics and Automation (ICRA) 2024</div>
+
+    <div class="authors">
+      <span>Rashmi Bhaskara<sup>*</sup></span>
+      <span><a href="https://hrishikeshvish.github.io/">Hrishikesh Viswanath</a><sup>*</sup></span>
+      <span><a href="https://ideas.cs.purdue.edu">Aniket Bera</a></span>
+    </div>
+    <div class="affil">
+      <span>Department of Computer Science, Purdue University, USA</span>
+    </div>
+    <div class="affil"><span><sup>*</sup>Equal contribution</span></div>
+
+    <div class="buttons">
+      <a class="btn" href="https://arxiv.org/abs/2309.09137">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 12h8v2H8zm0 4h8v2H8z"/></svg>
+        arXiv
+      </a>
+      <a class="btn" href="#bibtex">
+        <svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>
+        BibTeX
+      </a>
+    </div>
+  </header>
+
+  <section class="teaser">
+    <figure>
+      <img src="flowmno_data/teaser.jpg" alt="FlowMNO predictions (green) and GVO-integrated robot navigation (red) among pedestrians">
+      <figcaption>We present FlowMNO, an Optical Flow-Integrated Markov Neural Operator designed to capture pedestrian behavior across diverse
+        scenarios. Our paper models trajectory prediction as a Markovian process, where future pedestrian coordinates depend solely on the current state.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Abstract</h2>
+    <p class="lead">
+      Predicting pedestrian movements remains a complex and persistent challenge in robot navigation research. We must evaluate several factors
+      to achieve accurate predictions, such as pedestrian interactions, the environment, crowd density, and social and cultural norms. Accurate
+      prediction of pedestrian paths is vital for ensuring safe human-robot interaction, especially in robot navigation. Furthermore, this research
+      has potential applications in autonomous vehicles, pedestrian tracking, and human-robot collaboration. Therefore, in this paper, we introduce
+      FlowMNO, an Optical Flow-Integrated Markov Neural Operator designed to capture pedestrian behavior across diverse scenarios. Our paper models
+      trajectory prediction as a Markovian process, where future pedestrian coordinates depend solely on the current state. This problem formulation
+      eliminates the need to store previous states. We conducted experiments using standard benchmark datasets like ETH, HOTEL, ZARA1, ZARA2, UCY,
+      and RGB-D pedestrian datasets. Our study demonstrates that FlowMNO outperforms some of the state-of-the-art deep learning methods like LSTM,
+      GAN, and CNN-based approaches, by approximately 86.46% when predicting pedestrian trajectories. Thus, we show that FlowMNO can seamlessly
+      integrate into robot navigation systems, enhancing their ability to navigate crowded areas smoothly.
+    </p>
+  </section>
+
+  <section>
+    <h2>Method</h2>
+    <figure>
+      <img src="flowmno_data/pipeline.jpg" alt="FlowMNO architecture">
+      <figcaption><strong>Model architecture.</strong> FlowMNO incorporates optical flow as a key component for input data generation. Optical flow
+        is generated using the Farneback method in combination with a pedestrian detection algorithm. FlowMNO adopts a Markovian process model for
+        pedestrian trajectory prediction: the future state of a pedestrian primarily depends only on their current state.</figcaption>
+    </figure>
+
+    <h3>Trajectory prediction as a Markov process</h3>
+    <p>
+      Pedestrians may change direction suddenly, so past states are a poor guide to the next one. FlowMNO therefore treats the crowd as a
+      Markov process: the next state depends only on the current one, and no history has to be stored. Pedestrians are detected in each frame
+      with YOLOv3-tiny and non-maximum suppression, and the motion between consecutive frames \(I_{t-1}, I_t\) is captured as a dense Farneback
+      optical flow \(O_t\). A Markov neural operator then predicts the next flow field,
+    </p>
+    <div class="eq">$$O_t = \text{FarnebackOpticalFlow}(I_{t-1} \rightarrow I_t), \qquad O_{t+1} = \text{MNO}(O_t).$$</div>
+    <p>
+      The operator learns the one-step solution map \(\hat S_h : f(t) \mapsto f(t+h)\) and is trained with a Sobolev-norm loss on the residual
+      \(r = \hat S_h(f) - S_h(f)\), computed in Fourier space for \(p = 2\):
+    </p>
+    <div class="eq">$$\|r\|_{k,2}^2 = \sum_{n=-\infty}^{\infty} \left(1 + n^2 + \ldots + n^{2k}\right) |\hat r(n)|^2 .$$</div>
+    <p>
+      Composing \(\hat S_h\) with its own output gives long-horizon predictions, \(f(nh) \approx \hat S_h^{\,n}(f_0)\). Each pedestrian's next
+      position \((x_{t+1}, y_{t+1})\) is read off \(O_{t+1}\) as the flow displacement at the centroid of their bounding box in frame \(I_t\).
+    </p>
+
+    <figure>
+      <img src="flowmno_data/training.jpg" alt="Input and predicted optical flow frames">
+      <figcaption>The MNO model is trained on the input optical flow \(O_t\) and predicts the optical flow frame at time step \(t+1\), \(O_{t+1}\).</figcaption>
+    </figure>
+
+    <h3>Navigating among pedestrians</h3>
+    <p>
+      The predicted positions \((x_{t+1}, y_{t+1})\) become dynamic obstacles in the Generalized Velocity Obstacles (GVO) framework. For every
+      pedestrian \(i\), GVO evaluates the relative velocity \(v_{r_i} = v_{r_\text{robot}} - v_{r_i^\text{pedestrian}}\) to assess collision risk
+      and choose the robot's desired velocity.
+    </p>
+    <figure>
+      <img src="flowmno_data/gvo_robot.jpg" alt="FlowMNO with GVO deployed on a robot">
+      <figcaption>Demonstration of FlowMNO integrated with GVO, deployed on a robot.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Results</h2>
+    <p class="lead">
+      ADE / FDE (lower is better) against state-of-the-art deep learning methods on ETH and Hotel, Zara1, Zara2 and UCY. On the RGB-D
+      pedestrian dataset FlowMNO reaches an ADE of 0.03 and an FDE of 0.04.
+    </p>
+    <div class="tablewrap">
+      <table class="res">
+        <thead>
+          <tr><th>Model</th><th>ETH</th><th>Hotel</th><th>Zara1</th><th>Zara2</th><th>UCY</th><th>Average</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SSeg-LSTM</td><td>0.15 / 0.295</td><td>0.05 / 0.08</td><td>0.05 / 0.08</td><td>0.07 / 0.1</td><td>0.1 / 0.16</td><td>0.08 / 0.15</td></tr>
+          <tr><td>SS-LSTM</td><td>0.2 / 0.37</td><td>0.08 / 0.13</td><td>0.08 / 0.11</td><td>0.07 / 0.12</td><td>0.2 / 0.24</td><td>0.13 / 0.19</td></tr>
+          <tr><td>Scene-LSTM</td><td>0.18 / 0.34</td><td>0.25 / 0.29</td><td>0.37 / 0.33</td><td>0.19 / 0.1</td><td>0.25 / 0.03</td><td>0.21 / 0.20</td></tr>
+          <tr><td>Social-LSTM</td><td>0.5 / 1.07</td><td>0.11 / 0.23</td><td>0.22 / 0.48</td><td>0.25 / 0.5</td><td>0.27 / 0.77</td><td>0.27 / 0.41</td></tr>
+          <tr><td>Social-Attention</td><td>0.46 / 4.56</td><td>0.42 / 3.57</td><td>0.21 / 0.65</td><td>0.41 / 3.39</td><td>0.36 / 4.45</td><td>0.38 / 3.49</td></tr>
+          <tr><td>Starnet</td><td>0.73 / 1.48</td><td>0.49 / 1.01</td><td>0.27 / 0.56</td><td>0.33 / 0.7</td><td>0.41 / 0.84</td><td>0.46 / 0.94</td></tr>
+          <tr><td>SGAN (20V-20)</td><td>0.61 / 1.22</td><td>0.48 / 0.95</td><td>0.21 / 0.42</td><td>0.27 / 0.54</td><td>0.36 / 0.75</td><td>0.39 / 0.78</td></tr>
+          <tr><td>CNN-based</td><td>1.04 / 2.07</td><td>0.59 / 1.17</td><td>0.43 / 0.90</td><td>0.34 / 0.75</td><td>0.57 / 1.21</td><td>0.59 / 1.22</td></tr>
+          <tr class="ours"><td>FlowMNO (Ours)</td><td>0.04 / 0.02</td><td>0.02 / 0.01</td><td>0.05 / 0.09</td><td>0.01 / 0.02</td><td>0.02 / 0.04</td><td>0.03 / 0.04</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>Comparison of quantitative results using error metrics (ADE/FDE, lower is better for both) with state-of-the-art deep learning methods.</figcaption>
+
+    <h3>ADE reduction</h3>
+    <div class="tablewrap">
+      <table class="res">
+        <thead>
+          <tr><th>FlowMNO vs. model</th><th>ADE reduction (%)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SSeg-LSTM</td><td>50.00</td></tr>
+          <tr><td>SS-LSTM</td><td>69.23</td></tr>
+          <tr><td>Scene-LSTM</td><td>88.24</td></tr>
+          <tr><td>Social-LSTM</td><td>96.26</td></tr>
+          <tr><td>Social-Attention</td><td>98.88</td></tr>
+          <tr><td>Starnet</td><td>97.30</td></tr>
+          <tr><td>SGAN (20V-20)</td><td>96.72</td></tr>
+          <tr><td>CNN-based</td><td>98.06</td></tr>
+          <tr class="ours"><td>Average reduction</td><td>86.46</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>How much FlowMNO reduces the average displacement error relative to each model.</figcaption>
+  </section>
+
+  <section id="bibtex">
+    <h2>Citation</h2>
+<pre class="bib">@inproceedings{bhaskara2024trajectory,
+  title     = {Trajectory Prediction for Robot Navigation using Flow-Guided Markov Neural Operator},
+  author    = {Bhaskara, Rashmi and Viswanath, Hrishikesh and Bera, Aniket},
+  booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
+  year      = {2024}
+}</pre>
+  </section>
+
+  <footer>
+    Page layout inspired by <a href="https://www.matthewtancik.com/nerf">NeRF</a>.
+  </footer>
+</div>
+</body>
+</html>
