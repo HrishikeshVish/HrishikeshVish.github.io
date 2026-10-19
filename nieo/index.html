@@ -61,17 +61,8 @@
   </section>
 
   <section>
-    <h2>Abstract</h2>
-    <p class="lead">
-      3D mapping of large-scale outdoor environments from LiDAR measurements is a fundamental challenge in computer vision and robotics.
-      While neural implicit representations provide memory-efficient architectures for surface mapping, recovering high-fidelity geometry
-      from sparse point clouds remains susceptible to geometric jitter and high-frequency artifacts. Classical geometry processing suppresses
-      such artifacts with curvature energies whose minimizers define smooth surfaces, and level-set formulations of these energies are well
-      established. In this work, we propose LiDAR mapping as an energy optimization problem, where we derive smooth LiDAR maps by optimizing
-      the variational energy defined over the surface curvature represented by neural implicit representations. We show that this approach
-      enables smooth reconstruction of million-point LiDAR sweeps that observe large open surfaces spanning hundreds of metres. Experiments on
-      large-scale outdoor datasets show that this recovers geometrically consistent surfaces with no additional inference-time penalties.
-    </p>
+    <h2>TL;DR</h2>
+    <p class="lead tldr">We cast LiDAR mapping as energy optimization: a neural signed distance field is trained while minimizing the curvature energy of its level set, the classical way to suppress geometric jitter and high-frequency artifacts. This gives smooth, geometrically consistent reconstructions of million-point LiDAR sweeps over open surfaces spanning hundreds of metres, with no extra cost at inference.</p>
   </section>
 
   <section>

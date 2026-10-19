@@ -74,6 +74,7 @@ h3 { font-size: 17px; font-weight: 700; margin: 18px 0 6px; }
 h4 { font-weight: 700; }
 p { margin: 0 0 9px; }
 .lead { max-width: 860px; margin: 0 auto; text-align: justify; hyphens: auto; }
+.tldr { max-width: 760px; text-align: center; font-size: 17px; line-height: 1.5; hyphens: manual; }
 
 figure { margin: 12px 0 0; }
 figure img, figure video {

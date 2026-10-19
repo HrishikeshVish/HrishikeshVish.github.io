@@ -94,20 +94,8 @@
   </section>
 
   <section>
-    <h2>Abstract</h2>
-    <p class="lead">
-      Simulating physical systems governed by Lagrangian dynamics often entails solving partial differential equations (PDEs) over
-      high-resolution spatial domains, leading to significant computational expense. Reduced-order modeling (ROM) mitigates this cost by
-      evolving low-dimensional latent representations of the underlying system. While neural ROMs enable querying solutions from latent
-      states at arbitrary spatial points, their latent states typically represent the global domain and struggle to capture localized,
-      highly dynamic behaviors such as fluids. We propose a sampling-based reduction framework that evolves Lagrangian systems directly in
-      physical space, over the particles themselves, reducing the number of active degrees of freedom via data-driven neural PDE operators.
-      To enable querying at arbitrary spatial locations, we introduce a learnable kernel parameterization that uses local spatial information
-      from time-evolved sample particles to infer the underlying solution manifold. Empirically, our approach achieves a 6.6&times;–32&times;
-      reduction in input dimensionality while maintaining high-fidelity evaluations across diverse Lagrangian regimes, including fluid flows,
-      granular media, and elastoplastic dynamics. We refer to this framework as GIOROM (<strong>G</strong>eometry-<strong>I</strong>nf<strong>O</strong>rmed
-      <strong>R</strong>educed-<strong>O</strong>rder <strong>M</strong>odeling).
-    </p>
+    <h2>TL;DR</h2>
+    <p class="lead tldr">GIOROM simulates Lagrangian systems by evolving only a sparse sample of the particles with a data-driven neural PDE operator, instead of a global latent state. A learnable kernel then reconstructs the full field at any location from the evolved particles, cutting active degrees of freedom by 6.6&times;–32&times; while staying accurate on fluids, granular media and elastoplastic materials.</p>
     <div class="stats">
       <div class="stat"><b>6.6–32&times;</b><span>fewer active degrees of freedom than the full particle system</span></div>
       <div class="stat"><b>2–3.5&times;</b><span>faster 200-step rollouts than GNS on the same graph</span></div>
