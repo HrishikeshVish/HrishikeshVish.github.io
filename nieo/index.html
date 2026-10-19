@@ -62,7 +62,7 @@
 
   <section>
     <h2>TL;DR</h2>
-    <p class="lead tldr">We cast LiDAR mapping as energy optimization: a neural signed distance field is trained while minimizing the curvature energy of its level set, the classical way to suppress geometric jitter and high-frequency artifacts. This gives smooth, geometrically consistent reconstructions of million-point LiDAR sweeps over open surfaces spanning hundreds of metres, with no extra cost at inference.</p>
+    <p class="lead tldr">We cast LiDAR mapping as energy optimization: the reconstruction is formulated as a low-energy configuration of a neural signed distance field, one that minimizes the curvature energy of its level set while simultaneously satisfying the Eikonal constraint. This suppresses geometric jitter and high-frequency artifacts, giving smooth, geometrically consistent reconstructions of million-point LiDAR sweeps over open surfaces spanning hundreds of metres, with no extra cost at inference.</p>
   </section>
 
   <section>
