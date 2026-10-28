@@ -2,7 +2,7 @@
 layout: post
 title:  "Physics-informed adaptive fourier neural interpolation operator for synthetic frame generation"
 date:   2025-01-09 22:21:59 +00:00
-image: /images/adafnio.png
+image: /images/adafnio_illustration.png
 categories: research
 author: "Hrishikesh Viswanath"
 venue: US Patent App. 18/758,927

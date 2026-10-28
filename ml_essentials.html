@@ -5,23 +5,23 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" href="/style.css" />
-  <style>
-    .ml-content a { text-decoration: none; color: #1772d0; }
-    .ml-content a:hover { text-decoration: underline; }
-    .ml-content h5, .ml-content h6 { margin-top: 1.5em; font-weight: bold; }
-    .ml-content ul { margin-bottom: 1.5em; }
-    .ml-content b { margin-top: 1em; display: inline-block; }
-  </style>
 </head>
 <body>
-  <table style="width:100%;max-width:800px;border:0px;margin:auto;border-spacing:0px;border-collapse:separate;">
-    <tr>
-      <td style="padding:5%" class="ml-content">
-        <a href="index.html" style="font-size: 14px;">← Back to Home</a>
-        <h1 style="margin-top:20px">Machine Learning Essentials</h1>
-        <p>This page provides a list of topics and resources to build a good undergraduate level foundation in various topics related to Machine Learning, Linear Algebra, Artificial Intelligence, Information Retrieval, Social Networks, Deep Learning and Statistics.</p>
-        
-        <hr style="border:0; border-top:1px solid #eee; margin:30px 0;">
+  <div class="wrap">
+    <nav class="nav">
+      <a href="/">Hrishikesh Viswanath</a>
+      <div class="nav__links">
+        <a href="/#research">Research</a>
+        <a href="/#posts">Posts</a>
+        <a href="/pdfs/cv.pdf">CV</a>
+        <a href="mailto:hviswan@purdue.edu">Contact</a>
+      </div>
+    </nav>
+
+    <main class="article">
+      <span class="mono muted">Jul 2024</span>
+      <h1>Machine Learning Essentials</h1>
+      <p class="lede">This page provides a list of topics and resources to build a good undergraduate level foundation in various topics related to Machine Learning, Linear Algebra, Artificial Intelligence, Information Retrieval, Social Networks, Deep Learning and Statistics.</p>
 
         <h5>Foundation/Basics</h5>
         <p>
@@ -284,7 +284,7 @@
         <b>Genetic Algorithms</b><br>
         <b>Particle Swarm Optimization</b><br>
 
-        <h5 style="margin-top: 40px; font-size: 24px;">Advanced Topics</h5>
+        <h5>Advanced Topics</h5>
         
         <h6>Advanced Math/algorithms for “Learning”</h6>
         <p>
@@ -351,9 +351,12 @@
           <li>Mel-Spectrograms Synthesis through Diffusion</li>
           <li>Learning Embeddings</li>
         </ul>
+    </main>
 
-      </td>
-    </tr>
-  </table>
+    <footer class="footer">
+      <span>© Hrishikesh Viswanath</span>
+      <a href="/">← Back to home</a>
+    </footer>
+  </div>
 </body>
 </html>
