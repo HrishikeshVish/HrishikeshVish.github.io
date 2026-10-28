@@ -2,7 +2,7 @@
 layout: post
 title:  "Trajectory prediction for robot navigation using flow-guided markov neural operator"
 date:   2024-05-14 22:21:59 +00:00
-image: /images/flowmno.png
+image: /images/flowmno_illustration.png
 categories: research
 author: "Hrishikesh Viswanath"
 venue: 2024 IEEE International Conference on Robotics and Automation (ICRA)
