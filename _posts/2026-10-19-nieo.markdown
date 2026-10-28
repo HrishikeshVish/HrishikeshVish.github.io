@@ -7,6 +7,7 @@ categories: research
 author: "Hrishikesh Viswanath"
 venue: IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)
 authors: "<strong>Hrishikesh Viswanath</strong>, Md Ashiqur Rahman, Chi Lin, Damon Conover, Aniket Bera"
+arxiv: https://arxiv.org/abs/2610.28598
 code: https://github.com/HrishikeshVish/nieo
 website: /nieo/index.html
 ---
