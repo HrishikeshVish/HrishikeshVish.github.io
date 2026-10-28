@@ -13,223 +13,171 @@
   </script>
   <title>{{ site.name }}</title>
 
-  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-
+  <meta charset="utf-8">
   <meta name="author" content="{{ site.name }}" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/style.css" />
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
 
 </head>
 
 <body>
-  <table style="width:100%;max-width:800px;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
-    <tr style="padding:0px">
-      <td style="padding:0px">
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
-          <tr style="padding:0px">
-            <td style="padding:2.5%;width:60%;vertical-align:middle">
-              <h1>
-                Hrishikesh Viswanath
-              </h1>
-              <p>
-                  I am a PhD student at <strong>Purdue University</strong>, advised by <strong><a href='https://ideas.cs.purdue.edu'>Aniket Bera</a></strong>. My overarching goal is to bridge physical modeling and scalable surrogate models, with a focus in robotics and reinforcement learning (RL).
-              </p>
+  <div class="wrap">
 
-              <p>
-                  I am broadly interested in scalable models for physics and their potential applications in robotics. A core problem driving my research is how to effectively integrate <strong>Partial Differential Equation (PDE) formulations</strong> and generative priors to provide geometric structure and stabilize continuous control and RL policies. </p>
-                  
-                  <p>At a foundational level, I want to address the challenge of learning high-fidelity dynamics in sparse data regimes. My work relies on two core pillars: efficient modeling techniques like model-order reduction, and scalable learning strategies such as lightweight physics-informed learning, leveraging alternatives to autodiff residuals such as Monte-Carlo methods (Walk-on-Spheres).
-              </p>
+    <nav class="nav">
+      <a href="/">Hrishikesh Viswanath</a>
+      <div class="nav__links">
+        <a href="#research">Research</a>
+        <a href="#posts">Posts</a>
+        <a href="pdfs/cv.pdf">CV</a>
+        <a href="mailto:hviswan@purdue.edu">Contact</a>
+      </div>
+    </nav>
 
-              <p>
-                  Outside the lab, I was the 2024 Vice President of Purdue SEARCH. I mentored our NASA SUITS team to the competition finals, earning a NASA Artemis I mission flag that flew around the moon.
-              </p>
-              <p class="links">
-                  <a class="pill" href="mailto:hviswan@purdue.edu">Email</a>
-                  <a class="pill" href="pdfs/cv.pdf">CV</a>
-                  <a class="pill" href="https://scholar.google.com/citations?user=nzKRVqEAAAAJ&hl=en">Scholar</a>
-                  <a class="pill" href="https://github.com/HrishikeshVish">Github</a>
-                </p>
-            </td>
-            <td style="padding:2.5%;width:40%;max-width:40%">
-              <a href="images/hrishivish.jpeg"><img class="profile hoverZoomLink" alt="profile photo" src="images/hrishivish.jpeg"></a>
-            </td>
-          </tr>
-        </table>
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
-          <tr>
-            <td style="padding:2.5%;width:100%;vertical-align:middle">
-              <h2>Posts</h2>
-              <p>
-                <h3><strong><a href="ml_essentials.html">Machine Learning Essentials (Jul 2024) </a></strong></h3><br>
-                A comprehensive list of resources to build an undergraduate-level foundation in ML, Linear Algebra, AI, and Statistics.
-              </p>
-              <p>
-                <h3><strong><a href="reading_list.html">Reading List (Oct 2022)</a></strong></h3><br>
-                A curated collection of papers, books, and resources related to my core research interests.
-              </p>
-            </td>
-          </tr>
-        </table>
-
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
-          <tr>
-            <td style="padding:2.5%;width:100%;vertical-align:middle">
-              <h2>Research</h2>
-              <p>
-                I'm interested in robotics, reinforcement learning, operator learning and PINN.
-              </p>
-            </td>
-          </tr>
-        </table>
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
-
-          {% for post in site.posts %}
-          {% for cat in post.categories %}
-          {% if cat == 'research' %}
-          <tr>
-            <td style="padding:2.5%;width:25%;vertical-align:middle;min-width:120px">
-              {% if post.website %}<a href="{{post.website}}">{% endif %}<img class="thumb" src="/tn{{post.image}}" alt="{{post.title}}" />{% if post.website %}</a>{% endif %}
-            </td>
-            <td style="padding:2.5%;width:75%;vertical-align:middle">
-              <h3>{{post.title}}</h3>
-              <br>
-              {{post.authors}}
-
-              <br>
-              <span class="venue">{{post.venue}}, {{ post.date | date: "%Y" }}</span>
-              <br>
-              <span class="pills">
-              {% if post.website %}<a class="pill" href="{{post.website}}">project page</a>{% endif %}
-              {% if post.paper %}<a class="pill" href="{{post.paper}}">paper</a>{% endif %}
-              {% if post.arxiv and post.arxiv != post.paper %}<a class="pill" href="{{post.arxiv}}">arxiv</a>{% endif %}
-              {% if post.patent %}<a class="pill" href="{{post.patent}}">patent</a>{% endif %}
-              {% if post.code %}<a class="pill" href="{{post.code}}">code</a>{% endif %}
-              {% if post.video %}<a class="pill" href="{{post.video}}">video</a>{% endif %}
-              {% if post.poster %}<a class="pill" href="{{post.poster}}">poster</a>{% endif %}
-              {% if post.slides %}<a class="pill" href="{{post.slides}}">slides</a>{% endif %}
-              {% if post.youtube %}<a class="pill" href="{{post.youtube}}">youtube</a>{% endif %}
-              </span>
-              <p></p>
-              {{ post.excerpt }}
-            </td>
-          </tr>
-          {% endif %}
-          {% endfor %}
-          {% endfor %}
-        </table>
-        <br>
-        <br>
-        <br>
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
-          <tr>
-            <td style="padding:2.5%;width:100%;vertical-align:middle">
-              <h2>Selected Coursework</h2>
-              <ul style="column-count: 2; padding-left: 20px; line-height: 1.6;">
-                <li><strong>53100:</strong> Computational Geometry (Au)</li>
-                <li><strong>57100:</strong> Artificial Intelligence</li>
-                <li><strong>57800:</strong> Statistical Machine Learning</li>
-                <li><strong>58400:</strong> Theory of Computation / Complexity (Au)</li>
-                <li><strong>58500:</strong> Theoretical CS Toolkit (Au)</li>
-                <li><strong>58800:</strong> Randomized Algorithms</li>
-                <li><strong>59200:</strong> Interpretability in ML</li>
-                <li><strong>59200:</strong> Motion Planning</li>
-                <li><strong>61500:</strong> Numerical Methods for PDEs I (Au)</li>
-              </ul>
-            </td>
-          </tr>
-        </table>
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
-  <tbody>
-    <tr>
-      <td style="padding:2.5%;width:100%;vertical-align:middle">
-        <h2>Reviewing</h2>
+    <header class="hero">
+      <div class="hero__bio">
+        <h1>Hrishikesh Viswanath</h1>
         <p>
-          <strong>2026:</strong> ICLR, ICML, RA-L <br>
-          <strong>2025:</strong> SIGGRAPH ASIA <br>
-          <strong>2024:</strong> ICLR 2025, IROS
+          I am a PhD student at <strong>Purdue University</strong>, advised by <a href="https://ideas.cs.purdue.edu">Aniket Bera</a>. My overarching goal is to bridge physical modeling and scalable surrogate models, with a focus in robotics and reinforcement learning (RL).
         </p>
-      </td>
-    </tr>
-    
+        <p>
+          I am broadly interested in scalable models for physics and their potential applications in robotics. A core problem driving my research is how to effectively integrate <strong>Partial Differential Equation (PDE) formulations</strong> and generative priors to provide geometric structure and stabilize continuous control and RL policies.
+        </p>
+        <p>
+          At a foundational level, I want to address the challenge of learning high-fidelity dynamics in sparse data regimes. My work relies on two core pillars: efficient modeling techniques like model-order reduction, and scalable learning strategies such as lightweight physics-informed learning, leveraging alternatives to autodiff residuals such as Monte-Carlo methods (Walk-on-Spheres).
+        </p>
+        <p>
+          Outside the lab, I was the 2024 Vice President of Purdue SEARCH. I mentored our NASA SUITS team to the competition finals, earning a NASA Artemis I mission flag that flew around the moon.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="mailto:hviswan@purdue.edu">Email</a>
+          <a class="btn" href="pdfs/cv.pdf">CV</a>
+          <a class="btn btn--mist" href="https://scholar.google.com/citations?user=nzKRVqEAAAAJ&hl=en">Scholar</a>
+          <a class="btn btn--mist" href="https://github.com/HrishikeshVish">GitHub</a>
+        </div>
+      </div>
+      <div class="hero__photo">
+        <img alt="Hrishikesh Viswanath" src="images/hrishivish.jpeg">
+      </div>
+    </header>
 
-    <tr>
-      <td style="padding:2.5%;width:100%;vertical-align:middle">
-        <h2>Mentorship & Leadership</h2>
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
-          <tr>
-            <td style="padding:10px 0;width:15%;vertical-align:top">2024</td>
-            <td style="padding:10px 0;width:85%;vertical-align:top">
-              <strong>Space and Earth Analogs Research Chapter at Purdue</strong> <br>
-              Vice President & Administrative Lead
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:10px 0;width:15%;vertical-align:top">2024</td>
-            <td style="padding:10px 0;width:85%;vertical-align:top">
-              <strong>Astro-USA initiative</strong> <br>
-              Involved in fundraising and planning for a student led analog habitat facility.
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:10px 0;width:15%;vertical-align:top">2024</td>
-            <td style="padding:10px 0;width:85%;vertical-align:top">
-              <strong>NASA SUITS</strong> <br>
-              Mentored team JARVIS for the on-site round of the NASA SUITS competition.
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:10px 0;width:15%;vertical-align:top">2024</td>
-            <td style="padding:10px 0;width:85%;vertical-align:top">
-              <strong>ARTEMIS</strong> <br>
-              Mentored undergraduate students at IDEAS lab for the Purdue Undergraduate Research Conference.
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:10px 0;width:15%;vertical-align:top">2023</td>
-            <td style="padding:10px 0;width:85%;vertical-align:top">
-              <strong>RASC-AL</strong> <br>
-              Mentored an undergraduate team for the NASA RASC-AL challenge.
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+    <section class="section" id="posts">
+      <h2 class="section-label">Posts</h2>
+      <div class="post-list">
+        <a class="post-card" href="ml_essentials.html">
+          <span class="mono muted">Jul 2024</span>
+          <h3>Machine Learning Essentials</h3>
+          <p>A comprehensive list of resources to build an undergraduate-level foundation in ML, Linear Algebra, AI, and Statistics.</p>
+        </a>
+        <a class="post-card" href="reading_list.html">
+          <span class="mono muted">Oct 2022</span>
+          <h3>Reading List</h3>
+          <p>A curated collection of papers, books, and resources related to my core research interests.</p>
+        </a>
+      </div>
+    </section>
 
-    <tr>
-      <td style="padding:2.5%;width:100%;vertical-align:middle">
-        <h2>Open Source Contributions</h2>
-        <ul>
-          <li style="margin-bottom:10px;">
-            <a href="https://github.com/HrishikeshVish/Fairpy"><strong>Fairpy</strong></a>: 
-            A Python toolkit for measuring and mitigating biases in LLMs. Supports WEAT, StereoSet, and NullSpace Projection.
-          </li>
-          <li>
-            <a href="https://huggingface.co/datasets/hrishivish23/MPM-Verse-MaterialSim-Large"><strong>MPM-Verse</strong></a>: 
-            A large-scale physics simulation dataset for learning MPM-based dynamics (water, sand, plasticine, jelly).
-          </li>
+    <section class="section" id="research">
+      <h2 class="section-label">Research</h2>
+      <p class="intro">I'm interested in robotics, reinforcement learning, operator learning and PINN.</p>
+
+      {% for post in site.posts %}
+      {% if post.categories contains 'research' %}
+      <article class="paper">
+        {% if post.website %}<a class="paper__media" href="{{post.website}}">{% else %}<div class="paper__media">{% endif %}
+          <img src="/tn{{post.image}}" alt="{{post.title}}" loading="lazy" />
+        {% if post.website %}</a>{% else %}</div>{% endif %}
+        <div>
+          <h3>{% if post.website %}<a href="{{post.website}}">{{post.title}}</a>{% else %}{{post.title}}{% endif %}</h3>
+          <div class="paper__venue mono">{{post.venue}} · {{ post.date | date: "%Y" }}</div>
+          <p class="paper__authors">{{post.authors}}</p>
+          <div class="paper__summary">{{ post.excerpt }}</div>
+          <div class="btn-row">
+            {% if post.website %}<a class="btn btn--sm" href="{{post.website}}">Project page</a>{% endif %}
+            {% if post.paper %}<a class="btn btn--sm btn--mist" href="{{post.paper}}">Paper</a>{% endif %}
+            {% if post.arxiv and post.arxiv != post.paper %}<a class="btn btn--sm btn--mist" href="{{post.arxiv}}">arXiv</a>{% endif %}
+            {% if post.patent %}<a class="btn btn--sm btn--mist" href="{{post.patent}}">Patent</a>{% endif %}
+            {% if post.code %}<a class="btn btn--sm btn--mist" href="{{post.code}}">Code</a>{% endif %}
+            {% if post.video %}<a class="btn btn--sm btn--mist" href="{{post.video}}">Video</a>{% endif %}
+            {% if post.poster %}<a class="btn btn--sm btn--mist" href="{{post.poster}}">Poster</a>{% endif %}
+            {% if post.slides %}<a class="btn btn--sm btn--mist" href="{{post.slides}}">Slides</a>{% endif %}
+            {% if post.youtube %}<a class="btn btn--sm btn--mist" href="{{post.youtube}}">YouTube</a>{% endif %}
+          </div>
+        </div>
+      </article>
+      {% endif %}
+      {% endfor %}
+    </section>
+
+    <section class="section">
+      <h2 class="section-label">Selected Coursework</h2>
+      <ul class="columns">
+        <li><span class="mono">53100</span> Computational Geometry (Au)</li>
+        <li><span class="mono">57100</span> Artificial Intelligence</li>
+        <li><span class="mono">57800</span> Statistical Machine Learning</li>
+        <li><span class="mono">58400</span> Theory of Computation / Complexity (Au)</li>
+        <li><span class="mono">58500</span> Theoretical CS Toolkit (Au)</li>
+        <li><span class="mono">58800</span> Randomized Algorithms</li>
+        <li><span class="mono">59200</span> Interpretability in ML</li>
+        <li><span class="mono">59200</span> Motion Planning</li>
+        <li><span class="mono">61500</span> Numerical Methods for PDEs I (Au)</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 class="section-label">Mentorship &amp; Leadership</h2>
+      <ul class="timeline">
+        <li>
+          <span class="mono">2024</span>
+          <div><strong>Space and Earth Analogs Research Chapter at Purdue</strong><span class="muted">Vice President &amp; Administrative Lead</span></div>
+        </li>
+        <li>
+          <span class="mono">2024</span>
+          <div><strong>Astro-USA initiative</strong><span class="muted">Involved in fundraising and planning for a student led analog habitat facility.</span></div>
+        </li>
+        <li>
+          <span class="mono">2024</span>
+          <div><strong>NASA SUITS</strong><span class="muted">Mentored team JARVIS for the on-site round of the NASA SUITS competition.</span></div>
+        </li>
+        <li>
+          <span class="mono">2024</span>
+          <div><strong>ARTEMIS</strong><span class="muted">Mentored undergraduate students at IDEAS lab for the Purdue Undergraduate Research Conference.</span></div>
+        </li>
+        <li>
+          <span class="mono">2023</span>
+          <div><strong>RASC-AL</strong><span class="muted">Mentored an undergraduate team for the NASA RASC-AL challenge.</span></div>
+        </li>
+      </ul>
+    </section>
+
+    <div class="two-col">
+      <section class="section">
+        <h2 class="section-label">Reviewing</h2>
+        <ul class="timeline">
+          <li><span class="mono">2026</span><div>ICLR, ICML, RA-L</div></li>
+          <li><span class="mono">2025</span><div>SIGGRAPH Asia</div></li>
+          <li><span class="mono">2024</span><div>ICLR 2025, IROS</div></li>
         </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+      </section>
 
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
-          <tr>
-            <td style="padding:0px">
-              <br>
-              <p style="text-align:center;font-size:small;">
-                Design and source code from <a style="font-size:small;" href="https://jonbarron.info">Jon Barron's website</a>
-              </p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+      <section class="section">
+        <h2 class="section-label">Open Source</h2>
+        <ul class="timeline">
+          <li><span class="mono">LLM</span><div><a href="https://github.com/HrishikeshVish/Fairpy"><strong>Fairpy</strong></a><span class="muted">A Python toolkit for measuring and mitigating biases in LLMs. Supports WEAT, StereoSet, and NullSpace Projection.</span></div></li>
+          <li><span class="mono">Data</span><div><a href="https://huggingface.co/datasets/hrishivish23/MPM-Verse-MaterialSim-Large"><strong>MPM-Verse</strong></a><span class="muted">A large-scale physics simulation dataset for learning MPM-based dynamics (water, sand, plasticine, jelly).</span></div></li>
+        </ul>
+      </section>
+    </div>
+
+    <footer class="footer">
+      <span>© Hrishikesh Viswanath</span>
+      <span>Originally based on <a href="https://jonbarron.info">Jon Barron's website</a></span>
+    </footer>
+
+  </div>
 </body>
 
 </html>
-
