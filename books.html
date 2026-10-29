@@ -50,6 +50,73 @@ permalink: /books.html
         {% endfor %}
       </section>
       {% endfor %}
+
+      {% assign st = site.data.book_stats %}
+      <h5>By the numbers <span class="muted">since 2023</span></h5>
+      <div class="stat-row">
+        <div><strong>{{ st.books }}</strong><span>books</span></div>
+        <div><strong>{{ st.pages | divided_by: 1000 }},{{ st.pages | modulo: 1000 | prepend: "00" | slice: -3, 3 }}</strong><span>pages</span></div>
+        <div><strong>{{ st.avg }}</strong><span>average rating</span></div>
+        <div><strong>{{ st.loved }}</strong><span>five-star reads</span></div>
+      </div>
+
+      <div class="charts">
+        <figure class="chart">
+          <figcaption>Books per year</figcaption>
+          <div class="vbars">
+            {% for y in st.years %}
+            <div class="vbars__col" title="{{ y.name }}: {{ y.count }} books, average {{ y.avg }}">
+              <span class="vbars__value">{{ y.count }}</span>
+              <span class="vbars__bar" style="height: {{ y.pct }}%"></span>
+              <span class="vbars__label mono">{{ y.name }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </figure>
+
+        <figure class="chart">
+          <figcaption>Fiction vs nonfiction</figcaption>
+          {% capture ring %}{% for k in st.kinds %}var(--slice-{{ forloop.index }}) {{ k.start }}% {{ k.end | minus: 0.8 }}%, var(--mist) {{ k.end | minus: 0.8 }}% {{ k.end }}%{% unless forloop.last %}, {% endunless %}{% endfor %}{% endcapture %}
+          <div class="donut-wrap">
+            <div class="donut" style="background: conic-gradient({{ ring }})" role="img" aria-label="{% for k in st.kinds %}{{ k.name }} {{ k.share }}%{% unless forloop.last %}, {% endunless %}{% endfor %}">
+              <span><strong>{{ st.books }}</strong>books</span>
+            </div>
+            <ul class="legend">
+              {% for k in st.kinds %}
+              <li title="{{ k.name }}: {{ k.count }} books, average {{ k.avg }}"><i style="background: var(--slice-{{ forloop.index }})"></i>{{ k.name }}<span class="mono">{{ k.share }}%</span></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </figure>
+
+        <figure class="chart">
+          <figcaption>Genres <span>books · avg ★</span></figcaption>
+          <ul class="hbars">
+            {% for g in st.genres %}
+            <li title="{{ g.name }}: {{ g.count }} books, average {{ g.avg }}">
+              <span class="hbars__name">{{ g.name }}</span>
+              <span class="hbars__track"><span style="width: {{ g.pct }}%"></span></span>
+              <span class="hbars__value mono">{{ g.count }}</span>
+              <span class="hbars__avg mono">{{ g.avg }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </figure>
+
+        <figure class="chart">
+          <figcaption>Authors I keep returning to <span>books · avg ★</span></figcaption>
+          <ul class="hbars">
+            {% for a in st.authors limit: 6 %}
+            <li title="{{ a.name }}: {{ a.count }} books, average {{ a.avg }}">
+              <span class="hbars__name">{{ a.name }}</span>
+              <span class="hbars__track"><span style="width: {{ a.pct }}%"></span></span>
+              <span class="hbars__value mono">{{ a.count }}</span>
+              <span class="hbars__avg mono">{{ a.avg }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </figure>
+      </div>
     </main>
 
     <script>

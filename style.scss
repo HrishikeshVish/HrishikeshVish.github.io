@@ -316,6 +316,69 @@ a.paper__media:hover { background: var(--ash); }
   color: var(--ink);
 }
 
+/* BOOK CHARTS: ink and greys only, every mark labelled */
+.article h5 .muted { font-weight: 400; text-transform: none; letter-spacing: 0; margin-left: 8px; }
+.stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 12px; }
+.stat-row div { padding: 18px 20px; border-radius: var(--radius-media); background: var(--mist); }
+.stat-row strong { display: block; font-size: 34px; line-height: 1.1; letter-spacing: -1.2px; }
+.stat-row span { color: var(--muted); font-size: 14.5px; }
+
+.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.chart {
+  --slice-1: var(--ink);
+  --slice-2: #8a8a89;
+  --slice-3: #c4c4c3;
+  margin: 0;
+  padding: 20px 22px 22px;
+  border-radius: var(--radius-media);
+  background: var(--mist);
+}
+.chart figcaption { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; font-weight: 500; letter-spacing: -0.4px; }
+.chart figcaption span { font-family: var(--mono); font-size: 12px; font-weight: 400; letter-spacing: 0; color: var(--muted); }
+
+.vbars { display: flex; align-items: flex-end; gap: 14px; height: 168px; }
+.vbars__col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px; }
+.vbars__bar { width: 100%; max-width: 44px; border-radius: 4px 4px 0 0; background: var(--ink); transition: background-color .18s; }
+.vbars__col:hover .vbars__bar { background: var(--btn-hover); }
+.vbars__value { font-size: 14px; font-weight: 500; }
+.vbars__label { font-size: 12px; color: var(--muted); }
+
+.donut-wrap { display: flex; align-items: center; gap: 24px; }
+.donut {
+  position: relative;
+  flex: none;
+  width: 148px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+/* the hole: a mist disc, so 2px ring gaps and centre share the card colour */
+.donut span {
+  position: absolute;
+  inset: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--mist);
+  font-size: 13px;
+  color: var(--muted);
+}
+.donut strong { font-size: 28px; line-height: 1; letter-spacing: -1px; color: var(--ink); }
+.legend { list-style: none; padding: 0; margin: 0; flex: 1; }
+.legend li { display: flex; align-items: center; gap: 10px; white-space: nowrap; margin: 0; padding: 7px 0; font-size: 15px; border-bottom: 1px solid var(--rule); }
+.legend li:last-child { border-bottom: 0; }
+.legend i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.legend .mono { margin-left: auto; color: var(--muted); }
+
+.hbars { list-style: none; padding: 0; margin: 0; }
+.hbars li { display: grid; grid-template-columns: 9.5em minmax(0, 1fr) 2ch 3ch; align-items: center; gap: 12px; margin: 0; padding: 5px 0; font-size: 14.5px; }
+.hbars__name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hbars__track span { display: block; height: 8px; border-radius: 0 4px 4px 0; background: var(--ink); transition: background-color .18s; }
+.hbars li:hover .hbars__track span { background: var(--btn-hover); }
+.hbars__value { text-align: right; }
+.hbars__avg { text-align: right; color: var(--muted); }
+
 /**********/
 /* FOOTER */
 /**********/
@@ -351,6 +414,10 @@ a.paper__media:hover { background: var(--ash); }
   .timeline li { grid-template-columns: 56px minmax(0, 1fr); }
   .books__tier { grid-template-columns: 1fr; gap: 10px; }
   .books__label { flex-direction: row; align-items: baseline; gap: 10px; }
+  .stat-row { grid-template-columns: 1fr 1fr; }
+  .charts { grid-template-columns: 1fr; }
+  .donut { width: 120px; }
+  .donut span { inset: 22px; }
   .nav { flex-direction: column; align-items: flex-start; gap: 6px; padding: 18px 0 8px; }
   .nav__links { gap: 18px; justify-content: flex-start; }
 }

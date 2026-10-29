@@ -1,0 +1,173 @@
+{
+ "books": 71,
+ "pages": 30372,
+ "avg": 3.7,
+ "loved": 20,
+ "years": [
+  {
+   "name": "2023",
+   "count": 13,
+   "avg": 3.6,
+   "pct": 59
+  },
+  {
+   "name": "2024",
+   "count": 20,
+   "avg": 3.9,
+   "pct": 91
+  },
+  {
+   "name": "2025",
+   "count": 16,
+   "avg": 3.6,
+   "pct": 73
+  },
+  {
+   "name": "2026",
+   "count": 22,
+   "avg": 3.6,
+   "pct": 100
+  }
+ ],
+ "kinds": [
+  {
+   "name": "Fiction",
+   "count": 49,
+   "avg": 3.7,
+   "pct": 100,
+   "share": 69,
+   "start": 0,
+   "end": 69.01
+  },
+  {
+   "name": "Nonfiction",
+   "count": 16,
+   "avg": 3.6,
+   "pct": 33,
+   "share": 23,
+   "start": 69.01,
+   "end": 91.55
+  },
+  {
+   "name": "Comics & manga",
+   "count": 6,
+   "avg": 3.8,
+   "pct": 12,
+   "share": 8,
+   "start": 91.55,
+   "end": 100.0
+  }
+ ],
+ "genres": [
+  {
+   "name": "Science fiction",
+   "count": 29,
+   "avg": 3.8,
+   "pct": 100
+  },
+  {
+   "name": "Fantasy",
+   "count": 15,
+   "avg": 3.4,
+   "pct": 52
+  },
+  {
+   "name": "Science & ideas",
+   "count": 9,
+   "avg": 3.4,
+   "pct": 31
+  },
+  {
+   "name": "History & lives",
+   "count": 7,
+   "avg": 3.9,
+   "pct": 24
+  },
+  {
+   "name": "Comics & manga",
+   "count": 6,
+   "avg": 3.8,
+   "pct": 21
+  },
+  {
+   "name": "Other fiction",
+   "count": 5,
+   "avg": 4.0,
+   "pct": 17
+  }
+ ],
+ "authors": [
+  {
+   "name": "R.F. Kuang",
+   "count": 5,
+   "avg": 3.2,
+   "pct": 100
+  },
+  {
+   "name": "Andy Weir",
+   "count": 3,
+   "avg": 4.7,
+   "pct": 60
+  },
+  {
+   "name": "Liu Cixin",
+   "count": 3,
+   "avg": 4.3,
+   "pct": 60
+  },
+  {
+   "name": "Frank Herbert",
+   "count": 3,
+   "avg": 3.7,
+   "pct": 60
+  },
+  {
+   "name": "Brandon Sanderson",
+   "count": 2,
+   "avg": 5.0,
+   "pct": 40
+  },
+  {
+   "name": "Pierce Brown",
+   "count": 2,
+   "avg": 4.8,
+   "pct": 40
+  },
+  {
+   "name": "Michio Kaku",
+   "count": 2,
+   "avg": 4.5,
+   "pct": 40
+  },
+  {
+   "name": "Dan Brown",
+   "count": 2,
+   "avg": 4.0,
+   "pct": 40
+  },
+  {
+   "name": "Greg Egan",
+   "count": 2,
+   "avg": 4.0,
+   "pct": 40
+  },
+  {
+   "name": "Sui Ishida",
+   "count": 2,
+   "avg": 4.0,
+   "pct": 40
+  },
+  {
+   "name": "Isaac Asimov",
+   "count": 2,
+   "avg": 3.5,
+   "pct": 40
+  },
+  {
+   "name": "Aldous Huxley",
+   "count": 2,
+   "avg": 2.5,
+   "pct": 40
+  }
+ ]
+}
