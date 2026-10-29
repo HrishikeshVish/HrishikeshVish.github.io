@@ -1,0 +1,74 @@
+---
+---
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <title>Books | Hrishikesh Viswanath</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="/style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav">
+      <a href="/">Hrishikesh Viswanath</a>
+      <div class="nav__links">
+        <a href="/#research">Research</a>
+        <a href="/#posts">Posts</a>
+        <a href="/pdfs/cv.pdf">CV</a>
+        <a href="mailto:hviswan@purdue.edu">Contact</a>
+      </div>
+    </nav>
+
+    <main class="article">
+      <span class="mono muted">Updated {{ site.data.books.first.date | date: "%b %Y" }}</span>
+      <h1>Books</h1>
+      <p class="lede">What I've read since 2023, grouped by how much I liked it.</p>
+
+      {% assign years = site.data.books | group_by: "year" | sort: "name" | reverse %}
+      <div class="btn-row books__years" role="tablist">
+        {% for year in years %}<button class="btn btn--sm{% unless forloop.first %} btn--mist{% endunless %}" role="tab" data-year="{{ year.name }}">{{ year.name }}</button>{% endfor %}
+      </div>
+
+      {% for year in years %}
+      <section class="books__year" data-year="{{ year.name }}"{% unless forloop.first %} hidden{% endunless %}>
+        <p class="books__count mono muted">{{ year.size }} books in {{ year.name }}</p>
+        {% assign tiers = year.items | group_by: "tier" | sort: "name" | reverse %}
+        {% for tier in tiers %}
+        <div class="books__tier">
+          <div class="books__label">
+            {% case tier.name %}{% when '5' %}Loved{% when '4' %}Liked{% when '3' %}It was fine{% else %}Not for me{% endcase %}
+            <span class="stars" style="--fill: {{ tier.name | times: 20 }}%"></span>
+          </div>
+          <ul class="books__list">
+            {% for book in tier.items %}
+            <li><a href="{{ book.url }}">{{ book.title }}</a> <span>{{ book.author }}</span>{% assign whole = book.rating | floor %}{% if book.rating != whole %} <span class="mono">{{ book.rating }}</span>{% endif %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endfor %}
+      </section>
+      {% endfor %}
+    </main>
+
+    <script>
+      // one year at a time; without JS only the latest year shows
+      document.querySelectorAll(".books__years .btn").forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          document.querySelectorAll(".books__years .btn").forEach(function (t) {
+            t.classList.toggle("btn--mist", t !== tab);
+          });
+          document.querySelectorAll(".books__year").forEach(function (y) {
+            y.hidden = y.dataset.year !== tab.dataset.year;
+          });
+        });
+      });
+    </script>
+
+    <footer class="footer">
+      <span>© Hrishikesh Viswanath</span>
+      <a href="/">← Back to home</a>
+    </footer>
+  </div>
+</body>
+</html>

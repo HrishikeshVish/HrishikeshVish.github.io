@@ -2,7 +2,7 @@
 ---
 
 // Shared style for the homepage and the post pages (ml_essentials,
-// reading_list): Zalando Sans
+// reading_list, books): Zalando Sans
 // with tight tracking, Geist Mono section labels over a hairline rule,
 // ink/mist palette, pill buttons and soft rounded media frames.
 // The project pages keep their own /project.css.
@@ -281,6 +281,41 @@ a.paper__media:hover { background: var(--ash); }
 .reading-list a:hover { text-decoration: underline; text-decoration-color: var(--ink); }
 .reading-list .author { color: var(--muted); font-size: 15px; }
 
+/*********/
+/* BOOKS */
+/*********/
+.books__years { margin: 40px 0 0; }
+.books__years .btn { border: 0; font-family: inherit; cursor: pointer; }
+.books__count { margin: 28px 0 8px; }
+/* a rating tier: label on the left, its books flowing on the right */
+.books__tier {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 24px;
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+}
+.books__label { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; font-weight: 500; letter-spacing: -0.4px; }
+.books__list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 28px; }
+.books__list li { margin: 0; }
+.books__list a { font-weight: 500; letter-spacing: -0.4px; text-decoration: none; }
+.books__list a:hover { text-decoration: underline; text-decoration-color: var(--ink); }
+.books__list span { color: var(--muted); font-size: 14.5px; }
+.books__list .mono { font-size: 12.5px; }
+/* five grey stars with an ink copy on top, clipped to the rating */
+.stars { position: relative; display: inline-block; font-size: 12px; letter-spacing: 2px; line-height: 1; color: var(--ash); }
+.stars::before { content: "★★★★★"; }
+.stars::after {
+  content: "★★★★★";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--fill);
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
 /**********/
 /* FOOTER */
 /**********/
@@ -314,6 +349,8 @@ a.paper__media:hover { background: var(--ash); }
   .paper + .paper { margin-top: 36px; }
   .columns { columns: 1; }
   .timeline li { grid-template-columns: 56px minmax(0, 1fr); }
+  .books__tier { grid-template-columns: 1fr; gap: 10px; }
+  .books__label { flex-direction: row; align-items: baseline; gap: 10px; }
   .nav { flex-direction: column; align-items: flex-start; gap: 6px; padding: 18px 0 8px; }
   .nav__links { gap: 18px; justify-content: flex-start; }
 }
