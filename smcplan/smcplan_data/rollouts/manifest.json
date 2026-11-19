@@ -1,0 +1,46 @@
+[
+ {
+  "id": "pointmaze",
+  "label": "Point maze",
+  "sub": "H=10, seed 88",
+  "note": "Ours reaches the goal through the corridor. GD drives into the wall the straight line crosses.",
+  "iters": 16,
+  "cols": 8,
+  "rows": 7,
+  "cell": 224,
+  "n": 51
+ },
+ {
+  "id": "pusht",
+  "label": "Push-T",
+  "sub": "H=10, seed 51",
+  "note": "A seed GD, GRASP, CEM and MPPI all miss within 150 iterations.",
+  "iters": 32,
+  "cols": 8,
+  "rows": 7,
+  "cell": 224,
+  "n": 51
+ },
+ {
+  "id": "cube",
+  "label": "Cube",
+  "sub": "seed 17",
+  "note": "OGBench cube with the LeWM world model. Frames are brightened; the environment's own camera is dark.",
+  "iters": 13,
+  "cols": 6,
+  "rows": 5,
+  "cell": 224,
+  "n": 26
+ },
+ {
+  "id": "pointmaze24",
+  "label": "Point maze",
+  "sub": "H=10, seed 24",
+  "note": "The appendix seed. Ours solves it on the first iteration.",
+  "iters": 1,
+  "cols": 8,
+  "rows": 7,
+  "cell": 224,
+  "n": 51
+ }
+]

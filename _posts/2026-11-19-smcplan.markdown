@@ -1,0 +1,13 @@
+---
+layout: post
+title:  "Latent Space Planning with Sequential Monte Carlo"
+date:   2026-11-19 00:00:00 +00:00
+image: /images/smcplan.png
+categories: research
+author: "Hrishikesh Viswanath"
+venue: Preprint
+authors: "<strong>Hrishikesh Viswanath</strong>, Anindita Ghosh, Uttaran Bhattacharya, Aniket Bera"
+code: https://github.com/HrishikeshVish/smcplan
+website: /smcplan/index.html
+---
+Planning in a learned world model as sequential Monte Carlo over whole action sequences, with a PDE cost-to-go on a roadmap of offline latents

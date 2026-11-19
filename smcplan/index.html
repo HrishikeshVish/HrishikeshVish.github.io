@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SMCPlan | Latent Space Planning with Sequential Monte Carlo</title>
+  <meta name="description" content="Planning in a learned world model as sequential Monte Carlo over whole action sequences, with a PDE cost-to-go on a roadmap of offline latents.">
+  <meta property="og:title" content="Latent Space Planning with Sequential Monte Carlo">
+  <meta property="og:description" content="A population of action sequences, carried by SMC across the targets an optimizer re-centers, with a PDE cost-to-go on a latent roadmap.">
+  <meta property="og:image" content="https://hrishikeshvish.github.io/smcplan/smcplan_data/logo.png">
+  <link rel="icon" type="image/png" href="smcplan_data/logo.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Zalando+Sans:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+/* The shared project-page style of hrishikeshvish.github.io (project.css), single light theme,
+   with this page's teal-blue accent. Layout: one centred 1000 px column, framed hero, sections split by rules. */
+:root {
+  --ink: #02031d;
+  --muted: #555555;
+  --accent: #0f7b8a;
+  --accent-soft: #e3f1f3;
+  --accent-deep: #0a5560;
+  --rule: #d4d4d4;
+  --frame: #c9c9c9;
+  --radius: 12px;
+  --sans: "Zalando Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --mist: #efeeee;
+  --ash: #d5d5d4;
+  --paper: #ffffff;
+  --code-bg: #f6f6f4;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: var(--sans); font-weight: 400;
+  font-size: 16px; line-height: 1.5; letter-spacing: -0.2px;
+  -webkit-font-smoothing: antialiased;
+}
+strong, b, th { font-weight: 500; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1000px; margin: 0 auto; padding-block: 0;
+  padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+
+.home { display: block; margin-top: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--ink); font-size: 13.5px; color: var(--ink); }
+
+header { text-align: center; padding: 20px 0 4px; }
+.logo { width: 96px; height: 96px; display: block; margin: 0 auto 6px; }
+h1.acronym { font-size: 54px; font-weight: 500; letter-spacing: -1.6px; margin: 0; line-height: 1.05; }
+h1.acronym span { color: var(--accent); }
+.title { font-size: 22px; font-weight: 500; letter-spacing: -0.6px; margin: 6px auto 0; max-width: 820px; line-height: 1.22; text-wrap: balance; }
+.venue { margin: 10px 0 0; font-family: var(--mono); font-size: 13.5px; letter-spacing: 0; color: var(--accent); }
+.authors { margin: 12px auto 0; font-size: 17px; max-width: 840px; }
+.authors span { white-space: nowrap; margin: 0 9px; }
+.affil { margin-top: 4px; font-size: 13.5px; color: var(--muted); }
+.affil span { margin: 0 9px; white-space: nowrap; }
+sup { font-size: 0.65em; }
+
+.buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 16px 0 6px; }
+.btn { display: inline-flex; align-items: center; gap: 7px; padding: 5px 15px; border-radius: 30px; background: var(--mist);
+  color: var(--ink); font-family: var(--sans); font-size: 16px; font-weight: 500; line-height: 1.3; letter-spacing: -0.48px;
+  white-space: nowrap; transition: background-color .18s, color .18s; border: 0; cursor: pointer; }
+.btn:hover { background: var(--ash); color: var(--ink); text-decoration: none; }
+.buttons .btn:first-child { background: var(--ink); color: var(--paper); }
+.buttons .btn:first-child:hover { background: #686868; color: var(--paper); }
+.btn svg { width: 15px; height: 15px; fill: currentColor; }
+.btn.disabled { background: var(--mist); color: #a0a09f; pointer-events: none; }
+
+section { padding: 18px 0; border-top: 1px solid var(--rule); }
+section.teaser { border-top: 0; }
+h2 { font-family: var(--mono); font-size: 13.5px; font-weight: 500; letter-spacing: 0.3px; text-transform: uppercase;
+  color: #757574; margin: 0 0 16px; text-align: center; }
+h3 { font-size: 18px; font-weight: 500; letter-spacing: -0.5px; margin: 22px 0 6px; text-wrap: balance; }
+p { margin: 0 0 9px; }
+.lead { max-width: 860px; margin: 0 auto; text-align: justify; hyphens: auto; }
+.tldr { max-width: 780px; margin: 4px auto 16px; padding: 14px 20px; font-size: 16.5px; line-height: 1.5; text-align: left;
+  background: var(--accent-soft); border-radius: 0 10px 10px 0; border-left: 5px solid var(--accent-deep);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.07); }
+
+figure { margin: 12px 0 0; }
+figure img { display: block; margin: 0 auto; width: auto; height: auto; max-width: min(100%, 620px); max-height: 400px;
+  border: 1px solid var(--frame); border-radius: var(--radius); background: var(--paper); }
+figure.wide img { max-width: 100%; max-height: none; width: 100%; }
+figcaption { font-size: 13.5px; line-height: 1.38; color: var(--muted); margin: 6px auto 0; max-width: 760px; text-align: center; }
+.teaser figure { border: 1.5px solid var(--ink); border-radius: 16px; padding: 12px; max-width: 880px; margin: 4px auto 0; }
+.teaser figure img { border: 0; border-radius: 8px; max-width: 100%; max-height: none; width: 100%; }
+
+.steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 22px; margin: 14px auto 0; max-width: 880px; }
+.step { background: var(--accent-soft); border-radius: var(--radius); padding: 12px 16px; }
+.step h4 { font-family: var(--mono); font-size: 12.5px; font-weight: 500; letter-spacing: 0.3px; text-transform: uppercase;
+  color: var(--accent); margin: 0 0 4px; }
+.step p { margin: 0; font-size: 15px; line-height: 1.42; }
+.eq { background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 8px 14px; margin: 12px auto; max-width: 860px; overflow-x: auto; text-align: center; font-size: 17px; }
+ul.hl { max-width: 860px; margin: 0 auto; padding-left: 22px; }
+ul.hl li { margin-bottom: 5px; }
+
+.tablewrap { overflow-x: auto; margin: 0 auto; }
+table.res { border-collapse: collapse; margin: 0 auto; font-size: 14px;
+  border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); }
+table.res th, table.res td { padding: 4px 9px; text-align: center; white-space: nowrap; }
+table.res td:first-child, table.res th:first-child { text-align: left; padding-left: 2px; }
+table.res thead tr:last-child th { border-bottom: 0.8px solid var(--ink); }
+table.res thead tr:first-child th { font-family: var(--mono); font-size: 12px; font-weight: 500; }
+table.res thead tr:first-child th.grp { border-bottom: 0.8px solid var(--rule); }
+table.res tbody tr.rule td { border-top: 0.8px solid var(--rule); }
+table.res tbody tr.ours td { background: var(--accent-soft); }
+table.res td.m { font-weight: 500; border-left: 1px solid var(--rule); }
+
+/* interactive rollout player: frame atlases drawn to canvases, one shared timeline */
+.viewer { margin: 4px auto 0; max-width: 940px; }
+.vbar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 12px; }
+.pill { font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 4px 13px; border-radius: 30px;
+  border: 1px solid var(--ash); background: var(--paper); color: var(--ink); cursor: pointer; letter-spacing: -0.3px; }
+.pill[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.panes { display: grid; grid-template-columns: 1fr 1fr 0.64fr; gap: 14px; align-items: start; }
+.pane { margin: 0; min-width: 0; }
+.pane .k { font-family: var(--mono); font-size: 12.5px; display: block; text-align: center; margin-bottom: 5px; }
+.pane.ours .k { color: var(--accent); }
+.pane canvas, .pane img { display: block; width: 100%; aspect-ratio: 1 / 1; border: 1px solid var(--frame);
+  border-radius: var(--radius); background: var(--paper); max-width: none; max-height: none; }
+.pane.ours canvas { border-color: var(--accent); }
+.pane .badge { display: block; text-align: center; font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 5px; }
+.pane.ours .badge { color: var(--accent); }
+.vctl { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+.vctl .btn { padding: 4px 14px; font-size: 14px; }
+.vctl input[type="range"] { flex: 1; accent-color: var(--accent); min-width: 0; }
+.tick { font-family: var(--mono); font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+@media (max-width: 720px) {
+  .panes { grid-template-columns: 1fr 1fr; }
+  .pane.goal { grid-column: 1 / -1; max-width: 240px; margin: 0 auto; }
+}
+
+pre.bib { font-family: var(--mono); background: var(--code-bg); border: 1px solid var(--rule); border-radius: var(--radius);
+  padding: 13px 15px; font-size: 12.5px; line-height: 1.4; overflow-x: auto; margin: 0; }
+footer { padding: 18px 0 36px; border-top: 1px solid var(--rule); font-size: 13.5px; color: var(--muted); text-align: center; }
+
+@media (max-width: 720px) {
+  h1.acronym { font-size: 42px; letter-spacing: -1.1px; }
+  .title { font-size: 18px; }
+  .authors { font-size: 15px; }
+  .steps { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="home" href="/">&larr; Back to Home</a>
+
+  <header>
+    <img class="logo" src="smcplan_data/logo.png" alt="Push-T: the goal T, the block T and the circular pusher">
+    <h1 class="acronym"><span>SMC</span>Plan</h1>
+    <div class="title">Latent Space Planning with Sequential Monte Carlo</div>
+    <div class="venue">Preprint, 2026</div>
+
+    <div class="authors">
+      <span><a href="https://hrishikeshvish.github.io/">Hrishikesh Viswanath</a><sup>1</sup></span>
+      <span>Anindita Ghosh<sup>2</sup></span>
+      <span>Uttaran Bhattacharya<sup>3</sup></span>
+      <span><a href="https://ideas.cs.purdue.edu">Aniket Bera</a><sup>1</sup></span>
+    </div>
+    <div class="affil">
+      <span><sup>1</sup>Department of Computer Science, Purdue University</span>
+      <span><sup>2</sup>Saarland University</span>
+      <span><sup>3</sup>Adobe Systems</span>
+    </div>
+    <div class="buttons">
+      <a class="btn disabled" aria-disabled="true">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 12h8v2H8zm0 4h8v2H8z"/></svg>
+        arXiv (soon)
+      </a>
+      <a class="btn" href="https://github.com/HrishikeshVish/smcplan">
+        <svg viewBox="0 0 24 24"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.2 1.9 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg>
+        Code
+      </a>
+      <a class="btn" href="#rollouts">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm-2-12 6 4-6 4V8z"/></svg>
+        Watch rollouts
+      </a>
+      <a class="btn" href="#bibtex">
+        <svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>
+        BibTeX
+      </a>
+    </div>
+  </header>
+
+  <section class="teaser">
+    <figure>
+      <img src="smcplan_data/hero.png" alt="Latent world models, a cost-to-go on a roadmap, and one SMC iteration over action sequences">
+      <figcaption>A plan is a whole action sequence. Tilting a Gaussian around it by the planning cost gives a target, and sequential Monte Carlo carries a population of sequences across the targets that the optimizer re-centers each iteration.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>TL;DR</h2>
+    <p class="tldr">Planning in a learned world model is usually gradient descent on one action sequence. We plan with a population instead. Each particle is a complete action sequence, sequential Monte Carlo moves and reweights the population, and an optimizer step updates the nominal plan from it, which re-centers the target for the next iteration. We also replace the straight-line latent distance to the goal with a cost-to-go solved from a PDE on a roadmap of offline latents. Over twelve settings of four environments and two world models, the planner solves 79.8% of seeds against 72.3% for MPPI, the strongest baseline, and 50.9% for gradient descent.</p>
+  </section>
+
+  <section>
+    <h2>The Problem</h2>
+    <p class="lead">A world model turns planning into a search over action sequences: roll a sequence out in latent space and score the last latent against the goal. The two standard ways to run that search fail differently. Sampling-based planners such as CEM and MPPI only need cost evaluations, but they redraw every sample from a Gaussian around the current plan at every iteration, so the samples reach the cost-tilted distribution only through importance weights, and the search degrades as the horizon and the action dimension grow. Gradient-based planners differentiate the cost through the model and descend quickly when the goal is reachable greedily, but a single trajectory commits early and gets stuck exactly where the model is least trustworthy.</p>
+    <p class="lead">The cost is the second problem. Latent distance to the goal is a straight line, and a straight line in latent space happily crosses a wall.</p>
+    <figure class="wide">
+      <img src="smcplan_data/envs.png" alt="Point maze, Push-T, Reacher and OGBench cube, start and final states">
+      <figcaption>Four of the five tasks, at the start and at the end of an episode. Point maze, Wall and Push-T use DINO-WM; Reacher and the OGBench cube use LeWM.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Method</h2>
+    <p class="lead">A plan \(\bm\mu\) is an action sequence of horizon \(H\). Put a Gaussian reference \(q(\cdot\mid\bm\mu)\) around it and tilt that reference by the planning cost \(C\):</p>
+    <div class="eq">$$\gamma_{\bm\mu}(\mathbf a) \;=\; q(\mathbf a \mid \bm\mu)\,\exp\!\big(-C(\mathbf a)/\alpha\big), \qquad \pi_{\bm\mu} \propto \gamma_{\bm\mu}.$$</div>
+    <p class="lead">The plan moves by one optimizer step per iteration, so the targets of consecutive iterations form a sequence, and sequential Monte Carlo is the machinery that carries a population of particles across such a sequence. The two halves of an iteration are the expectation and maximization steps of the EM view of MPPI: SMC supplies the weighted population, the optimizer moves the plan to it.</p>
+
+    <div class="steps">
+      <div class="step">
+        <h4>Move</h4>
+        <p>Each particle takes one unadjusted Langevin step on the current target, \(\mathbf a_k^{(i)} = \mathbf a_{k-1}^{(i)} + \eta\,\nabla_{\mathbf a}\log\gamma_k(\mathbf a_{k-1}^{(i)}) + \sqrt{2\eta}\,\varepsilon_k^{(i)}\). The cost gradient flows through the frozen world model.</p>
+      </div>
+      <div class="step">
+        <h4>Reweight</h4>
+        <p>Weights are carried multiplicatively, \(W_k^{(i)} = W_{k-1}^{(i)}\,G_k(\mathbf a_{k-1}^{(i)},\mathbf a_k^{(i)})\), with the incremental weight of an SMC sampler. On a time-varying potential this is Jarzynski's equality.</p>
+      </div>
+      <div class="step">
+        <h4>Resample</h4>
+        <p>When the effective sample size falls below \(\tau N\), systematic resampling clones the particles that are working and drops the rest. Effort moves onto the branches that are paying off.</p>
+      </div>
+      <div class="step">
+        <h4>Update</h4>
+        <p>The plan is moved by the weighted population gradient, \(\mathbf g_k = \sum_i w_k^{(i)}\nabla_{\bm\mu}U_{\bm\mu_k}(\mathbf a_k^{(i)})\), passed to Adam. This re-centers the target for the next iteration.</p>
+      </div>
+    </div>
+
+    <h3>A cost-to-go from a PDE on the latent roadmap</h3>
+    <p class="lead">Classical planners do not use distance to the goal, they use a cost-to-go, obtained by solving a PDE over the feasible state space. A latent world model has no explicit feasible set, so we build one from the data. The vertices of a <em>roadmap</em> are encoded dataset states, and each observed transition connects its endpoint to its \(\kappa\) nearest vertices, which gives a graph whose edges are movements the environment actually allows. On the graph Laplacian \(L\) of that roadmap we take one backward Euler step of the heat equation from the vertex nearest the goal, following the heat method of Crane et al.:</p>
+    <div class="eq">$$(I + tL)\,u \;=\; e_g, \qquad V_i \;=\; \frac{\operatorname{rank}_i(-\log u) - 1}{N_{\mathcal R} - 1}.$$</div>
+    <p class="lead">We keep only the ordering that the heat field induces, not its magnitude, which is the part the Varadhan estimate gets wrong. The planning cost evaluates this cost-to-go along the whole predicted rollout, under weights that grow geometrically toward the final step, and adds it to the terminal latent distance \(\mathcal L\) and an action penalty:</p>
+    <div class="eq">$$C(\mathbf a) \;=\; \mathcal L(\mathbf a) \;+\; \lambda_a \tfrac{1}{Hm}\lVert\mathbf a\rVert^2 \;+\; \lambda_V\, C_V(\mathbf a).$$</div>
+    <p class="lead">Setting \(\lambda_V = 0\) recovers the plain \(L_2\) objective, which is why the tables below report both arms of the same planner. \(\kappa\) and the diffusion time are picked per environment from the offline dataset alone, with no planning seed, world-model rollout or success signal entering the choice.</p>
+  </section>
+
+  <section id="results">
+    <h2>Results</h2>
+    <p class="lead">Four environments at horizons 5, 10 and 15, 100 seeds per cell. Every planner gets twelve candidate action sequences and 150 iterations over the same pretrained world model, the same seeds and the same start and goal pairs. Success is measured by executing the plan in the simulator, not by the latent distance the planner optimizes.</p>
+    <div class="tablewrap">
+      <table class="res">
+        <thead>
+          <tr><th></th><th class="grp" colspan="3">Reacher</th><th class="grp" colspan="3">Point maze</th><th class="grp" colspan="3">Wall</th><th class="grp" colspan="3">Push-T</th><th></th></tr>
+          <tr><th>Planner</th><th>5</th><th>10</th><th>15</th><th>5</th><th>10</th><th>15</th><th>5</th><th>10</th><th>15</th><th>5</th><th>10</th><th>15</th><th class="m">mean</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>GD</td><td>83</td><td>38</td><td>15</td><td>49</td><td>66</td><td>69</td><td>58</td><td>58</td><td>59</td><td>87</td><td>24</td><td><strong>5</strong></td><td class="m">50.9</td></tr>
+          <tr><td>GRASP</td><td>36</td><td>47</td><td>59</td><td>40</td><td>49</td><td>63</td><td>10</td><td>10</td><td>4</td><td>36</td><td>5</td><td>0</td><td class="m">29.9</td></tr>
+          <tr><td>CEM</td><td>69</td><td>42</td><td>41</td><td>59</td><td>75</td><td>80</td><td>29</td><td>41</td><td>56</td><td>42</td><td>6</td><td>3</td><td class="m">45.2</td></tr>
+          <tr><td>MPPI</td><td>86</td><td>78</td><td>67</td><td>82</td><td>95</td><td><strong>97</strong></td><td>78</td><td>87</td><td>86</td><td>83</td><td>27</td><td>2</td><td class="m">72.3</td></tr>
+          <tr class="ours rule"><td>Ours, PDE cost</td><td><strong>100</strong></td><td><strong>100</strong></td><td><strong>89</strong></td><td><strong>88</strong></td><td><strong>98</strong></td><td>96</td><td><strong>92</strong></td><td>81</td><td>84</td><td>93</td><td>32</td><td>4</td><td class="m">79.8</td></tr>
+          <tr class="ours"><td>Ours, <span>\(L_2\)</span> cost</td><td>99</td><td>78</td><td>27</td><td>79</td><td>91</td><td>95</td><td>89</td><td><strong>89</strong></td><td><strong>91</strong></td><td><strong>94</strong></td><td><strong>35</strong></td><td>4</td><td class="m">72.6</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="lead" style="margin-top:12px">Success rate (%) per cell, best in bold. Our planner is highest in eight of the twelve cells, and ahead of the strongest baseline by a statistically significant margin in four of them (exact McNemar on paired seeds, Holm-corrected across the twelve settings): Reacher at every horizon and Wall at <span>\(H{=}5\)</span>. No cell in which a baseline leads is significant.</p>
+
+    <figure class="wide">
+      <img src="smcplan_data/success.png" alt="Fraction of seeds solved against iteration, six settings">
+      <figcaption>Fraction of seeds solved at or before each iteration, every planner holding twelve particles. Each environment is shown at the horizon where the margin over the strongest baseline is largest.</figcaption>
+    </figure>
+
+    <h3>The planners fail on different seeds</h3>
+    <p class="lead">Two planners with the same success rate need not solve the same seeds, so we compare them pair by pair on shared seeds. Across the twelve settings our planner solves 375 seeds that GD does not while GD solves 29 that ours does not, and the counts are 607/9 against GRASP, 436/22 against CEM and 142/53 against MPPI.</p>
+    <figure class="wide">
+      <img src="smcplan_data/paired.png" alt="Paired per-seed outcomes against each baseline">
+      <figcaption>Paired outcomes against each baseline, one row per horizon, summed over the 400 seeds of the four environments. Right: seeds ours solves and the baseline does not. Left: the reverse.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Does the PDE Cost Help?</h2>
+    <p class="lead">The same planner under the two costs, on the same seeds. The cost-to-go earns its place where the geodesic and the straight line disagree. On Reacher it adds 22 and 62 points at <span>\(H{=}10\)</span> and <span>\(H{=}15\)</span>, solving 22 and 65 seeds the <span>\(L_2\)</span> cost misses against 0 and 3 in the reverse direction. On Point maze it adds 9, 7 and 1 point. Where the straight line is already close to the geodesic the two costs are interchangeable, and on Wall the <span>\(L_2\)</span> cost leads by 8 and 7 points at the longer horizons, neither difference significant. Its usefulness is a property of the roadmap, not of the planner.</p>
+    <figure class="wide">
+      <img src="smcplan_data/cost.png" alt="PDE cost against L2 cost, by environment and horizon">
+      <figcaption>Our planner under the PDE cost and under the <span>\(L_2\)</span> cost (<span>\(\lambda_V = 0\)</span>), same 100 seeds per setting, with the difference in points above each pair. Error bars are 95% Wilson intervals for each rate separately; significance is the paired McNemar test.</figcaption>
+    </figure>
+    <figure class="wide">
+      <img src="smcplan_data/kernels.png" alt="Success rate by propagation kernel">
+      <figcaption>The propagation kernel inside the planner. ULA with Jarzynski weights, MALA, random-walk Metropolis and HMC, ported from blackjax and checked against it.</figcaption>
+    </figure>
+  </section>
+
+  <section id="rollouts">
+    <h2>Watch the Planner Act</h2>
+    <p class="lead">The executed rollouts, ours against gradient descent on the same seed, the same start and the same goal. Both rows run on one timeline, so every step is the same step. Scrub, or use the arrow keys.</p>
+    <div class="viewer">
+      <div class="vbar" role="group" aria-label="Choose a rollout">
+      <button class="pill" type="button" data-i="0" aria-pressed="true">Point maze <span style="opacity:.7">H=10, seed 88</span></button>
+      <button class="pill" type="button" data-i="1" aria-pressed="false">Push-T <span style="opacity:.7">H=10, seed 51</span></button>
+      <button class="pill" type="button" data-i="2" aria-pressed="false">Cube <span style="opacity:.7">seed 17</span></button>
+      <button class="pill" type="button" data-i="3" aria-pressed="false">Point maze <span style="opacity:.7">H=10, seed 24</span></button>
+      </div>
+      <div class="panes">
+        <figure class="pane ours">
+          <span class="k">ours</span>
+          <canvas id="c-ours" width="224" height="224"></canvas>
+          <span class="badge" id="b-ours">solved</span>
+        </figure>
+        <figure class="pane">
+          <span class="k">GD</span>
+          <canvas id="c-gd" width="224" height="224"></canvas>
+          <span class="badge" id="b-gd">not solved</span>
+        </figure>
+        <figure class="pane goal">
+          <span class="k">goal</span>
+          <img id="c-goal" alt="The goal observation for this seed">
+          <span class="badge">ground truth</span>
+        </figure>
+      </div>
+      <div class="vctl">
+        <button class="btn" id="play" type="button" aria-label="Pause">Pause</button>
+        <input type="range" id="scrub" min="0" max="50" value="0" step="1" aria-label="Step">
+        <span class="tick" id="tick">step 0 / 50</span>
+      </div>
+      <p id="note" style="font-size:13.5px;line-height:1.38;color:var(--muted);margin:10px auto 0;max-width:760px;text-align:center"></p>
+    </div>
+    <noscript>
+      <figure class="wide">
+        <img src="smcplan_data/frames_pointmaze.png" alt="Point maze rollout, ours against GD">
+        <figcaption>Point maze, H=10, seed 88. Ours solves it in 16 iterations; GD reaches the 150-iteration cap.</figcaption>
+      </figure>
+      <figure class="wide">
+        <img src="smcplan_data/frames_pusht.png" alt="Push-T rollout, ours against GD">
+        <figcaption>Push-T, H=10, seed 51. Ours solves it in 32 iterations; GD, GRASP, CEM and MPPI do not solve this seed within 150.</figcaption>
+      </figure>
+    </noscript>
+  </section>
+
+  <section>
+    <h2>What Is in the Code</h2>
+    <ul class="hl">
+      <li><strong>One planner, four propagation kernels.</strong> ULA with Jarzynski weights, plus MALA, random-walk Metropolis and HMC, ported from blackjax and verified against it.</li>
+      <li><strong>Two world-model families.</strong> DINO-WM for Point maze, Wall and Push-T, LeWM/JEPA for Reacher and the OGBench cube, behind one planner interface.</li>
+      <li><strong>Five planners in one codebase</strong>, each at its own authors' objective: GD, GRASP, CEM, MPPI and ours.</li>
+      <li><strong>The roadmap cost as a separate switch.</strong> <code>planner.lambda_v=0</code> recovers the <span>\(L_2\)</span> objective, and the cost can be applied to the baselines too.</li>
+      <li><strong>Every config behind a reported number ships as-is</strong>, including the per-environment rollout chunking that keeps a 16 GB card alive at <span>\(H{=}15\)</span>.</li>
+    </ul>
+  </section>
+
+  <section id="bibtex">
+    <h2>Citation</h2>
+<pre class="bib">@article{viswanath2026latentsmc,
+  title   = {Latent Space Planning with Sequential Monte Carlo},
+  author  = {Viswanath, Hrishikesh and Ghosh, Anindita and
+             Bhattacharya, Uttaran and Bera, Aniket},
+  journal = {arXiv preprint},
+  year    = {2026}
+}</pre>
+  </section>
+
+  <footer>
+    Built on <a href="https://dino-wm.github.io/">DINO-WM</a> and LeWM. Page by the authors.
+  </footer>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  if (!window.renderMathInElement) return;
+  renderMathInElement(document.body, {
+    delimiters: [{left: "$$", right: "$$", display: true},
+                 {left: "\\(", right: "\\)", display: false}],
+    throwOnError: false
+  });
+});
+</script>
+
+<script>
+(function () {
+  var SCENES = [{"id":"pointmaze","label":"Point maze","sub":"H=10, seed 88","note":"Ours reaches the goal through the corridor. GD drives into the wall the straight line crosses.","iters":16,"cols":8,"rows":7,"cell":224,"n":51},{"id":"pusht","label":"Push-T","sub":"H=10, seed 51","note":"A seed GD, GRASP, CEM and MPPI all miss within 150 iterations.","iters":32,"cols":8,"rows":7,"cell":224,"n":51},{"id":"cube","label":"Cube","sub":"seed 17","note":"OGBench cube with the LeWM world model. Frames are brightened; the environment's own camera is dark.","iters":13,"cols":6,"rows":5,"cell":224,"n":26},{"id":"pointmaze24","label":"Point maze","sub":"H=10, seed 24","note":"The appendix seed. Ours solves it on the first iteration.","iters":1,"cols":8,"rows":7,"cell":224,"n":51}];
+  var DIR = "smcplan_data/rollouts/", FPS = 14, HOLD = 10;  // frames held on the last step before looping
+  var cv = {ours: document.getElementById("c-ours"), gd: document.getElementById("c-gd")};
+  var bd = {ours: document.getElementById("b-ours"), gd: document.getElementById("b-gd")};
+  var goal = document.getElementById("c-goal"), scrub = document.getElementById("scrub");
+  var tick = document.getElementById("tick"), note = document.getElementById("note");
+  var play = document.getElementById("play"), pills = [].slice.call(document.querySelectorAll(".pill"));
+  var ctx = {ours: cv.ours.getContext("2d"), gd: cv.gd.getContext("2d")};
+  var cur = -1, frame = 0, playing = true, last = 0, held = 0, sheets = {};
+
+  function load(i, cb) {
+    if (sheets[i]) return cb(sheets[i]);
+    var s = SCENES[i], got = 0, pack = {};
+    ["ours", "gd"].forEach(function (role) {
+      var im = new Image();
+      im.onload = function () { if (++got === 2) { sheets[i] = pack; cb(pack); } };
+      im.onerror = function () { if (++got === 2) { sheets[i] = pack; cb(pack); } };
+      im.src = DIR + s.id + "_" + role + ".jpg";
+      pack[role] = im;
+    });
+  }
+
+  function draw() {
+    var s = SCENES[cur], pack = sheets[cur];
+    if (!pack) return;
+    ["ours", "gd"].forEach(function (role) {
+      var im = pack[role], c = ctx[role];
+      if (!im || !im.complete || !im.naturalWidth) return;
+      var sx = (frame % s.cols) * s.cell, sy = Math.floor(frame / s.cols) * s.cell;
+      c.drawImage(im, sx, sy, s.cell, s.cell, 0, 0, s.cell, s.cell);
+    });
+    tick.textContent = "step " + frame + " / " + (s.n - 1);
+    if (scrub.valueAsNumber !== frame) scrub.value = frame;
+  }
+
+  function select(i) {
+    cur = i; frame = 0; held = 0;
+    var s = SCENES[i];
+    pills.forEach(function (p, j) { p.setAttribute("aria-pressed", j === i ? "true" : "false"); });
+    cv.ours.width = cv.gd.width = cv.ours.height = cv.gd.height = s.cell;
+    scrub.max = s.n - 1; scrub.value = 0;
+    bd.ours.textContent = "solved @ iter " + s.iters;
+    bd.gd.textContent = "not solved in 150";
+    goal.src = DIR + s.id + "_goal.jpg";
+    note.textContent = s.note;
+    load(i, function () { draw(); });
+  }
+
+  function step(now) {
+    requestAnimationFrame(step);
+    if (!playing || cur < 0) return;
+    if (now - last < 1000 / FPS) return;
+    last = now;
+    var n = SCENES[cur].n;
+    if (frame >= n - 1) { if (++held < HOLD) return; held = 0; frame = 0; } else { frame++; }
+    draw();
+  }
+
+  pills.forEach(function (p) { p.addEventListener("click", function () { select(+p.dataset.i); }); });
+  scrub.addEventListener("input", function () { frame = scrub.valueAsNumber; held = 0; draw(); });
+  play.addEventListener("click", function () {
+    playing = !playing;
+    play.textContent = playing ? "Pause" : "Play";
+    play.setAttribute("aria-label", playing ? "Pause" : "Play");
+  });
+  function onScreen() {
+    var r = document.getElementById("rollouts").getBoundingClientRect();
+    return r.bottom > 0 && r.top < (window.innerHeight || 0);
+  }
+  document.addEventListener("keydown", function (e) {
+    if (cur < 0 || (e.key !== "ArrowLeft" && e.key !== "ArrowRight") || !onScreen()) return;
+    var n = SCENES[cur].n;
+    playing = false; play.textContent = "Play";
+    frame = (frame + (e.key === "ArrowRight" ? 1 : n - 1)) % n;
+    held = 0; draw(); e.preventDefault();
+  });
+
+  select(0);
+  requestAnimationFrame(step);
+})();
+</script>
+</body>
+</html>
