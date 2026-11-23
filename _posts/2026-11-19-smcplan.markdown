@@ -5,8 +5,9 @@ date:   2026-11-19 00:00:00 +00:00
 image: /images/smcplan.png
 categories: research
 author: "Hrishikesh Viswanath"
-venue: Preprint
+venue: Arxiv
 authors: "<strong>Hrishikesh Viswanath</strong>, Anindita Ghosh, Uttaran Bhattacharya, Aniket Bera"
+arxiv: https://arxiv.org/abs/2611.26706
 code: https://github.com/HrishikeshVish/smcplan
 website: /smcplan/index.html
 ---
