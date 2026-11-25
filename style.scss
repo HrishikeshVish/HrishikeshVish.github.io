@@ -22,6 +22,19 @@
   --radius-media: 10px;
   --sans: "Zalando Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: light;
+}
+/* dark theme, chosen with the switch in the nav (see /theme.js) */
+:root[data-theme="dark"] {
+  --ink: #ececeb;
+  --bg: #0c0c0d;
+  --mist: #161618;
+  --ash: #2e2e31;
+  --muted: #9d9d9c;
+  --label: #8c8c8b;
+  --rule: #262628;
+  --btn-hover: #bdbdbc;
+  color-scheme: dark;
 }
 
 /**************/
@@ -127,7 +140,7 @@ h3 {
   padding: 5px 15px;
   border-radius: var(--radius-btn);
   background: var(--ink);
-  color: #fff;
+  color: var(--bg);
   font-size: 16px;
   font-weight: 500;
   line-height: 1.3;
@@ -136,7 +149,7 @@ h3 {
   text-decoration: none;
   transition: background-color .18s, color .18s;
 }
-.btn:hover, .btn:focus-visible { background: var(--btn-hover); color: #fff; }
+.btn:hover, .btn:focus-visible { background: var(--btn-hover); color: var(--bg); }
 .btn--mist { background: var(--mist); color: var(--ink); }
 .btn--mist:hover, .btn--mist:focus-visible { background: var(--ash); color: var(--ink); }
 .btn--sm { font-size: 14px; padding: 3px 12px; letter-spacing: -0.3px; }
@@ -212,6 +225,9 @@ h3 {
   mix-blend-mode: multiply;
 }
 a.paper__media:hover { background: var(--ash); }
+/* figures are drawn on white: in the dark theme they keep a light card so the multiply blend still works */
+:root[data-theme="dark"] .paper__media { background: #e4e4e3; }
+:root[data-theme="dark"] a.paper__media:hover { background: #d2d2d1; }
 
 .paper h3 a { text-decoration: none; }
 .paper h3 a:hover { text-decoration: underline; text-decoration-color: var(--ink); }

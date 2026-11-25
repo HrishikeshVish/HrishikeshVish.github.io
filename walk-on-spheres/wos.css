@@ -1,7 +1,7 @@
 /* Walk on Spheres article.
    Black and white with a single blue accent. Light by default, like the rest of the site; dark when the
-   reader flips the switch in the nav (remembered in their browser). The figure scripts read the same
-   custom properties, so canvases switch with the page. */
+   reader flips the switch in the nav (/theme.js; the site palette is in /style.css). The figure scripts
+   read the same custom properties, so canvases switch with the page. */
 
 :root {
   --accent: #2f5cff;
@@ -13,41 +13,9 @@
   color-scheme: light;
 }
 :root[data-theme="dark"] {
-  /* the site's own tokens, inverted for this page */
-  --ink: #ececeb;
-  --bg: #0c0c0d;
-  --mist: #161618;
-  --ash: #2e2e31;
-  --muted: #9d9d9c;
-  --label: #8c8c8b;
-  --rule: #262628;
-  --btn-hover: #bdbdbc;
   --accent: #7393ff;
   --fig-mid: #66666a;
-  color-scheme: dark;
 }
-
-/* the light/dark switch in the nav */
-.nav__links { align-items: center; }
-.theme-switch {
-  appearance: none; display: inline-flex; align-items: center; gap: 8px;
-  padding: 0; border: 0; background: none; color: var(--ink); cursor: pointer;
-  font: inherit; letter-spacing: inherit;
-}
-.theme-switch__label { font-family: var(--mono); font-size: 12.5px; font-weight: 400; color: var(--muted); }
-.theme-switch__track {
-  position: relative; width: 36px; height: 20px; border-radius: 20px;
-  background: var(--ash); transition: background-color .2s;
-}
-.theme-switch__thumb {
-  position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%;
-  background: var(--bg); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); transition: transform .2s;
-}
-.theme-switch[aria-checked="true"] .theme-switch__track { background: var(--accent); }
-.theme-switch[aria-checked="true"] .theme-switch__thumb { transform: translateX(16px); }
-.theme-switch:hover .theme-switch__label { color: var(--ink); }
-.theme-switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 20px; }
-@media (prefers-reduced-motion: reduce) { .theme-switch__track, .theme-switch__thumb { transition: none; } }
 
 .wos { max-width: 760px; }
 .wos p, .wos li { font-size: 17px; line-height: 1.62; }

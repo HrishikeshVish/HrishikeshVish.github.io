@@ -33,6 +33,27 @@
   --code-bg: #f6f6f4;
   color-scheme: light;
 }
+:root[data-theme="dark"] {
+  /* dark theme, chosen with the switch beside "Back to Home" (see /theme.js) */
+  --ink: #ececeb;
+  --muted: #a3a3a2;
+  --accent: #3fb0bf;
+  --accent-soft: #0f2629;
+  --accent-deep: #2a8f9c;
+  --rule: #2a2a2d;
+  --frame: #3a3a3e;
+  --mist: #19191b;
+  --ash: #303034;
+  --paper: #0c0c0d;
+  --code-bg: #141416;
+  color-scheme: dark;
+}
+:root[data-theme="dark"] h2 { color: #8c8c8b; }
+:root[data-theme="dark"] .buttons .btn:first-child:hover { background: #bdbdbc; }
+/* figures are drawn on white, and transparent logos need a light backing */
+:root[data-theme="dark"] figure img, :root[data-theme="dark"] figure video,
+:root[data-theme="dark"] .pane canvas, :root[data-theme="dark"] .pane img { background: #fff; }
+:where(:root[data-theme="dark"]) .logo { background: #f2f2f1; border-radius: 16px; }
 * { box-sizing: border-box; }
 body {
   margin: 0; background: var(--paper); color: var(--ink);
@@ -147,6 +168,7 @@ footer { padding: 18px 0 36px; border-top: 1px solid var(--rule); font-size: 13.
   .steps { grid-template-columns: 1fr; }
 }
 </style>
+  <script src="/theme.js"></script>
 </head>
 <body>
 <div class="wrap">

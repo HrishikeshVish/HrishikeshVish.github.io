@@ -4,14 +4,7 @@
   <title>Walk on Spheres | Hrishikesh Viswanath</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>
-    // light unless the reader chose dark with the switch (remembered in this browser)
-    (function () {
-      var t = null;
-      try { t = localStorage.getItem("theme"); } catch (e) {}
-      document.documentElement.setAttribute("data-theme", t === "dark" ? "dark" : "light");
-    })();
-  </script>
+  <script src="/theme.js"></script>
   <meta name="author" content="Hrishikesh Viswanath">
   <meta name="description" content="An interactive introduction to solving PDEs with random walks: Brownian motion and harmonic functions, path integrals and the Feynman–Kac formula, and the Walk-on-Spheres algorithm, with a survey of recent work.">
   <meta property="og:title" content="Walk on Spheres">
@@ -32,10 +25,6 @@
         <a href="/#posts">Posts</a>
         <a href="/pdfs/cv.pdf">CV</a>
         <a href="mailto:hviswan@purdue.edu">Contact</a>
-        <button class="theme-switch" type="button" role="switch" aria-checked="false" aria-label="Dark mode" title="Dark mode">
-          <span class="theme-switch__label">Dark</span>
-          <span class="theme-switch__track" aria-hidden="true"><span class="theme-switch__thumb"></span></span>
-        </button>
       </div>
     </nav>
 
@@ -514,21 +503,6 @@
     </footer>
   </div>
 
-  <script>
-    // the light/dark switch
-    (function () {
-      var sw = document.querySelector(".theme-switch"), root = document.documentElement;
-      if (!sw) return;
-      var show = function () { sw.setAttribute("aria-checked", root.getAttribute("data-theme") === "dark" ? "true" : "false"); };
-      show();
-      sw.addEventListener("click", function () {
-        var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-        root.setAttribute("data-theme", next);
-        try { localStorage.setItem("theme", next); } catch (e) {}
-        show();
-      });
-    })();
-  </script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       if (!window.renderMathInElement) return;
