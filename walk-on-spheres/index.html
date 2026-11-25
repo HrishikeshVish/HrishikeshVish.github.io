@@ -1,0 +1,517 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <title>Walk on Spheres | Hrishikesh Viswanath</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Hrishikesh Viswanath">
+  <meta name="description" content="An interactive introduction to solving PDEs with random walks: Brownian motion and harmonic functions, path integrals and the Feynman–Kac formula, and the Walk-on-Spheres algorithm, with a survey of recent work.">
+  <meta property="og:title" content="Walk on Spheres">
+  <meta property="og:description" content="Solving PDEs with random walks, from Kakutani and Feynman–Kac to Walk on Spheres and its modern descendants. Interactive figures.">
+  <link rel="stylesheet" type="text/css" href="/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" type="text/css" href="wos.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="wos.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav">
+      <a href="/">Hrishikesh Viswanath</a>
+      <div class="nav__links">
+        <a href="/#research">Research</a>
+        <a href="/#posts">Posts</a>
+        <a href="/pdfs/cv.pdf">CV</a>
+        <a href="mailto:hviswan@purdue.edu">Contact</a>
+      </div>
+    </nav>
+
+    <main class="article wos">
+      <span class="mono muted">Nov 2026 · interactive</span>
+      <h1>Walk on Spheres</h1>
+      <p class="lede">This is a tour from Brownian motion and Feynman's path integrals, through the Feynman–Kac formula, to Muller's Walk-on-Spheres algorithm and the recent work that made it a practical, mesh-free PDE solver.</p>
+      <ul class="toc">
+        <li><a href="#idea">The idea</a></li>
+        <li><a href="#brownian">Brownian motion</a></li>
+        <li><a href="#feynman-kac">Feynman–Kac</a></li>
+        <li><a href="#wos">Walk on Spheres</a></li>
+        <li><a href="#practice">In practice</a></li>
+        <li><a href="#more">More equations</a></li>
+        <li><a href="#applications">Applications</a></li>
+        <li><a href="#beyond">Beyond Laplace</a></li>
+        <li><a href="#learning">Learning from walks</a></li>
+        <li><a href="#timeline">Timeline</a></li>
+        <li><a href="#references">References</a></li>
+      </ul>
+
+      <figure class="wfig wfig--hero" data-fig="hero">
+        <div class="wfig__panel">
+          <div class="wfig__tag">walk on spheres</div>
+          <div class="wfig__title">Jump to the edge of the <span class="hl">largest circle that fits</span>. Repeat.</div>
+          <div class="wfig__sub">stop within ε of the boundary and read the boundary value there</div>
+          <div class="wfig__stage"><canvas class="nodrag" aria-label="Animation: random walks jumping across circles inside a flower-shaped domain until they reach its boundary"></canvas></div>
+          <div class="wfig__hud">
+            <span>walks <b data-k="n">0</b></span>
+            <span>estimate <b class="hl" data-k="est">—</b></span>
+            <span>exact <b data-k="exact">—</b></span>
+            <span>mean jumps <b data-k="steps">—</b></span>
+          </div>
+          <div class="wfig__eq">$$u(x) \;\approx\; \frac{1}{N}\sum_{i=1}^{N} g\big(\bar x^{(i)}_{K}\big)$$</div>
+        </div>
+        <figcaption>The ringed dot is the query point \(x\) and the blue dot is the walker. Each walk jumps to a uniformly random point on the largest circle around its current position that still fits inside the domain (blue). It stops in the thin ε-shell along the boundary (shaded) and reads the boundary value \(g\) at the closest boundary point. The boundary is shaded by \(g\). The average over walks converges to the exact solution printed beside it.</figcaption>
+      </figure>
+
+      <h5 id="idea">The idea</h5>
+      <p>Picture a thin metal plate \(\Omega\) whose rim is held at a temperature \(g\) that varies around the edge. Wait long enough and the temperature inside settles to a steady state \(u\). That steady state can be modeled by Laplace's equation with Dirichlet boundary conditions,</p>
+      $$\Delta u = 0 \quad\text{in } \Omega, \qquad u = g \quad\text{on } \partial\Omega .$$
+      <p>The textbook route is to mesh \(\Omega\), assemble a linear system, and solve for \(u\) at every node at once. We will discuss a less restrictive path-integral based approach. Intuitively, to know \(u\) at a single point \(x\), release a random walker at \(x\), let it wander until it first touches the rim, and write down \(g\) where it touched. Do that many times and average. The average converges to \(u(x)\).</p>
+      <p>That is the whole method. There is no mesh and no linear system, and the answer at \(x\) does not require computing anything anywhere else. The algorithm that makes it fast, is called the Walk on Spheres. This approach dates from 1956 <a class="cite" href="#r-muller1956some">(Muller 1956)</a>. Its roots are older still: Kakutani's link between Brownian motion and harmonic functions <a class="cite" href="#r-kakutani1944">(1944)</a>, and Kac's rigorous version of Feynman's path integrals <a class="cite" href="#r-kac1949">(1949)</a>. Since Sawhney and Crane brought it to computer graphics <a class="cite" href="#r-sawhney2020monte">(2020)</a>, it has become a fast-moving research area, surveyed in <a class="cite" href="#r-sawhney2025state">Sawhney et al. (2025)</a>.</p>
+      <p>This page follows that story in order. This framework has tremendous potential beyond computer graphics, including PDE solvers, surrogate modeling and even robotics.</p>
+
+      <h5 id="brownian">Brownian motion and harmonic functions</h5>
+      <h6>A random path, made precise</h6>
+      <p>In the summer of 1827 the botanist Robert Brown watched particles from pollen grains jitter endlessly in water under his microscope <a class="cite" href="#r-brown1828">(Brown 1828)</a>. Einstein <a class="cite" href="#r-einstein1905">(1905)</a> explained the jitter as the cumulative effect of molecular impacts and showed that the density of many such particles obeys the diffusion equation. Wiener <a class="cite" href="#r-wiener1923">(1923)</a> then built the mathematical object: a probability measure on continuous paths, now called Wiener measure. Under it, a random path \(W_t\) in \(\mathbb{R}^d\) moves continuously and has independent Gaussian increments,</p>
+      $$W_{t+s} - W_t \sim \mathcal{N}(0,\, s\,I), \qquad \text{independent of the path up to time } t.$$
+      <p>This is Brownian motion. It has no preferred direction, meaning, it is rotationally symmetric. And it forgets its past. Upon every restart, it forms a fresh Brownian motion.</p>
+
+      <h6>Harmonic functions are averages</h6>
+      <p>A function with \(\Delta u = 0\) satisfies the <em>mean value property</em>. On any ball \(B_r(x)\) inside \(\Omega\), the value at the centre is the average over the sphere:</p>
+      $$u(x) = \frac{1}{|\partial B_r(x)|}\int_{\partial B_r(x)} u(y)\,\mathrm{d}y .$$
+      <p>Why is this true? Write \(m(r)\) for the average of \(u\) over the sphere of radius \(r\) around \(x\). Differentiating under the integral and applying the divergence theorem gives</p>
+      $$m'(r) = \frac{1}{|\partial B_r|}\int_{\partial B_r(x)} \frac{\partial u}{\partial n}\,\mathrm{d}y = \frac{1}{|\partial B_r|}\int_{B_r(x)} \Delta u\,\mathrm{d}y = 0,$$
+      <p>so \(m\) does not depend on \(r\), and as \(r \to 0\) it tends to \(u(x)\). Walk on Spheres is essentially this identity applied over and over.</p>
+      <p>The discrete version of the identity is older than the continuous theory. On a grid, the five-point Laplacian vanishes exactly when each value is the average of its four neighbours, that is, the expected value after one step of a random walk. Courant, Friedrichs and Lewy <a class="cite" href="#r-courant1928">(1928)</a> already used this random-walk reading of the discrete Dirichlet problem.</p>
+
+      <h6>Kakutani's theorem</h6>
+      <p>Kakutani <a class="cite" href="#r-kakutani1944">(1944)</a> made the continuous statement. Start a Brownian motion at \(x\) and let \(\tau = \inf\{t \ge 0 : W_t \notin \Omega\}\) be the first time it leaves \(\Omega\). Then</p>
+      $$u(x) = \mathbb{E}\big[\, g(W_\tau) \;\big|\; W_0 = x \,\big].$$
+      <p>The distribution of the exit point \(W_\tau\) is called the <em>harmonic measure</em> of \(\Omega\) seen from \(x\). The solution at \(x\) is the boundary data averaged against it.</p>
+      <p>The reason fits in one line of Itô calculus. For a smooth \(u\) evaluated along a Brownian path, Itô's formula <a class="cite" href="#r-ito1951">(Itô 1951)</a> reads</p>
+      $$\mathrm{d}\,u(W_t) = \nabla u(W_t)\cdot \mathrm{d}W_t \;+\; \tfrac12\,\Delta u(W_t)\,\mathrm{d}t .$$
+      <p>The first term is pure noise with mean zero. The second is a drift. When \(\Delta u = 0\) the drift vanishes, so \(u(W_t)\) is a martingale. If the walk stops at \(\tau\), which on a bounded domain is finite and has finite mean, then \(\mathbb{E}[u(W_\tau)] = u(x)\), and \(u(W_\tau) = g(W_\tau)\) because \(W_\tau\) lies on the boundary. <a class="cite" href="#r-le2016brownian">Le Gall (2016)</a> gives the full measure-theoretic details.</p>
+
+      <figure class="wfig" data-fig="kakutani">
+        <div class="wfig__panel">
+          <div class="wfig__tag">fig. 1 · kakutani 1944</div>
+          <div class="wfig__title">The solution at a point is <span class="hl">an average over Brownian paths</span></div>
+          <div class="wfig__sub">drag or tap inside the domain to move the start point</div>
+          <div class="wfig__stage"><canvas aria-label="Brownian paths from a start point inside a flower-shaped domain, coloured by the boundary value where they exit"></canvas></div>
+          <div class="wfig__hud">
+            <span>paths <b data-k="n">0</b></span>
+            <span>mean g(W<sub>τ</sub>) <b class="hl" data-k="est">—</b></span>
+            <span>exact u(x) <b data-k="exact">—</b></span>
+            <span>steps per path <b data-k="steps">—</b></span>
+          </div>
+          <div class="wfig__eq">$$u(x) = \mathbb{E}\big[\,g(W_\tau)\,\big], \qquad \tau = \inf\{t \ge 0 : W_t \notin \Omega\}$$</div>
+          <div class="wfig__controls">
+            <button class="wbtn" type="button" data-act="many">+100 paths</button>
+            <button class="wbtn" type="button" data-act="reset">Clear</button>
+          </div>
+        </div>
+        <figcaption>Brownian paths from the ringed dot, simulated with small Gaussian steps until they leave \(\Omega\). Each path is coloured by the boundary value where it exits, and each exit leaves a tick on the rim. The ticks pile up according to the harmonic measure. The boundary data is the trace of a harmonic polynomial, \(g = 0.5\,\mathrm{Re}(z^3) + 0.25\,\mathrm{Im}(z^2) + 0.35\,\mathrm{Re}(z)\) with \(z = x_1 + i x_2\), so the exact solution is known and printed for comparison. Note the number of steps per path.</figcaption>
+      </figure>
+
+      <h5 id="feynman-kac">Path integrals and the Feynman–Kac formula</h5>
+      <h6>Feynman's sum over histories</h6>
+      <p>In 1948 Feynman reformulated this problem as a sum over paths <a class="cite" href="#r-feynman1948">(Feynman 1948)</a>. The amplitude for a particle to travel from \(a\) to \(b\) is a sum over <em>every</em> path between them, each weighted by \(e^{iS/\hbar}\), where</p>
+      $$S[x] = \int \Big(\tfrac12 m\,\dot x(s)^2 - V\big(x(s)\big)\Big)\,\mathrm{d}s$$
+      <p>is the classical action along the path. Paths near the classical trajectory reinforce one another and the rest cancel. As mathematics, though, the sum is formal: no measure on paths carries that oscillating weight.</p>
+
+      <h6>Kac's version</h6>
+      <p>Mark Kac, Feynman's colleague at Cornell, saw what happens in imaginary time <a class="cite" href="#r-kac1949">(Kac 1949)</a>. Replacing \(t\) by \(-it\) turns the Schrödinger equation into a diffusion equation with a potential. It also turns the kinetic part of the weight, \(e^{-\int \frac12 \dot x^2}\), into exactly Wiener measure: a genuine probability distribution over Brownian paths. What remains of the action is the potential, now as a real, decaying weight. The result is the Feynman–Kac formula,</p>
+      $$\partial_t u = \tfrac12\Delta u - V(x)\,u,\quad u(x,0)=\varphi(x) \qquad\Longrightarrow\qquad u(x,t) = \mathbb{E}\Big[\varphi(x + W_t)\, \exp\Big(-\!\int_0^t V(x+W_s)\,\mathrm{d}s\Big)\Big].$$
+      <p>To get the temperature at \((x, t)\), run a Brownian path from \(x\) for time \(t\), look up the initial temperature \(\varphi\) where it ends, and discount it by how much potential it soaked up on the way. The discount has two equivalent readings. As a <em>weight</em>, each path simply counts for less. As <em>killing</em>, \(V\) is a death rate: in each instant the walker dies with probability \(V\,\mathrm{d}t\), and dead walkers report zero. The two agree in expectation, and Monte Carlo codes usually use the second to handle absorption.</p>
+
+      <h6>Why it works</h6>
+      <p>It is the same Itô argument as before, with one extra factor. Fix \((x, t)\) and follow</p>
+      $$M_s = u\big(x + W_s,\; t - s\big)\; e^{-\int_0^s V(x + W_q)\,\mathrm{d}q}, \qquad 0 \le s \le t .$$
+      <p>Itô's formula and the product rule give</p>
+      $$\mathrm{d}M_s = e^{-\int_0^s V}\Big(-\partial_t u + \tfrac12\Delta u - V u\Big)\,\mathrm{d}s \;+\; e^{-\int_0^s V}\,\nabla u\cdot \mathrm{d}W_s .$$
+      <p>The bracket vanishes because \(u\) solves the equation, so \(M\) is a martingale and \(\mathbb{E}[M_t] = M_0\). At \(s = 0\) this is \(u(x, t)\). At \(s = t\) it is \(\varphi(x + W_t)\) times the discount. In a simulation with time step \(\Delta t\), the killing reading becomes a coin flip: at every step the walker survives with probability \(e^{-V\Delta t}\).</p>
+
+      <h6>The elliptic version, with exit times</h6>
+      <p>Elliptic problems have no time horizon. Instead the path runs until it leaves \(\Omega\). Take a diffusion \(X_t\) with drift \(b\) and diffusion matrix \(\sigma\), whose generator is \(\mathcal{L} = \tfrac12\operatorname{Tr}(\sigma\sigma^\top \nabla^2) + b\cdot\nabla\). The boundary value problem \(\mathcal{L}u - c\,u = -f\) in \(\Omega\), \(u = g\) on \(\partial\Omega\), has the solution <a class="cite" href="#r-oksendal2003stochastic">(Øksendal 2003)</a></p>
+      $$u(x) = \mathbb{E}\Big[\, g(X_\tau)\,e^{-\int_0^\tau c(X_s)\,\mathrm{d}s} \;+\; \int_0^\tau f(X_t)\,e^{-\int_0^t c(X_s)\,\mathrm{d}s}\,\mathrm{d}t \;\Big|\; X_0 = x \Big].$$
+      <p>Every term has a reading. \(g(X_\tau)\) is the boundary value where you leave. \(\int f\,\mathrm{d}t\) is the source you collect along the way. The exponentials are absorption, as in Kac's formula. Kakutani's theorem is the special case \(b = 0\), \(\sigma = I\), \(c = f = 0\). Drift and variable diffusion cover advection and heterogeneous materials. <a class="cite" href="#r-sawhney2022grid">Sawhney et al. (2022)</a> keep the Walk-on-Spheres machinery for spatially varying coefficients by combining a Girsanov transformation with delta tracking, a technique borrowed from volume rendering. Absorption and variable coefficients both come back below, once Walk on Spheres is in hand.</p>
+
+      <h6>Nonlinear equations: backward SDEs</h6>
+      <p>When the equation is nonlinear in \(u\) or \(\nabla u\), the expectation above no longer closes. <a class="cite" href="#r-pardoux1990adapted">Pardoux and Peng (1990)</a> found the replacement: a <em>backward</em> stochastic differential equation. Alongside the forward diffusion \(X\), one solves for a pair \((Y, Z)\) with</p>
+      $$\mathrm{d}Y_s = -h(X_s, Y_s, Z_s)\,\mathrm{d}s + Z_s\cdot \mathrm{d}W_s ,$$
+      <p>pinned by the data at the terminal or exit time. Then \(Y_s = u(X_s, s)\) and \(Z_s = \sigma^\top \nabla u(X_s, s)\): the backward process carries the solution and its gradient along the paths. This nonlinear Feynman–Kac formula (<a class="cite" href="#r-zhang2017backward">Zhang 2017</a> covers the theory) underlies deep BSDE solvers, and <a class="cite" href="#r-nusken2021interpolating">Nüsken and Richter (2021)</a> show how BSDE-based losses interpolate with physics-informed ones.</p>
+
+      <h5 id="wos">Walk on Spheres</h5>
+      <h6>The shortcut</h6>
+      <p>Back to Laplace's equation, and to the cost of simulating paths step by step. Everything hinges on Figure 2. A Brownian motion started at the centre of a ball leaves it at a <em>uniformly</em> random point of the sphere, because by rotational symmetry no direction is preferred. Started anywhere else, the exit point follows the Poisson kernel, which favours the near side.</p>
+
+      <figure class="wfig" data-fig="exit">
+        <div class="wfig__panel">
+          <div class="wfig__tag">fig. 2 · exit distribution of a disk</div>
+          <div class="wfig__title">From the centre, <span class="hl">every direction is equally likely</span></div>
+          <div class="wfig__sub">drag the start point · bars: measured exits · blue: the Poisson kernel</div>
+          <div class="wfig__stage"><canvas aria-label="Brownian paths from a point inside a disk, with a radial histogram of where they exit and the Poisson kernel"></canvas></div>
+          <div class="wfig__hud">
+            <span>|x| <b data-k="rho">—</b></span>
+            <span>exits <b class="hl" data-k="n">0</b></span>
+            <span data-k="note"></span>
+          </div>
+          <div class="wfig__eq">$$P(x, y) = \frac{1 - |x|^2}{2\pi\,|x - y|^2}, \qquad |y| = 1$$</div>
+          <div class="wfig__controls">
+            <button class="wbtn" type="button" data-act="centre">Start at the centre</button>
+            <button class="wbtn" type="button" data-act="off">Start off-centre</button>
+          </div>
+        </div>
+        <figcaption>Brownian paths from the blue dot to the unit circle. The bars are a histogram of exit angles, with bar length proportional to the measured density. The blue curve is the Poisson kernel of the unit disk, the exact exit density, drawn to the same scale. At the centre both are flat. Walk on Spheres is built on that fact.</figcaption>
+      </figure>
+
+      <p><a class="cite" href="#r-muller1956some">Muller (1956)</a> turned this into an algorithm. Inside a ball centred at the walker, the path itself does not matter, only where it leaves, and that exit point is uniform on the sphere. So skip the path and jump straight to a uniform random point on the sphere. To jump as far as possible, use the largest ball that fits, of radius \(r_k = \operatorname{dist}(x_k, \partial\Omega)\). Because Brownian motion forgets its past, the walk restarts afresh from each landing point. The sequence \(x_0 = x, x_1, x_2, \dots\) visits exactly the points where one Brownian path from \(x\) leaves a chain of balls, so it reaches the boundary where that path would. In analytic terms it is the mean value property applied recursively: \(u(x_k)\) is the average of \(u\) over \(\partial B_{r_k}(x_k)\), and one uniform sample estimates that average without bias.</p>
+
+      <h6>Stopping in the ε-shell</h6>
+      <p>Every jump lands strictly inside \(\Omega\), so the walk approaches the boundary without ever reaching it. It stops once it is within \(\varepsilon\), inside the shell \(\{x : \operatorname{dist}(x, \partial\Omega) &lt; \varepsilon\}\), and reports \(g\) at the closest boundary point \(\bar x_K\). This costs a bias of order \(\varepsilon\) <a class="cite" href="#r-mascagni2003epsilon">(Mascagni and Hwang 2003)</a>. The payoff is the step count. On well-behaved domains, convex ones for example, the expected number of jumps grows only like \(\log(1/\varepsilon)\), against the order \(\varepsilon^{-2}\) steps that time stepping needs for a comparable bias. <a class="cite" href="#r-binder2012rate">Binder and Braverman (2012)</a> analyse the rate on general domains.</p>
+      <div class="algo"><b>walk_on_spheres</b>(x, ε):                 <span class="c"># one sample of u(x)</span>
+  loop:
+    r ← dist(x, ∂Ω)                      <span class="c"># a closest-point query</span>
+    if r &lt; ε: return g(closest boundary point to x)
+    x ← x + r · (uniform random unit vector)
+
+<span class="c"># the estimate of u(x) is the mean of N independent walks</span></div>
+
+      <h6>Why so few jumps</h6>
+      <p>The logarithm is easy to see near a flat piece of boundary. A walker at distance \(d\) from a straight wall jumps to a uniform point on a circle of radius \(d\), at angle \(\theta\), and so lands at distance \(d\,(1 + \sin\theta)\). The logarithm of the distance therefore performs a random walk with increments \(\log(1 + \sin\theta)\), whose mean is</p>
+      $$\frac{1}{2\pi}\int_0^{2\pi} \log(1 + \sin\theta)\,\mathrm{d}\theta = -\log 2 .$$
+      <p>On average every jump halves the distance, in the geometric sense. Getting from distance \(d\) into the ε-shell therefore takes about \(\log_2(d/\varepsilon)\) jumps, roughly 3.3 more for every factor of ten in ε. Curved boundaries change the constant (the flower in Figure 4 needs slightly more) but not the logarithm.</p>
+
+      <figure class="wfig" data-fig="walk">
+        <div class="wfig__panel">
+          <div class="wfig__tag">fig. 3 · walk on spheres · muller 1956</div>
+          <div class="wfig__title">One walk, <span class="hl">one sphere at a time</span></div>
+          <div class="wfig__sub">step through a walk or play many · drag the start point · reshape the domain</div>
+          <div class="wfig__stage"><canvas aria-label="Interactive walk on spheres inside a flower-shaped domain"></canvas></div>
+          <div class="wfig__hud">
+            <span>step <b data-k="step">0</b></span>
+            <span>r = dist(x<sub>k</sub>, ∂Ω) <b class="hl" data-k="r">—</b></span>
+            <span>ε <b data-k="eps">0.020</b></span>
+          </div>
+          <div class="wfig__hud">
+            <span>walks <b data-k="n">0</b></span>
+            <span>estimate <b class="hl" data-k="est">—</b></span>
+            <span>exact <b data-k="exact">—</b></span>
+            <span>mean jumps <b data-k="steps">—</b></span>
+          </div>
+          <div class="wfig__eq" data-tex></div>
+          <div class="wfig__controls">
+            <button class="wbtn" type="button" data-act="step">Step</button>
+            <button class="wbtn" type="button" data-act="play" aria-pressed="false">Play</button>
+            <button class="wbtn" type="button" data-act="many">+100 walks</button>
+            <button class="wbtn" type="button" data-act="reset">Reset</button>
+          </div>
+          <div class="wfig__controls">
+            <button class="wbtn" type="button" data-act="path" aria-pressed="false">Show the path each jump replaces</button>
+            <button class="wbtn" type="button" data-act="source" aria-pressed="false">Source term f</button>
+            <button class="wbtn" type="button" data-act="sound" aria-pressed="false">Sound</button>
+          </div>
+          <div class="wfig__controls">
+            <label class="wslider">c₁ <input type="range" data-in="c1" min="-0.2" max="0.2" step="0.01" value="0.14"><output data-k="c1">0.14</output></label>
+            <label class="wslider">c₂ <input type="range" data-in="c2" min="-0.2" max="0.2" step="0.01" value="0.06"><output data-k="c2">0.06</output></label>
+            <label class="wslider">log₁₀ ε <input type="range" data-in="eps" min="-3" max="-1" step="0.1" value="-1.7"></label>
+          </div>
+        </div>
+        <figcaption>The dashed line runs to the closest boundary point and sets the radius of the current sphere (blue). The walker lands on a uniformly random point of it. With <strong>Show the path</strong> on, the figure simulates the Brownian motion each jump stands in for, and moves to where that path actually leaves the ball. The domain family \(r(\theta) = 1 + c_1\cos 4\theta + c_2\cos 8\theta\) is the one from our paper. Since the walk only ever asks for distances to the boundary, any shape works. <strong>Source term f</strong> switches to the Poisson problem below, and each sphere then also samples the source at one point (dots, blue where the source is positive). With <strong>Sound</strong> on, each jump plays a note, higher for smaller spheres, so you can hear the walk close in on the boundary.</figcaption>
+      </figure>
+
+      <h6>Adding a source term</h6>
+      <p>For the Poisson equation \(\Delta u = -f\), the path also collects source on the way. Inside each ball, the expected amount collected before the path leaves is an integral against the ball's Green's function,</p>
+      $$\mathbb{E}\Big[\int_0^{\tau_k} f(X_t)\,\mathrm{d}t\Big] = \int_{B_{r_k}(x_k)} G_{r_k}(x_k, y)\, f(y)\,\mathrm{d}y, \qquad G_r(x, y) = \frac{1}{2\pi}\log\frac{r}{|x - y|} \quad (d = 2),$$
+      <p>and one random point \(y_k\) in the ball gives an unbiased estimate of it. Drawing \(y_k\) uniformly gives the estimator \(|B_{r_k}|\, f(y_k)\, G_{r_k}(x_k, y_k)\) <a class="cite" href="#r-sawhney2020monte">(Sawhney and Crane 2020)</a>. Figure 3 instead draws \(y_k\) with density proportional to \(G\), which makes every weight the same constant \(\int G = r_k^2/4\):</p>
+      $$\hat u(x) = g(\bar x_K) + \sum_{k=0}^{K-1} \frac{r_k^2}{4}\, f(y_k), \qquad y_k \sim \frac{G_{r_k}(x_k, \cdot)}{r_k^2/4} .$$
+      <p>The constant has a meaning. With \(f \equiv 1\) the path collects exactly the time it spends in the ball, so \(\int G = \mathbb{E}[\tau_k]\), the mean exit time from the centre. That mean solves \(\Delta v = -1\) in the ball with \(v = 0\) on the sphere, and \(v(y) = (r_k^2 - |y - x_k|^2)/4\) does both, so \(\mathbb{E}[\tau_k] = v(x_k) = r_k^2/4\).</p>
+      <div class="note">
+        <p><strong>A note on factors of two.</strong> Standard Brownian motion has generator \(\tfrac12\Delta\), which is why Kakutani's and Kac's formulas carry a \(\tfrac12\). From here on we follow Sawhney and Crane and write the Poisson equation as \(\Delta u = -f\). The matching process is Brownian motion run at double speed, \(X_t = W_{2t}\), whose generator is \(\Delta\). Exit points do not depend on speed, so only the source term notices.</p>
+      </div>
+
+      <h5 id="practice">The estimator in practice</h5>
+      <p>Each walk returns an independent sample whose mean is \(u(x)\), up to the ε-shell bias. Averaging \(N\) walks therefore leaves a standard error of \(\sigma(x)/\sqrt{N}\). Different query points share nothing, so the work parallelises perfectly and you can evaluate the solution only where you need it. Geometry enters only through distance (closest-point) queries, which a bounding volume hierarchy answers for any triangle soup or implicit surface. No volumetric mesh is ever built, so the method copes with exactly the geometry that breaks meshers: thin features, self-intersections and gaps <a class="cite" href="#r-sawhney2020monte">(Sawhney and Crane 2020)</a>.</p>
+      <p>The price is noise. Halving the error takes four times the walks, and smooth answers typically need \(10^4\) to \(10^6\) walks per point. Figure 4 shows both sides of the bargain.</p>
+
+      <figure class="wfig" data-fig="field">
+        <div class="wfig__panel">
+          <div class="wfig__tag">fig. 4 · every pixel is its own estimate</div>
+          <div class="wfig__title">Error falls like <span class="hl">1/√N</span>. Jumps grow like log 1/ε.</div>
+          <div class="wfig__sub">each pixel runs its own walks · set a large ε and watch the error stall</div>
+          <div class="wfig__duo">
+            <div class="wfig__stage"><canvas class="nodrag" data-c="field" aria-label="The solution on a flower-shaped domain, estimated independently at every pixel by walk on spheres"></canvas></div>
+            <div class="wfig__plots">
+              <canvas data-c="err" aria-label="Root mean square error against walks per pixel, on log-log axes"></canvas>
+              <canvas data-c="steps" aria-label="Mean number of jumps per walk against epsilon"></canvas>
+            </div>
+          </div>
+          <div class="wfig__hud">
+            <span>walks per pixel <b data-k="spp">0</b></span>
+            <span>mean jumps <b data-k="steps">—</b></span>
+            <span>RMS error <b class="hl" data-k="err">—</b></span>
+            <span>ε <b data-k="eps">—</b></span>
+          </div>
+          <div class="wfig__controls">
+            <button class="wbtn" type="button" data-act="laplace" aria-pressed="true">Laplace</button>
+            <button class="wbtn" type="button" data-act="poisson" aria-pressed="false">Poisson</button>
+            <label class="wslider">log₁₀ ε <input type="range" data-in="eps" min="-4" max="-1" step="0.25" value="-2.5"></label>
+            <button class="wbtn" type="button" data-act="restart">Restart</button>
+          </div>
+        </div>
+        <figcaption>Left: Walk on Spheres run independently at every pixel, one walk per pixel per pass, coloured by the running mean. Top right: RMS error against the exact solution at 1, 2, 4, … walks per pixel. The dashed line has slope −½. In the Laplace problem with a large ε, the curve flattens where the ε-shell bias takes over from the noise. The Poisson problem is noisier, so its floor sits below what 512 walks can reach. Bottom right: mean jumps per walk from random starting points, against ε on a log scale. It is a straight line, so a smaller ε costs only logarithmically more.</figcaption>
+      </figure>
+
+      <h6>Error bars for free</h6>
+      <p>Because each walk is an independent sample, the central limit theorem applies. With \(N\) walks, sample mean \(\hat u_N\) and sample standard deviation \(\hat\sigma\),</p>
+      $$u(x) \in \Big[\, \hat u_N - 1.96\,\frac{\hat\sigma}{\sqrt N},\;\; \hat u_N + 1.96\,\frac{\hat\sigma}{\sqrt N} \,\Big] \quad \text{with probability about } 95\%,$$
+      <p>up to the ε-shell bias. Few PDE solvers report their own error this cheaply. The per-walk spread \(\hat\sigma\) depends on how much \(g\) varies over the places where walks from \(x\) tend to exit, so points near boundaries with rapidly varying data are the noisiest. A sensible rule is to choose ε so that the bias sits well below the noise you can afford. Figure 6 prints such a standard error for any point you hover over.</p>
+
+      <h6>Making each walk count</h6>
+      <p>Much of the recent work attacks the noise. <em>Control variates</em> subtract a correlated quantity whose mean is known. Sawhney and Crane <a class="cite" href="#r-sawhney2020monte">(2020)</a> use a running estimate of the gradient, and <a class="cite" href="#r-li2024neural">Li et al. (2024)</a> learn a control variate with a network whose integral is available in closed form.</p>
+      <p>Other methods <em>reuse</em> work across query points. Boundary value caching <a class="cite" href="#r-miller2023boundary">(Miller et al. 2023)</a> first estimates the solution and its normal derivative at sample points on the boundary, then evaluates the interior through a boundary integral, trading a little bias for much lower variance. Harmonic caching <a class="cite" href="#r-zhou2025harmonic">(Zhou et al. 2025)</a> stores overlapping harmonic expansions and reports more than an order of magnitude lower error in equal time. Probe-based reuse <a class="cite" href="#r-huang2026probe">(Huang et al. 2026)</a> recycles intermediate walk states through fixed spherical probes. Gradient-domain reconstruction <a class="cite" href="#r-wu2026gradient">(Wu et al. 2026)</a> estimates differences of the solution between query points and integrates them.</p>
+      <p>A third group changes how the walk itself is sampled. These methods learn sampling distributions online <a class="cite" href="#r-huang2025guiding">(Huang et al. 2025)</a>, reweight off-centred estimators <a class="cite" href="#r-bao2025off">(Bao et al. 2025)</a>, and remove the ε-shell and its bias with conformal first-passage sampling <a class="cite" href="#r-himmler2025conformal">(Himmler and Günther 2025)</a>. Walk on decomposed subdomains <a class="cite" href="#r-jambon2026walk">(Jambon et al. 2026)</a> confines walks to small subdomains whose local operators are assembled into a sparse global system.</p>
+
+      <h5 id="more">More equations, same walk</h5>
+      <p>The walk itself never changes: jump to a random point on the largest empty sphere, stop near the boundary. What changes from one equation to the next is what each jump contributes. Three examples follow, each a direct reading of the Feynman–Kac formula.</p>
+
+      <h6>Absorption: the screened Poisson equation</h6>
+      <p>Add a constant absorption \(\sigma \ge 0\) to Laplace's equation:</p>
+      $$\Delta u - \sigma u = 0 \quad\text{in } \Omega, \qquad u = g \quad\text{on } \partial\Omega .$$
+      <p>The Feynman–Kac formula with \(c = \sigma\) says \(u(x) = \mathbb{E}\big[g(X_\tau)\,e^{-\sigma\tau}\big]\): walkers that take a long time to leave are discounted. Walk on Spheres no longer tracks time, but it does not need to. Started at the centre of a ball, the exit time and the exit point of Brownian motion are independent, again by symmetry, so the discount factors out of each jump. Its mean \(v(x_k) = \mathbb{E}[e^{-\sigma\tau_k}]\) solves \(\Delta v = \sigma v\) in the ball with \(v = 1\) on its sphere. In two dimensions the radial solution is a modified Bessel function, \(v(y) = I_0(\sqrt\sigma\,|y - x_k|)\,/\,I_0(\sqrt\sigma\,r_k)\), so each jump multiplies the walker's weight by</p>
+      $$v(x_k) = \frac{1}{I_0(r_k\sqrt{\sigma})}, \qquad\text{and}\qquad \hat u(x) = \Big(\prod_{k=0}^{K-1} \frac{1}{I_0(r_k\sqrt{\sigma})}\Big)\, g(\bar x_K) .$$
+      <p>Big spheres cost more weight than small ones, so a walker that wanders far from the boundary fades. Equivalently, it dies at each jump with probability \(1 - 1/I_0(r_k\sqrt\sigma)\), the killing reading from the Feynman–Kac section. Either way, the boundary's influence now decays over a distance of about \(1/\sqrt\sigma\).</p>
+
+      <figure class="wfig" data-fig="absorb">
+        <div class="wfig__panel">
+          <div class="wfig__tag">fig. 5 · screened poisson</div>
+          <div class="wfig__title">Absorption makes <span class="hl">walkers fade</span></div>
+          <div class="wfig__sub">raise σ and the boundary's influence shrinks to a band about 1/√σ wide</div>
+          <div class="wfig__stage"><canvas class="nodrag" aria-label="The screened Poisson equation solved by walk on spheres at every pixel of a flower-shaped domain"></canvas></div>
+          <div class="wfig__hud">
+            <span>σ <b class="hl" data-k="sigma">—</b></span>
+            <span>walks per pixel <b data-k="spp">0</b></span>
+            <span>mean final weight <b data-k="w">—</b></span>
+            <span>mean jumps <b data-k="steps">—</b></span>
+          </div>
+          <div class="wfig__eq">$$\hat u(x) = \Big(\prod_{k} \frac{1}{I_0(r_k\sqrt{\sigma})}\Big)\, g(\bar x_K)$$</div>
+          <div class="wfig__controls">
+            <label class="wslider">log₁₀(1 + σ) <input type="range" data-in="sigma" min="0" max="2" step="0.05" value="1.3"></label>
+          </div>
+        </div>
+        <figcaption>The boundary data of Figure 4, now solved for \(\Delta u - \sigma u = 0\) at every pixel. Each jump multiplies the walker's weight by \(1/I_0(r_k\sqrt\sigma)\), and the counter shows the average weight a walk ends with. At \(\sigma = 0\) this is Laplace's equation again. As σ grows the interior goes dark, and only a band near the boundary, about \(1/\sqrt\sigma\) wide (scale bar), remembers the boundary values. With a σ that varies in space, the same operator is the linearised Poisson–Boltzmann equation of the next section.</figcaption>
+      </figure>
+
+      <h6>Gradients</h6>
+      <p>Many applications need \(\nabla u\) more than \(u\): electric fields, heat fluxes, the direction a robot should move. The mean value property also holds for averages over solid balls, and \(\nabla u\) is harmonic too. Averaging \(\nabla u\) over a ball \(B_r(x) \subset \Omega\) and applying the divergence theorem turns it into an average over the sphere. In \(d\) dimensions,</p>
+      $$\nabla u(x) = \frac{d}{r^2}\;\mathbb{E}_{y \sim \mathcal{U}(\partial B_r(x))}\big[\, u(y)\,(y - x) \,\big],$$
+      <p>and each \(u(y)\) can itself be replaced by one walk started at \(y\) <a class="cite" href="#r-sawhney2020monte">(Sawhney and Crane 2020)</a>. You can check the constant on a linear function \(u(y) = a\cdot y\): the average of \((a\cdot n)\,n\) over unit directions \(n\) is \(a/d\). Two cheap tricks cut the variance a lot. Pair every direction \(n\) with its opposite \(-n\) (antithetic sampling), so the constant part of \(u\) cancels exactly. And spread the directions evenly around the circle with a single random offset, so no direction is over- or under-sampled. Figure 7 steers a robot with exactly this estimator.</p>
+
+      <h6>Variable coefficients</h6>
+      <p>Real materials are not uniform. With a diffusion coefficient \(\alpha(x) &gt; 0\) and an absorption \(\sigma(x) \ge 0\), the steady problem becomes</p>
+      $$\nabla\cdot\big(\alpha(x)\,\nabla u\big) - \sigma(x)\,u = -f(x) .$$
+      <p><a class="cite" href="#r-sawhney2022grid">Sawhney et al. (2022)</a> remove the first-order term \(\nabla\alpha\cdot\nabla u\) with a change of variables. Setting \(U = \sqrt{\alpha}\,u\) and expanding gives a screened Poisson equation with a new, spatially varying absorption:</p>
+      $$\Delta U - \sigma'(x)\,U = -\frac{f}{\sqrt{\alpha}}, \qquad \sigma' = \frac{\sigma}{\alpha} + \frac12\Big(\frac{\Delta\alpha}{\alpha} - \frac{|\nabla\log\alpha|^2}{2}\Big).$$
+      <p>A varying σ′ breaks the exact Bessel weight above, so they pick a constant \(\bar\sigma \ge \sigma'\) and move the difference to the right-hand side, \(\Delta U - \bar\sigma U = -f/\sqrt\alpha - (\bar\sigma - \sigma')\,U\). The unknown now appears in its own source term. The walk resolves that recursively: inside each ball it either continues from a random interior point (a "collision") or jumps to the sphere as usual. This is the null-collision trick that renders smoke and clouds with spatially varying density.</p>
+
+      <h5 id="applications">Applications, written out</h5>
+      <p>A handful of equations covers a surprising amount of physics and engineering. Here are several, written out, with three reproduced live.</p>
+
+      <h6>Electrostatics and capacitance</h6>
+      <p>In a region free of charge the electric potential \(\varphi\) satisfies Laplace's equation, and the surface of a conductor is an equipotential:</p>
+      $$\Delta\varphi = 0 \ \text{ between the conductors}, \qquad \varphi = V_i \ \text{ on conductor } i, \qquad \varphi = 0 \ \text{ on a grounded enclosure} .$$
+      <p>Engineers usually want the charge on each conductor, \(Q_i = -\epsilon\oint_{\partial C_i} \partial\varphi/\partial n \,\mathrm{d}s\), because the matrix that maps voltages to charges is the capacitance matrix of a circuit. A chip has millions of wires, and random-walk solvers became an industrial tool for this capacitance extraction <a class="cite" href="#r-le1992stochastic">(Le Coz and Iverson 1992)</a>. <a class="cite" href="#r-hwang2010monte">Hwang et al. (2010)</a> computed the capacitance of the unit cube this way, and <a class="cite" href="#r-rodriguez2025deeprwcap">Rodriguez et al. (2026)</a> guide the walks with a neural network. Figure 6 reproduces the potential problem with two conductors.</p>
+
+      <figure class="wfig" data-fig="electro">
+        <div class="wfig__panel">
+          <div class="wfig__tag">fig. 6 · electrostatics</div>
+          <div class="wfig__title">Two conductors, <span class="hl">no mesh</span></div>
+          <div class="wfig__sub">drag a conductor · hover or tap anywhere for a pointwise estimate with its error</div>
+          <div class="wfig__stage"><canvas aria-label="Electric potential between two conductors in a grounded box, estimated by walk on spheres, with equipotential lines"></canvas></div>
+          <div class="wfig__hud">
+            <span>walks per pixel <b data-k="spp">0</b></span>
+            <span>mean jumps <b data-k="steps">—</b></span>
+            <span>φ at cursor <b class="hl" data-k="probe">—</b></span>
+          </div>
+          <div class="wfig__eq">$$\begin{gathered} \Delta\varphi = 0 \ \text{ in the gap} \\ \varphi = \pm 1 \ \text{ on the conductors}, \qquad \varphi = 0 \ \text{ on the walls} \end{gathered}$$</div>
+          <div class="wfig__controls">
+            <button class="wbtn" type="button" data-act="restart">Restart</button>
+          </div>
+        </div>
+        <figcaption>Walk on Spheres at every pixel of the gap between a disk held at \(+1\) (blue), a plate held at \(-1\) (ink) and a grounded box. The lines are equipotentials, contoured from the running estimate: ragged after a few walks, smooth after a few hundred. The domain has holes, which matters to a mesher but not to a walker, since the distance to the nearest piece of boundary is all it ever asks for. The cursor readout runs 600 fresh walks at that point (2,000 on a tap) and prints the mean with its standard error.</figcaption>
+      </figure>
+
+      <h6>Molecules: the Poisson–Boltzmann equation</h6>
+      <p>Around a protein in salt water, mobile ions screen the electric field. Up to physical constants, the potential then satisfies the linearised Poisson–Boltzmann equation,</p>
+      $$-\nabla\cdot\big(\epsilon(x)\,\nabla\varphi\big) + \bar\kappa^2(x)\,\varphi = \rho_{\text{fixed}}(x),$$
+      <p>with a dielectric \(\epsilon\) that jumps at the molecular surface and a screening term \(\bar\kappa^2\) that is non-zero only in the solvent. Outside the molecule this is the screened Poisson equation of Figure 5. <a class="cite" href="#r-bossy2010probabilistic">Bossy et al. (2010)</a> give a probabilistic interpretation and walk-on-spheres algorithms for it, with special care at the molecular surface where the dielectric jumps, and <a class="cite" href="#r-mascagni2004monte">Mascagni and Simonov (2004)</a> compute physical properties of large molecules with Monte Carlo methods of this kind.</p>
+
+      <h6>Heat</h6>
+      <p>Steady heat conduction with conductivity \(k\) and internal heat sources \(q\) is the Poisson equation \(-k\,\Delta T = q\), the Poisson mode of Figure 4 with \(f = q/k\). A fixed temperature on the boundary is Dirichlet data. An insulated wall is a Neumann condition, which needs Walk on Stars (below). Transient problems, \(\partial_t T = \kappa\,\Delta T\), are within reach of the same ideas <a class="cite" href="#r-zhou2026grid">(Zhou et al. 2026)</a>.</p>
+
+      <h6>Robots: planning on a harmonic potential</h6>
+      <p>A classic way to steer a robot through a cluttered room is to solve a Laplace problem over its free space <a class="cite" href="#r-connolly1990">(Connolly, Burns and Weiss 1990)</a>,</p>
+      $$\Delta u = 0 \ \text{ in free space}, \qquad u = 1 \ \text{ on walls and obstacles}, \qquad u = 0 \ \text{ at the goal},$$
+      <p>and to follow \(-\nabla u\). By the maximum principle \(u\) has no local minimum in free space, so the descent cannot get stuck the way it can on hand-tuned potential fields. It moves away from obstacles because they sit at the maximum, and it ends at the goal. The catch is flatness. Inside an enclosed room held at \(u = 1\), the potential far from the goal differs from 1 by an exponentially small amount. A grid solver in double precision can still read a direction from that, but a Monte Carlo estimate cannot, because almost no walk ever reaches the goal. In an open field, closed off only by a boundary far away, the chance of reaching the goal decays just logarithmically with distance, and walks recover the gradient. A walk-on-spheres robot also never needs the whole field. It estimates \(\nabla u\) only where it stands, with the gradient estimator above, and takes a step. <a class="cite" href="#r-kotsinis2025autonomous">Kotsinis et al. (2025)</a> use harmonic fields and Monte Carlo integration in this spirit to explore unknown indoor environments.</p>
+
+      <figure class="wfig" data-fig="robot">
+        <div class="wfig__panel">
+          <div class="wfig__tag">fig. 7 · harmonic navigation</div>
+          <div class="wfig__title">The robot only asks for <span class="hl">the gradient where it stands</span></div>
+          <div class="wfig__sub">drag to place the robot · drag the blue goal · replan for a fresh random path</div>
+          <div class="wfig__stage"><canvas aria-label="A robot path through a room with obstacles, following the gradient of a harmonic potential estimated by walk on spheres"></canvas></div>
+          <div class="wfig__hud">
+            <span>steps <b data-k="n">0</b></span>
+            <span>walks used <b data-k="walks">0</b></span>
+            <span>this step <b data-k="last">—</b></span>
+            <span>u at robot <b class="hl" data-k="u">—</b></span>
+            <span>background walks per pixel <b data-k="spp">0</b></span>
+          </div>
+          <div class="wfig__eq">$$\begin{gathered} \widehat{\nabla u}(x) = \frac{2}{r^2}\cdot\frac{1}{N}\sum_{i=1}^{N} \hat u(y_i)\,(y_i - x) \\ x \;\leftarrow\; x - h\,\frac{\widehat{\nabla u}(x)}{\big\|\widehat{\nabla u}(x)\big\|} \end{gathered}$$</div>
+          <div class="wfig__controls">
+            <button class="wbtn" type="button" data-act="replan">Replan</button>
+          </div>
+        </div>
+        <figcaption>An open field with obstacles (ink) at \(u = 1\), the goal (blue) at \(u = 0\), and a boundary circle at \(u = 1\) far outside the picture. At each step the robot launches antithetic pairs of walks from a circle around its position. Only walks that reach the goal carry information, so it keeps adding pairs until about 30 have, then turns them into one gradient estimate and moves a short distance downhill. The counter shows how many walks that took. A step never exceeds half the distance to the nearest obstacle, so the path cannot collide. The route bends wide around the obstacles because it is the steepest-descent path of this particular potential, not a shortest path. The same walks average to an estimate of \(u\) at the robot, by the mean value property. The background is a separate full-field solve, shown only for intuition: the robot never reads it.</figcaption>
+      </figure>
+
+      <h6>Surfaces from points</h6>
+      <p>Poisson surface reconstruction <a class="cite" href="#r-kazhdan2006poisson">(Kazhdan et al. 2006)</a> turns an oriented point cloud into a watertight surface. It smears the normals into a vector field \(\vec V\) and looks for an indicator function \(\chi\), one inside and zero outside, whose gradient matches it as closely as possible. That least-squares problem is a Poisson equation,</p>
+      $$\Delta\chi = \nabla\cdot\vec V .$$
+      <p>Our paper uses surface reconstruction as one of its applications. More broadly, <a class="cite" href="#r-sawhney2020monte">Sawhney and Crane (2020)</a> show that many geometry-processing tasks reduce to Laplace or Poisson problems that walks can solve directly on messy geometry.</p>
+
+      <h6>Fluids</h6>
+      <p>Incompressible flow solvers spend most of their time in one step, the pressure projection. After moving the velocity forward to an intermediate field \(\mathbf v^*\), they solve</p>
+      $$\Delta p = \frac{\rho}{\Delta t}\,\nabla\cdot\mathbf v^*, \qquad \mathbf v = \mathbf v^* - \frac{\Delta t}{\rho}\,\nabla p,$$
+      <p>a Poisson equation every time step, which makes the new velocity divergence-free. <a class="cite" href="#r-jain2024neural">Jain et al. (2024)</a> build a fluid simulator that estimates this step with Monte Carlo walks and a neural field, and <a class="cite" href="#r-sabelfeld2022global">Sabelfeld and Bukhasheev (2022)</a> apply random-walk methods to the Navier–Stokes and Burgers equations directly.</p>
+
+      <h6>Elasticity</h6>
+      <p>Small deformations \(\mathbf w\) of an isotropic elastic solid obey the Lamé equation,</p>
+      $$\mu\,\Delta\mathbf w + (\lambda + \mu)\,\nabla(\nabla\cdot\mathbf w) + \mathbf b = 0,$$
+      <p>with Lamé parameters \(\lambda, \mu\) and body force \(\mathbf b\). The \(\nabla(\nabla\cdot\mathbf w)\) term couples the components, so this is not a set of independent Laplace equations. Even so, <a class="cite" href="#r-aksyuk2023stochastic">Aksyuk et al. (2023)</a> build stochastic simulation algorithms for its iterative solution.</p>
+
+      <h6>Porous media</h6>
+      <p>How easily fluid seeps through rock or soil is governed by flow in a maze of pores that no one wants to mesh. <a class="cite" href="#r-hwang2000rapid">Hwang, Given and Mascagni (2000)</a> estimate the permeability of porous media from Brownian motion paths among the grains instead.</p>
+
+      <h5 id="beyond">Beyond the Laplacian</h5>
+      <h6>Other boundary conditions</h6>
+      <p>Walk on Spheres needs Dirichlet data where it stops. Walk on Stars <a class="cite" href="#r-sawhney2023walk">(Sawhney et al. 2023)</a> handles Neumann (reflecting) boundaries by replacing balls with star-shaped regions that can include parts of the reflecting boundary, and <a class="cite" href="#r-miller2024walkin">Miller et al. (2024)</a> extend it to Robin conditions. <a class="cite" href="#r-yu2025robust">Yu et al. (2025)</a> make derivative estimates robust near Neumann boundaries. <a class="cite" href="#r-maesumi2026monte">Maesumi et al. (2026)</a> estimate Steklov (Dirichlet-to-Neumann) operators on large meshes of poor quality with many connected components.</p>
+      <h6>Coefficients, media and interfaces</h6>
+      <p>Spatially varying coefficients <a class="cite" href="#r-sawhney2022grid">(Sawhney et al. 2022)</a> appeared above. <a class="cite" href="#r-miller2025solving">Miller et al. (2025)</a> treat complex microparticle geometry as a stochastic participating medium. <a class="cite" href="#r-ding2026walk">Ding and Stinchcombe (2026)</a> handle elliptic interface problems with flux-jump conditions, walking on the interfaces themselves.</p>
+      <h6>Time</h6>
+      <p><a class="cite" href="#r-zhou2026grid">Zhou et al. (2026)</a> estimate transient temperatures at arbitrary points and times without time stepping or a volume mesh. <a class="cite" href="#r-bao2026walking">Bao et al. (2026)</a> extend Walk on Stars to the parabolic heat equation with Neumann conditions, and a second paper by <a class="cite" href="#r-bao2026monte">Bao et al. (2026)</a> handles nonlinear radiative boundary conditions with a fixed-point iteration. <a class="cite" href="#r-shalimova2024random">Shalimova and Sabelfeld (2024)</a> treat anisotropic transient diffusion with random walks on spheres.</p>
+      <h6>Differentiable and inverse problems</h6>
+      <p><a class="cite" href="#r-yu2024differential">Yu et al. (2024)</a> differentiate Monte Carlo Poisson solutions, and <a class="cite" href="#r-yilmazer2024solving">Yilmazer et al. (2024)</a> solve inverse PDE problems with grid-free estimators, and <a class="cite" href="#r-saeed2026fast">Saeed et al. (2026)</a> use Walk on Spheres to cut cage-based deformations.</p>
+      <h5 id="learning">Learning from walks</h5>
+      <p>A single walk is cheap and noisy, and a neural network trained on many noisy targets averages the noise away. That makes Monte Carlo estimates natural training data. Neural caches <a class="cite" href="#r-li2023neural">(Li et al. 2023)</a> fit a network to Walk-on-Spheres estimates as they arrive, to cache the solution and reduce its variance. Neural Walk-on-Spheres <a class="cite" href="#r-nam2024solving">(Nam et al. 2024)</a> trains a network against Walk-on-Spheres targets, avoiding the high-order derivatives of physics-informed losses. Extensions cover repeated queries over a static region <a class="cite" href="#r-song2024wos">(Song et al. 2024)</a> and fractional PDEs driven by α-stable Lévy processes <a class="cite" href="#r-guo2026fnwos">(Guo et al. 2026)</a>. These methods mostly target one PDE instance, or a narrow family of them.</p>
+      <p>Other recent work learns across distributions of problems. <a class="cite" href="#r-hsu2026mc">Hsu et al. (2026)</a> train on 100,000 elliptic PDEs and report speedups equivalent to 512 to 2,048 times more Monte Carlo compute, while still running a low-budget Walk-on-Spheres solve at inference. <a class="cite" href="#r-he2026neural">He et al. (2026)</a> learn a boundary kernel from Walk-on-Spheres exit samples, so new boundary values and source terms need no retraining. <a class="cite" href="#r-zhang2025monte">Zhang et al. (2025)</a> derive an unsupervised training objective from the probabilistic representation itself.</p>
+      <p>Our own work <a class="cite" href="#r-viswanath2026operator">(Viswanath, Nam et al. 2026)</a> asks whether the stochastic solver can supervise a <em>neural operator</em>, one model for a whole family of geometries, sources and boundary data. The observation is simple. A fresh Walk-on-Spheres estimate with a handful of walks is an unbiased but noisy measurement of the solution. A regression loss against it therefore has the same minimiser as a loss against the true solution, and drawing new estimates every epoch averages the noise over training. The operator needs neither precomputed solutions nor high-order derivatives. The same recipe carries over from Walk on Spheres to BSDE estimates for nonlinear problems. The <a href="https://arxiv.org/abs/2603.01193">paper</a> and <a href="https://github.com/neuraloperator/WoS-NO">code</a> have the details.</p>
+
+      <h5 id="timeline">Timeline</h5>
+      <ul class="timeline">
+        <li><span class="mono">1828</span><div>Brown reports the ceaseless jitter of pollen particles in water.</div></li>
+        <li><span class="mono">1905</span><div>Einstein ties Brownian motion to the diffusion equation.</div></li>
+        <li><span class="mono">1923</span><div>Wiener constructs a probability measure on continuous paths.</div></li>
+        <li><span class="mono">1928</span><div>Courant, Friedrichs and Lewy read the discrete Laplacian as a random walk.</div></li>
+        <li><span class="mono">1944</span><div>Kakutani: the Dirichlet problem as an expectation over Brownian paths.</div></li>
+        <li><span class="mono">1948</span><div>Feynman: quantum mechanics as a sum over paths.</div></li>
+        <li><span class="mono">1949</span><div>Kac makes imaginary-time path integrals rigorous: the Feynman–Kac formula.</div></li>
+        <li><span class="mono">1951</span><div>Itô's formula for functions of stochastic processes.</div></li>
+        <li><span class="mono">1956</span><div>Muller introduces Walk on Spheres.</div></li>
+        <li><span class="mono">1990</span><div>Pardoux and Peng: backward SDEs, the route to a nonlinear Feynman–Kac formula.</div></li>
+        <li><span class="mono">2003</span><div>Mascagni and Hwang analyse the ε-shell error.</div></li>
+        <li><span class="mono">2012</span><div>Binder and Braverman pin down the convergence rate on general domains.</div></li>
+        <li><span class="mono">2020</span><div>Sawhney and Crane bring Walk on Spheres to geometry processing.</div></li>
+        <li><span class="mono">2022</span><div>Spatially varying coefficients through delta tracking.</div></li>
+        <li><span class="mono">2023</span><div>Walk on Stars for Neumann conditions; boundary value caching; neural caches.</div></li>
+        <li><span class="mono">2024</span><div>Robin conditions; Neural Walk-on-Spheres; differentiable and inverse solvers.</div></li>
+        <li><span class="mono">2025</span><div>A SIGGRAPH course on the state of the art; harmonic caching; ε-free walks.</div></li>
+        <li><span class="mono">2026</span><div>Time-dependent diffusion, decomposed subdomains, and operators learned from walks.</div></li>
+      </ul>
+
+      <h5 id="references">References</h5>
+      <ol class="refs">
+        <li id="r-aksyuk2023stochastic">I. A. Aksyuk, A. E. Kireeva, K. K. Sabelfeld and D. D. Smirnov (2023). <span class="t"><a href="https://doi.org/10.1134/s199542392304002x">Stochastic Simulation Algorithms for Iterative Solution of the Lamé Equation</a></span>. Numerical Analysis and Applications.</li>
+        <li id="r-bao2025off">A. Bao, J. Xu, E. Shen and J. Wang (2025). <span class="t"><a href="https://doi.org/10.1145/3757377.3763852">Off-Centered WoS-Type Solvers with Statistical Weighting</a></span>. SIGGRAPH Asia 2025 Conference Papers.</li>
+        <li id="r-bao2026monte">A. Bao, E. Shen and J. Wang (2026). <span class="t"><a href="https://doi.org/10.1145/3811321">Monte Carlo PDE Solvers for Nonlinear Radiative Boundary Conditions</a></span>. ACM Transactions on Graphics.</li>
+        <li id="r-bao2026walking">A. Bao et al. (2026). <span class="t"><a href="https://arxiv.org/abs/2606.16578">Walking on Heat Stars for Parabolic Heat Equations with Neumann Boundary Conditions</a></span>. arXiv:2606.16578.</li>
+        <li id="r-binder2012rate">I. Binder and M. Braverman (2012). <span class="t"><a href="https://doi.org/10.1007/s00039-012-0161-z">The rate of convergence of the Walk on Spheres Algorithm</a></span>. Geometric and Functional Analysis.</li>
+        <li id="r-bossy2010probabilistic">M. Bossy, N. Champagnat, S. Maire and D. Talay (2010). <span class="t"><a href="https://doi.org/10.1051/m2an/2010050">Probabilistic interpretation and random walk on spheres algorithms for the Poisson-Boltzmann equation in molecular dynamics</a></span>. ESAIM: Mathematical Modelling and Numerical Analysis.</li>
+        <li id="r-brown1828">R. Brown (1828). <span class="t"><a href="https://doi.org/10.1080/14786442808674769">A brief account of microscopical observations made in the months of June, July and August 1827, on the particles contained in the pollen of plants; and on the general existence of active molecules in organic and inorganic bodies</a></span>. The Philosophical Magazine 4(21):161–173.</li>
+        <li id="r-connolly1990">C. I. Connolly, J. B. Burns and R. Weiss (1990). <span class="t"><a href="https://doi.org/10.1109/ROBOT.1990.126315">Path planning using Laplace's equation</a></span>. IEEE International Conference on Robotics and Automation.</li>
+        <li id="r-courant1928">R. Courant, K. Friedrichs and H. Lewy (1928). <span class="t"><a href="https://doi.org/10.1007/BF01448839">Über die partiellen Differenzengleichungen der mathematischen Physik</a></span>. Mathematische Annalen 100:32–74.</li>
+        <li id="r-ding2026walk">X. Ding and A. R. Stinchcombe (2026). <span class="t"><a href="https://doi.org/10.1016/j.jcp.2026.115105">Walk-on-interfaces: A Monte Carlo estimator for an elliptic interface problem with nonhomogeneous flux jump conditions and a Neumann boundary condition</a></span>. Journal of Computational Physics.</li>
+        <li id="r-einstein1905">A. Einstein (1905). <span class="t"><a href="https://doi.org/10.1002/andp.19053220806">Über die von der molekularkinetischen Theorie der Wärme geforderte Bewegung von in ruhenden Flüssigkeiten suspendierten Teilchen</a></span>. Annalen der Physik 322(8):549–560.</li>
+        <li id="r-feynman1948">R. P. Feynman (1948). <span class="t"><a href="https://doi.org/10.1103/RevModPhys.20.367">Space-time approach to non-relativistic quantum mechanics</a></span>. Reviews of Modern Physics 20(2):367–387.</li>
+        <li id="r-guo2026fnwos">L. Guo et al. (2026). <span class="t">FNWoS: Fractional Neural Walk-on-Spheres Methods for High-Dimensional PDEs Driven by α-stable Lévy Process on Irregular Domains</span>. arXiv preprint.</li>
+        <li id="r-he2026neural">J. He, S. Wang, Y. Sun and B. Zhu (2026). <span class="t"><a href="https://arxiv.org/abs/2609.35752">Neural Harmonic Measure Operator</a></span>. arXiv:2609.35752.</li>
+        <li id="r-himmler2025conformal">P. Himmler and T. Günther (2025). <span class="t"><a href="https://doi.org/10.1145/3730942">Conformal First Passage for Epsilon-free Walk-on-Spheres</a></span>. ACM Transactions on Graphics.</li>
+        <li id="r-hsu2026mc">E. Hsu, H. M. Yam and I. Ge (2026). <span class="t"><a href="https://arxiv.org/abs/2605.09288">MC²: Monte Carlo Correction for Fast Elliptic PDE Solving</a></span>. arXiv:2605.09288.</li>
+        <li id="r-huang2025guiding">T. Huang, J. Ling, S. Zhao and F. Xu (2025). <span class="t"><a href="https://doi.org/10.1145/3721238.3730593">Guiding-Based Importance Sampling for Walk on Stars</a></span>. SIGGRAPH 2025 Conference Papers.</li>
+        <li id="r-huang2026probe">W. Huang, Y. Zhu, Q. Fang and L. Liu (2026). <span class="t"><a href="https://doi.org/10.1145/3811366">Probe-based Walk on Spheres for Efficient Path Reusing</a></span>. ACM Transactions on Graphics.</li>
+        <li id="r-hwang2000rapid">C.-O. Hwang, J. A. Given and M. Mascagni (2000). <span class="t"><a href="https://doi.org/10.1063/1.870420">On the rapid estimation of permeability for porous media using Brownian motion paths</a></span>. Physics of Fluids.</li>
+        <li id="r-hwang2010monte">C.-O. Hwang, M. Mascagni and T. Won (2010). <span class="t"><a href="https://doi.org/10.1016/j.matcom.2008.03.003">Monte Carlo methods for computing the capacitance of the unit cube</a></span>. Mathematics and Computers in Simulation.</li>
+        <li id="r-ito1951">K. Itô (1951). <span class="t"><a href="https://doi.org/10.1017/S0027763000012216">On a formula concerning stochastic differentials</a></span>. Nagoya Mathematical Journal 3:55–65.</li>
+        <li id="r-jain2024neural">P. Jain, Z. Qu, P. Y. Chen and O. Stein (2024). <span class="t"><a href="https://doi.org/10.1145/3641519.3657438">Neural Monte Carlo Fluid Simulation</a></span>. SIGGRAPH 2024 Conference Papers.</li>
+        <li id="r-jambon2026walk">C. Jambon, M. S. Nabizadeh and M. Konaković Luković (2026). <span class="t"><a href="https://doi.org/10.1145/3811340">Walk on Decomposed Subdomains: A Hybrid Monte Carlo–Deterministic Solver for Elliptic PDEs</a></span>. ACM Transactions on Graphics.</li>
+        <li id="r-kac1949">M. Kac (1949). <span class="t"><a href="https://doi.org/10.1090/S0002-9947-1949-0027960-X">On distributions of certain Wiener functionals</a></span>. Transactions of the American Mathematical Society 65(1):1–13.</li>
+        <li id="r-kakutani1944">S. Kakutani (1944). <span class="t"><a href="https://doi.org/10.3792/pia/1195572706">Two-dimensional Brownian motion and harmonic functions</a></span>. Proceedings of the Imperial Academy, Tokyo 20(10):706–714.</li>
+        <li id="r-kazhdan2006poisson">M. Kazhdan, M. Bolitho and H. Hoppe (2006). <span class="t"><a href="https://doi.org/10.2312/SGP/SGP06/061-070">Poisson surface reconstruction</a></span>. Eurographics Symposium on Geometry Processing.</li>
+        <li id="r-kotsinis2025autonomous">D. Kotsinis, G. C. Karras and C. P. Bechlioulis (2025). <span class="t"><a href="https://doi.org/10.3390/s25164894">Autonomous Exploration in Unknown Indoor 2D Environments Using Harmonic Fields and Monte Carlo Integration</a></span>. Sensors.</li>
+        <li id="r-le1992stochastic">Y. L. Le Coz and R. B. Iverson (1992). <span class="t"><a href="https://doi.org/10.1016/0038-1101(92)90332-7">A stochastic algorithm for high speed capacitance extraction in integrated circuits</a></span>. Solid-State Electronics.</li>
+        <li id="r-le2016brownian">J.-F. Le Gall (2016). <span class="t"><a href="https://doi.org/10.1007/978-3-319-31089-3">Brownian motion, martingales, and stochastic calculus</a></span>. Graduate Texts in Mathematics, Springer.</li>
+        <li id="r-li2023neural">Z. Li et al. (2023). <span class="t"><a href="https://doi.org/10.1145/3610548.3618141">Neural Caches for Monte Carlo Partial Differential Equation Solvers</a></span>. SIGGRAPH Asia 2023 Conference Papers.</li>
+        <li id="r-li2024neural">Z. Li et al. (2024). <span class="t"><a href="https://doi.org/10.1145/3641519.3657395">Neural Control Variates with Automatic Integration</a></span>. SIGGRAPH 2024 Conference Papers.</li>
+        <li id="r-maesumi2026monte">A. Maesumi et al. (2026). <span class="t"><a href="https://arxiv.org/abs/2606.05581">Monte Carlo Steklov Operators for Large-Scale Geometry Processing in the Wild</a></span>. arXiv:2606.05581.</li>
+        <li id="r-mascagni2003epsilon">M. Mascagni and C.-O. Hwang (2003). <span class="t"><a href="https://doi.org/10.1016/s0378-4754(03)00038-7">ϵ-Shell error analysis for “Walk On Spheres” algorithms</a></span>. Mathematics and Computers in Simulation.</li>
+        <li id="r-mascagni2004monte">M. Mascagni and N. A. Simonov (2004). <span class="t"><a href="https://doi.org/10.1137/s1064827503422221">Monte Carlo Methods for Calculating Some Physical Properties of Large Molecules</a></span>. SIAM Journal on Scientific Computing.</li>
+        <li id="r-miller2023boundary">B. Miller, R. Sawhney, K. Crane and I. Gkioulekas (2023). <span class="t"><a href="https://doi.org/10.1145/3592400">Boundary Value Caching for Walk on Spheres</a></span>. ACM Transactions on Graphics.</li>
+        <li id="r-miller2024walkin">B. Miller, R. Sawhney, K. Crane and I. Gkioulekas (2024). <span class="t"><a href="https://doi.org/10.1145/3658153">Walkin’ Robin: Walk on Stars with Robin boundary conditions</a></span>. ACM Transactions on Graphics.</li>
+        <li id="r-miller2025solving">B. Miller, R. Sawhney, K. Crane and I. Gkioulekas (2025). <span class="t"><a href="https://doi.org/10.1145/3731152">Solving partial differential equations in participating media</a></span>. ACM Transactions on Graphics.</li>
+        <li id="r-muller1956some">M. E. Muller (1956). <span class="t"><a href="https://doi.org/10.1214/aoms/1177728169">Some Continuous Monte Carlo Methods for the Dirichlet Problem</a></span>. The Annals of Mathematical Statistics.</li>
+        <li id="r-nam2024solving">H. C. Nam, J. Berner and A. Anandkumar (2024). <span class="t"><a href="https://arxiv.org/abs/2406.03494">Solving Poisson Equations using Neural Walk-on-Spheres</a></span>. arXiv:2406.03494.</li>
+        <li id="r-nusken2021interpolating">N. Nüsken and L. Richter (2021). <span class="t"><a href="https://arxiv.org/abs/2112.03749">Interpolating between BSDEs and PINNs: deep learning for elliptic and parabolic boundary value problems</a></span>. arXiv:2112.03749.</li>
+        <li id="r-oksendal2003stochastic">B. Øksendal (2003). <span class="t"><a href="https://doi.org/10.1007/978-3-642-14394-6">Stochastic differential equations: an introduction with applications</a></span>. Universitext, Springer, 6th edition.</li>
+        <li id="r-pardoux1990adapted">E. Pardoux and S. Peng (1990). <span class="t"><a href="https://doi.org/10.1016/0167-6911(90)90082-6">Adapted solution of a backward stochastic differential equation</a></span>. Systems &amp; Control Letters.</li>
+        <li id="r-rodriguez2025deeprwcap">H. R. Rodriguez, J. Huang and W. Yu (2026). <span class="t"><a href="https://doi.org/10.1609/aaai.v40i2.37066">DeepRWCap: Neural-Guided Random-Walk Capacitance Solver for IC Design</a></span>. AAAI Conference on Artificial Intelligence.</li>
+        <li id="r-sabelfeld2022global">K. K. Sabelfeld and O. Bukhasheev (2022). <span class="t"><a href="https://doi.org/10.1515/mcma-2022-2126">Global random walk on grid algorithm for solving Navier–Stokes and Burgers equations</a></span>. Monte Carlo Methods and Applications.</li>
+        <li id="r-saeed2026fast">H. Saeed et al. (2026). <span class="t"><a href="https://doi.org/10.1145/3799902.3811051">Fast Cutting of Cage Based Deformation with Walk on Spheres</a></span>. SIGGRAPH 2026 Conference Papers.</li>
+        <li id="r-sawhney2020monte">R. Sawhney and K. Crane (2020). <span class="t"><a href="https://doi.org/10.1145/3386569.3392374">Monte Carlo geometry processing: A grid-free approach to PDE-based methods on volumetric domains</a></span>. ACM Transactions on Graphics.</li>
+        <li id="r-sawhney2022grid">R. Sawhney, D. Seyb, W. Jarosz and K. Crane (2022). <span class="t"><a href="https://doi.org/10.1145/3528223.3530134">Grid-free Monte Carlo for PDEs with spatially varying coefficients</a></span>. ACM Transactions on Graphics.</li>
+        <li id="r-sawhney2023walk">R. Sawhney, B. Miller, I. Gkioulekas and K. Crane (2023). <span class="t"><a href="https://doi.org/10.1145/3592398">Walk on Stars: A Grid-Free Monte Carlo Method for PDEs with Neumann Boundary Conditions</a></span>. ACM Transactions on Graphics.</li>
+        <li id="r-sawhney2025state">R. Sawhney, B. Miller, I. Gkioulekas and K. Crane (2025). <span class="t"><a href="https://doi.org/10.1145/3721241.3734001">State of the Art in Grid-Free Monte Carlo Methods for Partial Differential Equations</a></span>. SIGGRAPH 2025 Courses.</li>
+        <li id="r-shalimova2024random">I. Shalimova and K. Sabelfeld (2024). <span class="t"><a href="https://doi.org/10.1515/mcma-2023-2022">Random walk on spheres method for solving anisotropic transient diffusion problems and flux calculations</a></span>. Monte Carlo Methods and Applications.</li>
+        <li id="r-song2024wos">S. Song, A. Fahim and M. Mascagni (2024). <span class="t"><a href="https://doi.org/10.1007/978-3-032-10590-5_20">WoS-NN: An Effective Stochastic Solver for Elliptic PDEs with Machine Learning</a></span>. Monte Carlo and Quasi-Monte Carlo Methods (MCQMC 2024), Springer Proceedings in Mathematics &amp; Statistics.</li>
+        <li id="r-viswanath2026operator">H. Viswanath, H. C. Nam, J. Berner, A. Anandkumar and A. Bera (2026). <span class="t"><a href="https://arxiv.org/abs/2603.01193">Operator learning using weak supervision from Walk-on-Spheres</a></span>. arXiv:2603.01193.</li>
+        <li id="r-wiener1923">N. Wiener (1923). <span class="t"><a href="https://doi.org/10.1002/sapm192321131">Differential-space</a></span>. Journal of Mathematics and Physics 2(1–4):131–174.</li>
+        <li id="r-wu2026gradient">J. Wu, X. Hu, S. Zhao and K. Xu (2026). <span class="t"><a href="https://doi.org/10.1145/3811295">Gradient Domain Reconstruction for Monte Carlo PDE Solvers</a></span>. ACM Transactions on Graphics.</li>
+        <li id="r-yilmazer2024solving">E. F. Yilmazer, D. Vicini and W. Jakob (2024). <span class="t"><a href="https://doi.org/10.1145/3687990">Solving Inverse PDE Problems using Grid-Free Monte Carlo Estimators</a></span>. ACM Transactions on Graphics.</li>
+        <li id="r-yu2024differential">Z. Yu, L. Wu, Z. Zhou and S. Zhao (2024). <span class="t"><a href="https://doi.org/10.1145/3641519.3657460">A Differential Monte Carlo Solver For the Poisson Equation</a></span>. SIGGRAPH 2024 Conference Papers.</li>
+        <li id="r-yu2025robust">Z. Yu et al. (2025). <span class="t"><a href="https://doi.org/10.1145/3763333">Robust Derivative Estimation with Walk on Stars</a></span>. ACM Transactions on Graphics.</li>
+        <li id="r-zhang2017backward">J. Zhang (2017). <span class="t"><a href="https://doi.org/10.1007/978-1-4939-7256-2">Backward Stochastic Differential Equations</a></span>. Probability Theory and Stochastic Modelling, Springer.</li>
+        <li id="r-zhang2025monte">R. Zhang et al. (2025). <span class="t"><a href="https://doi.org/10.1109/tpami.2025.3548673">Monte Carlo Neural PDE Solver for Learning PDEs via Probabilistic Representation</a></span>. IEEE Transactions on Pattern Analysis and Machine Intelligence.</li>
+        <li id="r-zhou2025harmonic">Z. Zhou, E. d'Eon, R. Sawhney and W. Jarosz (2025). <span class="t"><a href="https://doi.org/10.1145/3763322">Harmonic Caching for Walk on Spheres</a></span>. ACM Transactions on Graphics.</li>
+        <li id="r-zhou2026grid">Z. Zhou, R. Sawhney, E. d'Eon and W. Jarosz (2026). <span class="t"><a href="https://arxiv.org/abs/2609.12306">Grid-Free Monte Carlo for Time-Dependent Diffusion</a></span>. arXiv:2609.12306.</li>
+      </ol>
+    </main>
+
+    <noscript><p class="muted">The figures on this page need JavaScript.</p></noscript>
+
+    <footer class="footer">
+      <span>© Hrishikesh Viswanath</span>
+      <a href="/">← Back to home</a>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!window.renderMathInElement) return;
+      renderMathInElement(document.querySelector("main"), {
+        delimiters: [{ left: "$$", right: "$$", display: true },
+                     { left: "\\(", right: "\\)", display: false }],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

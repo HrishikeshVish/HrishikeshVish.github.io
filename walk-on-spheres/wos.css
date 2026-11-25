@@ -1,0 +1,142 @@
+/* Walk on Spheres article.
+   Black and white with a single blue accent, following the reader's light or dark mode.
+   The figure scripts read the same custom properties, so canvases switch with the page. */
+
+:root {
+  --accent: #2f5cff;
+  --fig-panel: var(--mist);
+  --fig-paper: var(--bg);
+  --fig-fg: var(--ink);
+  --fig-mid: #a3a3a2;
+  --fig-rule: var(--ash);
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* the site's own tokens, inverted for this page */
+    --ink: #ececeb;
+    --bg: #0c0c0d;
+    --mist: #161618;
+    --ash: #2e2e31;
+    --muted: #9d9d9c;
+    --label: #8c8c8b;
+    --rule: #262628;
+    --btn-hover: #bdbdbc;
+    --accent: #7393ff;
+    --fig-mid: #66666a;
+  }
+}
+
+.wos { max-width: 760px; }
+.wos p, .wos li { font-size: 17px; line-height: 1.62; }
+.wos .lede { margin-bottom: 8px; }
+.wos h6 { margin-top: 36px; }
+.wos .katex { font-size: 1.06em; }
+.wos .katex-display { margin: 18px 0; overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
+.wos em { font-style: italic; }
+
+/* contents */
+.toc { list-style: none; padding: 0; margin: 28px 0 0; display: flex; flex-wrap: wrap; gap: 6px 8px; }
+.toc li { margin: 0; }
+.toc a {
+  display: inline-block; padding: 3px 12px; border-radius: 30px; background: var(--mist);
+  font-size: 14px; letter-spacing: -0.3px; text-decoration: none; transition: background-color .18s;
+}
+.toc a:hover { background: var(--ash); }
+
+/* citations and notes */
+a.cite { color: var(--muted); text-decoration-color: var(--ash); white-space: nowrap; }
+a.cite:hover { color: var(--ink); }
+.note {
+  margin: 22px 0; padding: 16px 20px; border-radius: var(--radius-media); background: var(--mist);
+  border-left: 2px solid var(--accent);
+}
+.note p { font-size: 15.5px; line-height: 1.55; margin: 0 0 8px; }
+.note p:last-child { margin-bottom: 0; }
+.note strong { font-weight: 500; }
+
+/* pseudocode */
+.algo {
+  margin: 22px 0; padding: 16px 20px; border-radius: var(--radius-media); background: var(--mist);
+  font-family: var(--mono); font-size: 13.5px; line-height: 1.75; white-space: pre-wrap; overflow-x: auto;
+}
+.algo b { display: inline; margin: 0; font-weight: 500; }
+.algo .c { color: var(--muted); }
+
+/* ---------- figures ---------- */
+.wfig { margin: 34px 0 40px; }
+.wfig__panel {
+  position: relative; background: var(--fig-panel); color: var(--ink);
+  border-radius: var(--radius-media); padding: 18px 18px 16px; overflow: hidden;
+}
+.wfig__tag {
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.3px; color: var(--label);
+  text-align: center; text-transform: uppercase;
+}
+.wfig__title {
+  margin-top: 8px; text-align: center; color: var(--ink);
+  font-size: 21px; font-weight: 500; line-height: 1.25; letter-spacing: -0.6px;
+}
+.wfig__sub { margin-top: 4px; text-align: center; color: var(--muted); font-size: 14.5px; letter-spacing: -0.2px; }
+.hl { color: var(--accent); }
+
+.wfig__stage { position: relative; margin: 14px 0 0; }
+.wfig__stage canvas { display: block; width: 100%; touch-action: pan-y; cursor: crosshair; }
+.wfig__stage canvas.nodrag { cursor: default; }
+
+.wfig__duo { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 14px; align-items: center; margin-top: 14px; }
+.wfig__duo .wfig__stage { margin: 0; }
+.wfig__plots { display: grid; gap: 10px; }
+.wfig__plots canvas { display: block; width: 100%; }
+
+.wfig__hud {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; margin-top: 12px;
+  font-family: var(--mono); font-size: 12.5px; color: var(--muted);
+}
+.wos .wfig__hud b { display: inline; margin: 0; color: var(--ink); font-weight: 500; }   /* the site's .article b is a block */
+.wos .wfig__hud b.hl { color: var(--accent); }
+
+.wfig__eq { margin-top: 10px; text-align: center; color: var(--ink); overflow-x: auto; overflow-y: hidden; min-height: 1.6em; }
+.wfig__eq .katex { font-size: 1.12em; }
+.wfig__eq .katex-display { margin: 4px 0; }
+
+.wfig__controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 12px; }
+.wfig__controls + .wfig__controls { margin-top: 8px; }
+.wbtn {
+  appearance: none; border: 1px solid var(--ash); background: var(--bg); color: var(--ink);
+  font: 500 13.5px/1.2 var(--sans); letter-spacing: -0.2px; padding: 6px 14px; border-radius: 30px; cursor: pointer;
+  transition: background-color .15s, border-color .15s, color .15s;
+}
+.wbtn:hover { border-color: var(--ink); }
+.wbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wbtn[aria-pressed="true"] {
+  border-color: var(--accent); color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, var(--bg));
+}
+.wslider { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+.wslider input[type="range"] { width: 112px; accent-color: var(--accent); }
+.wslider output { min-width: 4.5ch; color: var(--ink); }
+
+.wfig figcaption { margin-top: 10px; font-size: 14.5px; line-height: 1.5; color: var(--muted); }
+.wfig figcaption strong { font-weight: 500; color: var(--ink); }
+.wfig--hero { margin-top: 36px; }
+
+/* ---------- references ---------- */
+.refs { list-style: none; padding: 0; margin: 0; }
+.refs li {
+  margin: 0; padding: 9px 0; border-bottom: 1px solid var(--rule);
+  font-size: 14.5px; line-height: 1.5; color: var(--muted);
+}
+.refs li:target { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.refs .t { color: var(--ink); }
+.refs a { color: var(--muted); }
+.wos .timeline .mono { padding-top: 2px; }
+.wos .timeline li { font-size: 15.5px; }
+
+@media (max-width: 760px) {
+  .wos p, .wos li { font-size: 16.5px; }
+  .wfig__panel { padding: 14px 10px 14px; }
+  .wfig__title { font-size: 18.5px; }
+  .wfig__duo { grid-template-columns: 1fr; }
+  .wslider input[type="range"] { width: 92px; }
+}
