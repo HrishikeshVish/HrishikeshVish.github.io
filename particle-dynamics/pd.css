@@ -1,0 +1,38 @@
+/* Particle-dynamics article: shares the figure styles of /walk-on-spheres/wos.css and adds the few
+   things this page needs. The pictures from the paper are drawn on white, so they keep a light card in dark mode. */
+
+.pimg { margin: 34px 0 40px; }
+.pimg__frame {
+  display: block; border-radius: var(--radius-media); background: #fff; overflow: hidden;
+  border: 1px solid var(--rule);
+}
+.pimg__frame img { display: block; width: 100%; height: auto; }
+.pimg--pad .pimg__frame { padding: 14px; }
+.pimg figcaption { margin-top: 10px; font-size: 14.5px; line-height: 1.5; color: var(--muted); }
+.pimg figcaption strong { font-weight: 500; color: var(--ink); }
+:root[data-theme="dark"] .pimg__frame { border-color: transparent; background: #f1f1f0; }
+
+/* the three pain points */
+.pains { list-style: none; counter-reset: pain; padding: 0; margin: 22px 0; }
+.pains > li { counter-increment: pain; position: relative; margin: 0; padding: 16px 0 16px 46px; border-top: 1px solid var(--rule); }
+.pains > li:last-child { border-bottom: 1px solid var(--rule); }
+.pains > li::before {
+  content: counter(pain); position: absolute; left: 0; top: 17px;
+  width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+  font: 500 13px/1 var(--mono); color: var(--accent); border: 1px solid var(--accent);
+}
+.wos .pains strong { display: block; font-weight: 500; font-size: 17.5px; letter-spacing: -0.3px; margin-bottom: 4px; color: var(--ink); }
+
+/* pull quote for the question at the heart of the method */
+.wos .pull {
+  margin: 26px 0; padding: 4px 0 4px 20px; border-left: 2px solid var(--accent);
+  font-size: 21px; line-height: 1.4; letter-spacing: -0.5px; color: var(--ink);
+}
+
+/* where this article first appeared */
+.origin { font-size: 14.5px; color: var(--muted); }
+.origin a { color: var(--muted); }
+
+.ing { font-family: var(--mono); font-size: 12px; letter-spacing: 0.3px; text-transform: uppercase; color: var(--accent); margin: 40px 0 -24px; }
+
+.links { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; }

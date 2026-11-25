@@ -1,0 +1,248 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <title>Learning Particle Dynamics | Hrishikesh Viswanath</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="/theme.js"></script>
+  <meta name="author" content="Hrishikesh Viswanath">
+  <meta name="description" content="Why neural simulators of particle-based materials are hard to scale, and how GIOROM reduces the order of a Lagrangian simulation in physical space: neural operators time-step a few anchor particles, and a kernel ROM recovers the rest. Interactive figures.">
+  <meta property="og:title" content="Learning Particle-Based Material Dynamics with Neural Operators and Model-Order Reduction">
+  <meta property="og:description" content="Fast, localized physics by time-stepping in physical space. Interactive figures.">
+  <link rel="stylesheet" type="text/css" href="/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" type="text/css" href="/walk-on-spheres/wos.css" />
+  <link rel="stylesheet" type="text/css" href="pd.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="fluid.js"></script>
+  <script defer src="pd.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav">
+      <a href="/">Hrishikesh Viswanath</a>
+      <div class="nav__links">
+        <a href="/#research">Research</a>
+        <a href="/#posts">Posts</a>
+        <a href="/pdfs/cv.pdf">CV</a>
+        <a href="mailto:hviswan@purdue.edu">Contact</a>
+      </div>
+    </nav>
+
+    <main class="article wos">
+      <span class="mono muted">May 2026 · interactive</span>
+      <h1>Learning Particle-Based Material Dynamics with Neural Operators and Model-Order Reduction</h1>
+      <p class="lede">GIOROM: fast, localized physics by time-stepping in physical space.</p>
+      <p class="origin">First published on <a href="https://hrishivish.medium.com/learning-particle-based-material-dynamics-with-neural-operators-and-model-order-reduction-a61173c0d199">Medium</a>. The figures on this page are new and run live in your browser.</p>
+      <ul class="toc">
+        <li><a href="#lagrangian">Lagrangian simulation</a></li>
+        <li><a href="#hard">Why scaling is hard</a></li>
+        <li><a href="#sampling">Sampling in physical space</a></li>
+        <li><a href="#pipeline">The pipeline</a></li>
+        <li><a href="#next">What's next</a></li>
+        <li><a href="#references">References</a></li>
+      </ul>
+
+      <figure class="wfig wfig--hero" data-fig="hero">
+        <div class="wfig__panel">
+          <div class="wfig__tag">a lagrangian fluid</div>
+          <div class="wfig__title">Every particle is a piece of the material. <span class="hl">Drag</span> to stir it.</div>
+          <div class="wfig__sub">the pattern was painted on at the start, so it shows where each particle came from</div>
+          <div class="wfig__stage"><canvas aria-label="Animation: a column of fluid particles collapses and splashes across a box; dragging stirs it"></canvas></div>
+          <div class="wfig__hud">
+            <span>particles <b data-k="n">—</b></span>
+            <span>degrees of freedom <b class="hl" data-k="dof">—</b></span>
+            <span>step <b data-k="t">0</b></span>
+          </div>
+          <div class="wfig__eq">$$x = \phi(X, t), \qquad v = \frac{\partial \phi}{\partial t}(X, t)$$</div>
+          <div class="wfig__controls">
+            <button class="wbtn" type="button" data-act="mode">Colour by speed</button>
+            <button class="wbtn" type="button" data-act="reset">Reset</button>
+          </div>
+        </div>
+        <figcaption>A dam break, simulated live as you watch. A column of water is released at the left of a box, collapses, and splashes off the far wall. Each square is one particle. The checkerboard is painted in material coordinates \(X\), the positions particles started from, so the way it stretches and folds is the deformation map \(\phi\). The solver is a small particle-based fluid <a class="cite" href="#r-clavet2005">(Clavet et al. 2005)</a>; the same simulator drives the next two figures.</figcaption>
+      </figure>
+
+      <p><a href="https://github.com/HrishikeshVish/GIOROM">GIOROM</a>, or Geometry-Informed Reduced-Order Model, is a practical neural solver for Lagrangian physics. It enables high-fidelity simulation by (1) performing dimensionality reduction directly in physical space to preserve local geometric texture, (2) using continuous neural operators to remain entirely agnostic to explicit PDEs, and (3) achieving discretization convergence, so that a model trained on a sparse set of particles scales to millions of points at inference time.</p>
+      <p>High-fidelity physical simulators based on deep learning are becoming increasingly capable. They can model complex, chaotic behaviors like splashing fluids, collapsing sand, and tearing elastoplastic materials. As these solvers scale, they start to look less like isolated experiments and more like the foundational engines for digital twins and advanced computer graphics.</p>
+
+      <figure class="pimg">
+        <div class="pimg__frame"><img src="img/teaser.jpg" width="1024" height="578" loading="lazy" alt="Rendered results from GIOROM: a deforming cow, cut plastic sheets, owl statues, a toy splashing into water, a stretched pig and a blob on a table"></div>
+        <figcaption>Materials advanced by Lagrangian time stepping, from the paper.</figcaption>
+      </figure>
+
+      <p>But having a highly accurate physical solver is not the same as having an efficient one. In practice, scaling Lagrangian simulations remains computationally paralyzing: purely data-driven graph networks introduce massive message-passing latency, hybrid models require restrictive explicit math, and traditional compression methods destroy the local, chaotic details that make physical simulations look real.</p>
+      <p>In this post, I describe the computational bottlenecks that motivated this project and our approach to address them: why traditional neural model-order reduction fails for highly dynamic materials like fluids, why dense graph operations are a developmental dead end for real-time speed, and what we changed to make fast, purely data-driven physics simulation practical.</p>
+      <div class="note">
+        <p>This post discusses our work <a href="/giorom/">Learning Lagrangian Interaction Dynamics with Sampling-Based Model Order Reduction</a>, published in the Transactions on Machine Learning Research <a class="cite" href="#r-viswanath2026giorom">(Viswanath et al. 2026)</a>, where we propose GIOROM.</p>
+      </div>
+
+      <h5 id="lagrangian">What is a Lagrangian simulation?</h5>
+      <p>Physical simulations can be approached from several angles, for example Eulerian grids or Lagrangian particles. For materials that undergo massive topological changes, like water, snow, or sand, Lagrangian methods such as Smoothed Particle Hydrodynamics <a class="cite" href="#r-monaghan1992">(SPH)</a> and the Material Point Method <a class="cite" href="#r-sulsky1994">(MPM)</a> are the standard.</p>
+      <p>Suppose you have a physical domain governed by a deformation map \(\phi(\cdot, t) : \Omega_0 \to \Omega_t\). A Lagrangian simulation represents this continuous material as a large collection of discrete material points \(X\). The map describes the motion of each point over time, \(x = \phi(X, t)\). Taking time derivatives gives the velocity and acceleration of every particle in the system:</p>
+      $$v(X, t) = \frac{\partial \phi}{\partial t}(X, t), \qquad a(X, t) = \frac{\partial^2 \phi}{\partial t^2}(X, t).$$
+      <p>In practice, a neural surrogate for this system acts as a differentiable simulator. Given the current state (position and velocity) of millions of particles, the model predicts the inter-particle forces and outputs the updated accelerations for the next time step. The key point is that it must do this for every interacting point in space.</p>
+
+      <h6>What "order" means in model-order reduction</h6>
+      <p>Suppose there is a particle in free space. It can move along the \(x\), \(y\) and \(z\) directions, so it has 3 degrees of freedom. If there are two particles, and each can move independently, there are 6 degrees of freedom in total. If you think of a liquid as a continuous sheet of material, you can represent this sheet as a discrete set of independent particles when modeling it with MPM, SPH or another Lagrangian scheme. This is referred to as discretization. If you discretize the fluid into 2000 particles, it has 6000 degrees of freedom:</p>
+      $$\underbrace{(x_1, x_2, \dots, x_N)}_{\text{state at time } t} \in \mathbb{R}^{N \cdot d}, \qquad N = 2000,\; d = 3 \;\Rightarrow\; 6000 \text{ degrees of freedom}.$$
+      <p>The order of the model is this number. Reducing it means describing the same motion with fewer numbers.</p>
+
+      <figure class="wfig" data-fig="disc">
+        <div class="wfig__panel">
+          <div class="wfig__tag">discretization</div>
+          <div class="wfig__title">One flow, <span class="hl">four discretizations</span></div>
+          <div class="wfig__sub">the particles differ from panel to panel; the motion does not</div>
+          <div class="wfig__stage"><canvas aria-label="Animation: the same fluid flow drawn with 2000, 500, 125 and 31 particles"></canvas></div>
+          <div class="wfig__hud">
+            <span>step <b data-k="t">0</b></span>
+            <span>in 2D, each particle adds <b class="hl">2</b> degrees of freedom</span>
+          </div>
+          <div class="wfig__controls">
+            <button class="wbtn" type="button" data-act="reset">Reset</button>
+          </div>
+        </div>
+        <figcaption>A 2D flow of 2000 particles (4000 degrees of freedom), drawn again with a quarter, a sixteenth and a sixty-fourth of its particles. The coarse panels are random subsets of the fine one. Even 31 particles trace the collapse, the wave and the splash; what they lose is fine detail, not the motion. Drag in any panel to stir the flow.</figcaption>
+      </figure>
+
+      <figure class="pimg">
+        <div class="pimg__frame"><img src="img/discretizations.jpg" width="1024" height="780" loading="lazy" alt="A 3D water simulation shown at four discretizations over three time steps; the particle configurations differ but the motion is the same"></div>
+        <figcaption>An SPH-based water simulation sampled at different discretizations. The configuration of the particles varies across the samples but the behavior is identical.</figcaption>
+      </figure>
+
+      <h5 id="hard">Why scaling Lagrangian dynamics is hard</h5>
+      <p>If we want to avoid explicitly computing complex equations over millions of particles, we turn to neural networks. But scaling these neural physics solvers introduces three major pain points.</p>
+      <ol class="pains">
+        <li><strong>Dense message passing creates crippling computational overhead.</strong> The most intuitive data-driven approach is a Graph Network Simulator, or GNS <a class="cite" href="#r-sanchez2020">(Sanchez-Gonzalez et al. 2020)</a>. You treat every particle as a node and draw an edge between two particles if they are close enough to bump into each other. The network learns physics by passing latent messages across these edges. If you have one million particles, each with 50 neighbors, the network must compute 50 million edge interactions per time step. We get high accuracy, but the sheer volume of computation makes it prohibitively slow.</li>
+      </ol>
+
+      <figure class="wfig" data-fig="graph">
+        <div class="wfig__panel">
+          <div class="wfig__tag">message passing</div>
+          <div class="wfig__title">A graph network sends a message along <span class="hl">every edge</span>, every step</div>
+          <div class="wfig__sub">drag to move the lens; edges are drawn only inside it</div>
+          <div class="wfig__stage"><canvas aria-label="Animation: a fluid of particles with the edges of its neighbor graph shown inside a movable lens"></canvas></div>
+          <div class="wfig__hud">
+            <span>particles <b data-k="n">—</b></span>
+            <span>mean neighbors <b data-k="deg">—</b></span>
+            <span>messages per round <b data-k="msg">—</b></span>
+            <span>at 1M particles <b class="hl" data-k="million">—</b></span>
+          </div>
+          <div class="wfig__eq">$$h_i' = \gamma\Big(h_i,\; \sum_{j \in \mathcal{N}(i)} \psi(h_i, h_j, x_i - x_j)\Big), \qquad \mathcal{N}(i) = \{\, j : \lVert x_i - x_j \rVert < r \,\}$$</div>
+          <div class="wfig__controls">
+            <label class="wslider">radius r <input type="range" min="1.2" max="3.2" step="0.1" value="2" data-in="r"><output data-k="r">2.0</output></label>
+          </div>
+        </div>
+        <figcaption>Each edge carries one message \(\psi\) per round of message passing, so a round costs one evaluation per edge. Widen the radius and the count grows with the area of the neighborhood. The counts are for this 2D flow; the same radius in 3D captures more neighbors, and a GNS repeats message passing for several rounds per step.</figcaption>
+      </figure>
+
+      <ol class="pains" style="counter-reset: pain 1">
+        <li><strong>Intrusive solvers require known, rigid equations.</strong> To bypass the graph bottleneck, researchers built hybrid frameworks, like NCLAW <a class="cite" href="#r-ma2023">(Ma et al. 2023)</a>, that embed known constitutive laws directly into highly optimized neural PDE solvers. These are incredibly fast, but they are intrusive: they require explicit forms of the partial differential equations. If you are working in a purely data-driven regime where the governing equations are unknown or mathematically intractable, these models simply cannot run.</li>
+        <li><strong>Global reduced-order models destroy local geometric texture.</strong> The typical route to speed is model-order reduction, with approaches such as Continuous Reduced-Order Modeling, or CROM <a class="cite" href="#r-chen2022crom">(Chen et al. 2022)</a>. CROM bypasses the spatial bottleneck by projecting the entire high-dimensional simulation into a tiny, low-dimensional global latent space, and can be viewed as <a href="https://www.matthewtancik.com/nerf">NeRF</a> for physics.</li>
+      </ol>
+      <p>But there is a critical issue: forcing an entire physical system into a global latent space destroys local texture, particularly in chaotic fluid systems. In Lagrangian physics, highly localized, chaotic behaviors, like a sudden splash or a topological fracture, are the most important parts of the simulation. Because a global latent space loses its grip on these local dynamics, the decompressed simulations often end up looking like Play-Doh instead. Fluids visually glitch, cluster unnaturally, or overshoot and leak through their physical boundaries.</p>
+
+      <h5 id="sampling">A locality-preserving fix: sampling in physical space</h5>
+      <p>This is where GIOROM comes in. The main observation is that while tracking millions of points is computationally impossible for most applications, projecting them into a global abstract space may ruin the dynamic structures.</p>
+      <p>Our fix asks a simple question:</p>
+      <p class="pull">What if we reduce the order, but keep the particles in the real, physical 3D world?</p>
+      <p>Instead of compressing the simulation into a global latent vector, GIOROM samples a much smaller, sparsified subset of <em>anchor particles</em> from the physical domain. We then time-step only these anchor points forward. Because the simulation remains entirely in physical space, the model inherently preserves the local, chaotic geometric boundaries that global models destroy.</p>
+
+      <figure class="wfig" data-fig="poke">
+        <div class="wfig__panel">
+          <div class="wfig__tag">global or sampled</div>
+          <div class="wfig__title">Pull on one spot. <span class="hl">Where does the error go?</span></div>
+          <div class="wfig__sub">drag anywhere on the material; blue marks each particle's error</div>
+          <div class="wfig__stage"><canvas aria-label="A block of particles pulled at one spot, shown exactly, through a global basis, and through a few sampled anchor particles"></canvas></div>
+          <div class="wfig__hud">
+            <span>budget K <b data-k="k">16</b></span>
+            <span>error at the pull · global <b data-k="gn">—</b> · sampled <b data-k="sn">—</b></span>
+            <span>error far away · global <b data-k="gf">—</b> · sampled <b class="hl" data-k="sf">—</b></span>
+          </div>
+          <div class="wfig__controls">
+            <label class="wslider">budget K <input type="range" min="2" max="8" step="1" value="4" data-in="m" aria-label="budget: number of modes or anchors"><output data-k="k">16</output></label>
+          </div>
+        </div>
+        <figcaption>A block of material pulled at one spot, the kind of local motion a splash or a fracture produces. <strong>Left</strong>, the exact displacement. <strong>Middle</strong>, its best fit by \(K\) smooth global modes \(\cos(a\pi u)\cos(b\pi w)\) of the material coordinates, a linear stand-in for a global reduced model. <strong>Right</strong>, \(K\) anchor particles (ringed) keep their exact displacement, and every other particle takes a kernel-weighted average of the anchors near it. Errors are mean distances in particle spacings, near the pull and more than 12 spacings from it. The global fit spreads error over the whole block, because every mode spans the whole body; the sampled reconstruction keeps it near the pull. It still misses detail finer than the spacing between anchors, which is why the number of anchors matters. This sketch uses the exact displacement, not a trained model.</figcaption>
+      </figure>
+
+      <figure class="pimg pimg--pad">
+        <div class="pimg__frame"><img src="/giorom/giorom_data/fig_overview.png" loading="lazy" alt="GIOROM pipeline: an interaction-network encoder, a neural-operator transformer processor and an interaction-network decoder time-step the sampled particles; Euler integration and a kernel ROM recover the full set"></div>
+        <figcaption>Time-stepping on a sampled graph. The encoder, processor and decoder act on the sampled particles only; Euler integration moves them, and the kernel ROM recovers the full discretization.</figcaption>
+      </figure>
+
+      <h5 id="pipeline">How GIOROM rewires the pipeline</h5>
+      <p>To make this anchor-based time stepping work efficiently without explicit PDEs, we restructured how the network infers the future.</p>
+
+      <p class="ing">Ingredient 1</p>
+      <h6>Autoregressive neural operators (offline phase)</h6>
+      <p>How do we calculate the movement of these sparse anchor points? Rather than hardcoding classical math, GIOROM uses an autoregressive neural operator \(\mathcal{G}_\Theta\).</p>
+      <p>Traditional neural networks map fixed grid inputs to fixed outputs. Neural operators learn mappings between continuous function spaces <a class="cite" href="#r-kovachki2023">(Kovachki et al. 2023)</a>. GIOROM looks at a short history window of the anchor particles' velocities, \(v_{t-w}\) to \(v_t\), and uses the neural operator to directly predict their upcoming accelerations \(a_t\), which an Euler step integrates:</p>
+      $$\hat a_t = \mathcal{G}_\Theta\big(v_{t-w}, \dots, v_t\big), \qquad v_{t+1} = v_t + \Delta t\,\hat a_t, \qquad x_{t+1} = x_t + \Delta t\, v_{t+1}.$$
+      <p>Because it learns the continuous deformation operator from data, it is entirely PDE-agnostic.</p>
+      <p>Crucially, this achieves discretization convergence. You can train GIOROM on a low-resolution dataset of a few thousand particles, and deploy it to infer the physics of a hyper-dense simulation with millions of particles without retraining. The model understands the physics, not the pixel count.</p>
+
+      <figure class="pimg pimg--pad">
+        <div class="pimg__frame"><img src="/giorom/giorom_data/fig_intro.png" loading="lazy" alt="Prior ROM techniques project the full state to a global latent vector; GIOROM time-steps a sampled set of particles and reconstructs the full set with a kernel network"></div>
+        <figcaption>Sampling-based model-order reduction (bottom) versus projection-based model-order reduction (top).</figcaption>
+      </figure>
+
+      <p class="ing">Ingredient 2</p>
+      <h6>Re-expansion via a kernel ROM (online phase)</h6>
+      <p>Once the neural operator moves the sparse anchor points forward in time, how do we get the rest of the simulation back?</p>
+      <p>We introduce a learnable, online kernel-based ROM. Instead of acting like a rigid "unzipping" algorithm, the kernel ROM parametrizes the solution manifold. It reconstructs the full, high-resolution physical field by querying arbitrary spatial locations using the local geometric information of the evolved anchor particles. A field \(v\) known on the anchors is carried to any point \(x\) by a normalized kernel integral,</p>
+      $$u(x, t) = \frac{\int_\Omega \psi(x, y)\, v(y, t)\, d\mu(y)}{\int_\Omega \psi(x, y)\, d\mu(y)} \;\approx\; \frac{\sum_{j} \psi(x, y_j)\, v(y_j, t)}{\sum_{j} \psi(x, y_j)},$$
+      <p>where the sum runs over the anchors \(y_j\) near \(x\) and the kernel \(\psi\) is learned. This decoupling of the reduced-space prediction from the full-space inference means you can render the final simulation at whatever resolution you need, independently of the physics calculation.</p>
+
+      <h5 id="next">What's next?</h5>
+      <figure class="pimg">
+        <div class="pimg__frame"><img src="/giorom/giorom_data/fig_rom_comps.jpg" loading="lazy" alt="Water sloshing in a box reconstructed by an autoencoder, PCA, LiCROM, CROM and GIOROM, beside the ground truth"></div>
+        <figcaption>Water sloshing in a box, reconstructed by global reduced models (autoencoder, PCA, LiCROM, CROM) and by GIOROM, beside the ground truth (GT).</figcaption>
+      </figure>
+      <p>There are many ways to extend this approach. While GIOROM breaks the dimensionality bottleneck and preserves local geometry, it remains specific to individual materials. It generalizes to new trajectories and varying spatial resolutions, but it behaves like a neural field with respect to the material: a model trained on sand must be retrained to understand water.</p>
+      <p>The next big step for the scientific machine learning community is to move toward foundation models for physical systems. We need architectures capable of handling arbitrary continuum materials that can operate seamlessly in both data-driven and PDE-dependent regimes. Purely data-driven regimes may not suffice. Consider for example <a href="https://pranav-jain.github.io/projects/nmcfs/index.html">this work</a> <a class="cite" href="#r-jain2024">(Jain et al. 2024)</a>, which accelerates fluid simulation by replacing its most expensive step with a neural surrogate. This keeps the physical grounding while replacing expensive parts of the solver pipeline, which is much better than introducing training and dataset biases into a data-driven physics simulator.</p>
+      <p>Similarly, future models will likely need to sample and compute dynamics intelligently in both physical space and a reduced-order latent space. Reduced-order models such as CROM <a class="cite" href="#r-chen2022crom">(Chen et al. 2022)</a> and LiCROM <a class="cite" href="#r-chang2023licrom">(Chang et al. 2023)</a> define the physics in the latent space, which means they can be more accurate than a purely data-driven simulation.</p>
+      <p>We view GIOROM as an initial iteration toward a generation of solvers that combines neural operators, neural fields and reduced-order models. For more details, read the full paper or visit the repository.</p>
+      <div class="links">
+        <a class="btn btn--mist" href="https://arxiv.org/abs/2407.03925">arXiv</a>
+        <a class="btn btn--mist" href="https://openreview.net/forum?id=vXCQA1EzaG">OpenReview</a>
+        <a class="btn btn--mist" href="https://github.com/HrishikeshVish/GIOROM">GitHub</a>
+        <a class="btn btn--mist" href="/giorom/">Project page</a>
+      </div>
+
+      <h5 id="references">References</h5>
+      <ol class="refs">
+        <li id="r-chang2023licrom">Y. Chang, P. Y. Chen, Z. Wang, M. M. Chiaramonte, K. Carlberg and E. Grinspun (2023). <span class="t">LiCROM: Linear-subspace continuous reduced order modeling with neural fields</span>. SIGGRAPH Asia 2023 Conference Papers, 1–12.</li>
+        <li id="r-chen2022crom">P. Y. Chen, J. Xiang, D. H. Cho, Y. Chang, G. A. Pershing, H. T. Maia, M. M. Chiaramonte, K. Carlberg and E. Grinspun (2022). <span class="t"><a href="https://arxiv.org/abs/2206.02607">CROM: Continuous reduced-order modeling of PDEs using implicit neural representations</a></span>. arXiv:2206.02607.</li>
+        <li id="r-clavet2005">S. Clavet, P. Beaudoin and P. Poulin (2005). <span class="t"><a href="https://doi.org/10.1145/1073368.1073400">Particle-based viscoelastic fluid simulation</a></span>. ACM SIGGRAPH/Eurographics Symposium on Computer Animation.</li>
+        <li id="r-jain2024">P. Jain, Z. Qu, P. Y. Chen and O. Stein (2024). <span class="t"><a href="https://pranav-jain.github.io/projects/nmcfs/index.html">Neural Monte Carlo Fluid Simulation</a></span>. SIGGRAPH 2024 Conference Papers.</li>
+        <li id="r-kovachki2023">N. Kovachki, Z. Li, B. Liu, K. Azizzadenesheli, K. Bhattacharya, A. Stuart and A. Anandkumar (2023). <span class="t"><a href="https://jmlr.org/papers/v24/21-1524.html">Neural operator: Learning maps between function spaces with applications to PDEs</a></span>. Journal of Machine Learning Research 24(89):1–97.</li>
+        <li id="r-ma2023">P. Ma, P. Y. Chen, B. Deng, J. B. Tenenbaum, T. Du, C. Gan and W. Matusik (2023). <span class="t">Learning neural constitutive laws from motion observations for generalizable PDE dynamics</span>. International Conference on Machine Learning, 23279–23300.</li>
+        <li id="r-monaghan1992">J. J. Monaghan (1992). <span class="t"><a href="https://doi.org/10.1146/annurev.aa.30.090192.002551">Smoothed particle hydrodynamics</a></span>. Annual Review of Astronomy and Astrophysics 30:543–574.</li>
+        <li id="r-sanchez2020">A. Sanchez-Gonzalez, J. Godwin, T. Pfaff, R. Ying, J. Leskovec and P. Battaglia (2020). <span class="t">Learning to simulate complex physics with graph networks</span>. International Conference on Machine Learning.</li>
+        <li id="r-sulsky1994">D. Sulsky, Z. Chen and H. L. Schreyer (1994). <span class="t"><a href="https://doi.org/10.1016/0045-7825(94)90112-0">A particle method for history-dependent materials</a></span>. Computer Methods in Applied Mechanics and Engineering 118(1–2):179–196.</li>
+        <li id="r-viswanath2026giorom">H. Viswanath, Y. Chang, A. Panas, J. Berner, P. Y. Chen and A. Bera (2026). <span class="t"><a href="https://openreview.net/forum?id=vXCQA1EzaG">Learning Lagrangian Interaction Dynamics with Sampling-Based Model Order Reduction</a></span>. Transactions on Machine Learning Research. <a href="https://arxiv.org/abs/2407.03925">arXiv:2407.03925</a>.</li>
+      </ol>
+    </main>
+
+    <noscript><p class="muted">The figures on this page need JavaScript.</p></noscript>
+
+    <footer class="footer">
+      <span>© Hrishikesh Viswanath</span>
+      <a href="/">← Back to home</a>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!window.renderMathInElement) return;
+      renderMathInElement(document.querySelector("main"), {
+        delimiters: [{ left: "$$", right: "$$", display: true },
+                     { left: "\\(", right: "\\)", display: false }],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>
