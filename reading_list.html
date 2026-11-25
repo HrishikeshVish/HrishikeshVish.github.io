@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" href="/style.css" />
+  <script src="/theme.js"></script>
 </head>
 <body>
   <div class="wrap">
@@ -18,52 +19,102 @@
       </div>
     </nav>
 
-    <main class="article">
+    <main class="article article--wide">
       <span class="mono muted">Oct 2022</span>
       <h1>Reading List</h1>
-      <p class="lede">A curated collection of foundational textbooks and resources related to Machine Learning, Optimization, Physics-based Deep Learning, and Computer Graphics.</p>
+      <p class="lede">Foundational textbooks for machine learning, optimization, physics-based deep learning and computer graphics. Hover over a book to see what it covers.</p>
 
-        <ul class="reading-list">
-            <li>
-              <a href="https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf">Pattern Recognition and Machine Learning</a>
-              <span class="author">Christopher M. Bishop</span>
-            </li>
-            <li>
-              <a href="http://box.cs.istu.ru/public/docs/other/_New/Books/Misc/Principles%20of%20Data%20Mining.pdf">Principles of Data Mining</a>
-              <span class="author">David Hand, Heikki Mannila and Padhraic Smyth</span>
-            </li>
-            <li>
-              <a href="https://www.cambridge.org/core/books/randomized-algorithms/6A3E5CD760B0DDBA3794A100EE2843E8">Randomized Algorithms</a>
-              <span class="author">Rajeev Motwani and Prabhakar Raghavan</span>
-            </li>
-            <li>
-              <a href="https://web.stanford.edu/~boyd/cvxbook/">Convex Optimization</a>
-              <span class="author">Stephen Boyd and Lieven Vandenberghe</span>
-            </li>
-            <li>
-              <a href="https://physicsbaseddeeplearning.org/">Physics-based Deep Learning</a>
-              <span class="author">N. Thuerey, P. Holl, M. Mueller, P. Schnell, F. Trost, K. Um</span>
-            </li>
-            <li>
-              <a href="https://www.oreilly.com/library/view/hands-on-machine-learning/9781491962282/">Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow</a>
-              <span class="author">Aurélien Géron</span>
-            </li>
-            <li>
-              <a href="http://aima.cs.berkeley.edu/">Artificial Intelligence - A Modern Approach</a>
-              <span class="author">Stuart J. Russell and Peter Norvig</span>
-            </li>
-            <li>
-              <a href="https://www.pearson.com/en-us/subject-catalog/p/digital-image-processing/P200000003224?view=educator">Digital Image Processing</a>
-              <span class="author">Rafael C. Gonzalez and Richard E. Woods</span>
-            </li>
-            <li>
-              <a href="https://github.com/PacktPublishing/Deep-Reinforcement-Learning-Hands-On">Deep Reinforcement Learning Hands-On</a>
-              <span class="author">Maxim Lapan</span>
-            </li>
-            <li>
-              <a href="https://www.amazon.com/Computer-Graphics-3rd-Alan-Watt/dp/0201398559">3D Computer Graphics</a>
-              <span class="author">Alan Watt</span>
-            </li>
+        <ul class="shelf">
+          <li>
+            <a class="book" href="https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf">
+              <span class="book__tag">ML</span>
+              <span class="book__art"><svg viewBox="0 0 48 48" aria-hidden="true"><g transform="rotate(-28 17 28)"><ellipse cx="17" cy="28" rx="12" ry="6.5"/><ellipse cx="17" cy="28" rx="7" ry="3.6"/><ellipse cx="17" cy="28" rx="2.6" ry="1.3"/></g><g transform="rotate(32 32 17)"><ellipse cx="32" cy="17" rx="11" ry="6"/><ellipse cx="32" cy="17" rx="6" ry="3.2"/></g><circle cx="9" cy="38" r=".9" fill="currentColor"/><circle cx="24" cy="23" r=".9" fill="currentColor"/><circle cx="40" cy="9" r=".9" fill="currentColor"/><circle cx="39" cy="26" r=".9" fill="currentColor"/></svg></span>
+              <span class="book__title">Pattern Recognition and Machine Learning</span>
+              <span class="book__by">Christopher M. Bishop</span>
+              <span class="book__banner">Machine learning, the Bayesian way: graphical models, kernels and mixture models.<span>microsoft.com<b aria-hidden="true">↗</b></span></span>
+            </a>
+          </li>
+          <li>
+            <a class="book" href="http://box.cs.istu.ru/public/docs/other/_New/Books/Misc/Principles%20of%20Data%20Mining.pdf">
+              <span class="book__tag">Data</span>
+              <span class="book__art"><svg viewBox="0 0 48 48" aria-hidden="true"><ellipse cx="20" cy="11" rx="13" ry="4.5"/><path d="M7 11v24c0 2.5 5.8 4.5 13 4.5"/><path d="M7 19c0 2.5 5.8 4.5 13 4.5M7 27c0 2.5 5.8 4.5 13 4.5"/><path d="M33 11v8"/><circle cx="32" cy="31" r="7"/><path d="M37 36l6 6"/></svg></span>
+              <span class="book__title">Principles of Data Mining</span>
+              <span class="book__by">David Hand, Heikki Mannila and Padhraic Smyth</span>
+              <span class="book__banner">Models, patterns and the algorithms that find them, from statistics and computing.<span>box.cs.istu.ru<b aria-hidden="true">↗</b></span></span>
+            </a>
+          </li>
+          <li>
+            <a class="book" href="https://www.cambridge.org/core/books/randomized-algorithms/6A3E5CD760B0DDBA3794A100EE2843E8">
+              <span class="book__tag">Algorithms</span>
+              <span class="book__art"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="15" width="19" height="19" rx="3.5" transform="rotate(-12 14.5 24.5)"/><circle cx="10.5" cy="21.5" r="1.3" fill="currentColor"/><circle cx="18.5" cy="27.5" r="1.3" fill="currentColor"/><circle cx="14.5" cy="24.5" r="1.3" fill="currentColor"/><rect x="24" y="9" width="19" height="19" rx="3.5" transform="rotate(14 33.5 18.5)"/><circle cx="29.5" cy="13.5" r="1.3" fill="currentColor"/><circle cx="37.5" cy="23.5" r="1.3" fill="currentColor"/><circle cx="29.5" cy="23.5" r="1.3" fill="currentColor"/><circle cx="37.5" cy="13.5" r="1.3" fill="currentColor"/></svg></span>
+              <span class="book__title">Randomized Algorithms</span>
+              <span class="book__by">Rajeev Motwani and Prabhakar Raghavan</span>
+              <span class="book__banner">Randomness as a tool: Las Vegas and Monte Carlo algorithms, tail bounds, random walks.<span>cambridge.org<b aria-hidden="true">↗</b></span></span>
+            </a>
+          </li>
+          <li>
+            <a class="book" href="https://web.stanford.edu/~boyd/cvxbook/">
+              <span class="book__tag">Optimization</span>
+              <span class="book__art"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M5 7c3 17 9.5 26 19 26S40 24 43 7"/><path d="M6 41h36" opacity=".35"/><path d="M27 40.5 44 25" stroke-dasharray="2 2.6"/><circle cx="24" cy="33" r="2.2" fill="currentColor"/><path d="M24 36v4" opacity=".5"/></svg></span>
+              <span class="book__title">Convex Optimization</span>
+              <span class="book__by">Stephen Boyd and Lieven Vandenberghe</span>
+              <span class="book__banner">Recognising and solving convex problems: duality and interior-point methods.<span>web.stanford.edu<b aria-hidden="true">↗</b></span></span>
+            </a>
+          </li>
+          <li>
+            <a class="book" href="https://physicsbaseddeeplearning.org/">
+              <span class="book__tag">Physics</span>
+              <span class="book__art"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="6.5"/><path d="M3 24h12M33 24h12"/><path d="M3 16c7 0 11 1.5 15 4.5M30 19.5c4-3 8-3.5 15-3.5"/><path d="M3 32c7 0 11-1.5 15-4.5M30 28.5c4 3 8 3.5 15 3.5"/><path d="M3 8c9 0 15 2 21 6.5S36 8 45 8M3 40c9 0 15-2 21-6.5S36 40 45 40" opacity=".55"/></svg></span>
+              <span class="book__title">Physics-based Deep Learning</span>
+              <span class="book__by">N. Thuerey, P. Holl, M. Mueller, P. Schnell, F. Trost, K. Um</span>
+              <span class="book__banner">Deep learning meets simulation: physical losses and differentiable solvers.<span>physicsbaseddeeplearning.org<b aria-hidden="true">↗</b></span></span>
+            </a>
+          </li>
+          <li>
+            <a class="book" href="https://www.oreilly.com/library/view/hands-on-machine-learning/9781491962282/">
+              <span class="book__tag">ML</span>
+              <span class="book__art"><svg viewBox="0 0 48 48" aria-hidden="true"><g opacity=".45"><path d="M8 12 24 8M8 12l16 10M8 12l16 14M8 24 24 8M8 24l16 14M8 36l16-14M8 36l16 4M24 8l16 10M24 22l16-4M24 22l16 12M24 38l16-20M24 38l16-4"/></g><circle cx="8" cy="12" r="3"/><circle cx="8" cy="24" r="3"/><circle cx="8" cy="36" r="3"/><circle cx="24" cy="8" r="3"/><circle cx="24" cy="22" r="3"/><circle cx="24" cy="38" r="3"/><circle cx="40" cy="18" r="3" fill="currentColor"/><circle cx="40" cy="34" r="3"/></svg></span>
+              <span class="book__title">Hands‑On Machine Learning<span class="book__sub">with Scikit-Learn, Keras, and TensorFlow</span></span>
+              <span class="book__by">Aurélien Géron</span>
+              <span class="book__banner">Practical ML in Python, from scikit-learn to deep networks in Keras and TensorFlow.<span>oreilly.com<b aria-hidden="true">↗</b></span></span>
+            </a>
+          </li>
+          <li>
+            <a class="book" href="http://aima.cs.berkeley.edu/">
+              <span class="book__tag">AI</span>
+              <span class="book__art"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 9 12 21M24 9l12 12M12 21 6 33M12 21l6 12M36 21l-6 12M36 21l6 12" opacity=".4"/><path d="M24 9 36 21 30 33" stroke-width="2.4"/><circle cx="24" cy="7" r="3" fill="currentColor"/><circle cx="12" cy="21" r="2.6"/><circle cx="36" cy="21" r="2.6" fill="currentColor"/><circle cx="6" cy="35" r="2.2"/><circle cx="18" cy="35" r="2.2"/><circle cx="30" cy="35" r="3" fill="currentColor"/><circle cx="42" cy="35" r="2.2"/></svg></span>
+              <span class="book__title">Artificial Intelligence<span class="book__sub">A Modern Approach</span></span>
+              <span class="book__by">Stuart J. Russell and Peter Norvig</span>
+              <span class="book__banner">The standard AI text: search, logic, planning, uncertainty and learning.<span>aima.cs.berkeley.edu<b aria-hidden="true">↗</b></span></span>
+            </a>
+          </li>
+          <li>
+            <a class="book" href="https://www.pearson.com/en-us/subject-catalog/p/digital-image-processing/P200000003224?view=educator">
+              <span class="book__tag">Vision</span>
+              <span class="book__art"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6.0" y="6.0" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.08" stroke="none"/><rect x="6.0" y="15.2" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.13" stroke="none"/><rect x="6.0" y="24.4" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.24" stroke="none"/><rect x="6.0" y="33.6" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.38" stroke="none"/><rect x="15.2" y="6.0" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.13" stroke="none"/><rect x="15.2" y="15.2" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.24" stroke="none"/><rect x="15.2" y="24.4" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.38" stroke="none"/><rect x="15.2" y="33.6" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.56" stroke="none"/><rect x="24.4" y="6.0" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.24" stroke="none"/><rect x="24.4" y="15.2" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.38" stroke="none"/><rect x="24.4" y="24.4" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.56" stroke="none"/><rect x="24.4" y="33.6" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.77" stroke="none"/><rect x="33.6" y="6.0" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.38" stroke="none"/><rect x="33.6" y="15.2" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.56" stroke="none"/><rect x="33.6" y="24.4" width="8" height="8" rx="1" fill="currentColor" fill-opacity="0.77" stroke="none"/><rect x="33.6" y="33.6" width="8" height="8" rx="1" fill="currentColor" fill-opacity="1.00" stroke="none"/><rect x="4.5" y="4.5" width="39" height="39" rx="3"/></svg></span>
+              <span class="book__title">Digital Image Processing</span>
+              <span class="book__by">Rafael C. Gonzalez and Richard E. Woods</span>
+              <span class="book__banner">Enhancement, filtering, the frequency domain, restoration and segmentation.<span>pearson.com<b aria-hidden="true">↗</b></span></span>
+            </a>
+          </li>
+          <li>
+            <a class="book" href="https://github.com/PacktPublishing/Deep-Reinforcement-Learning-Hands-On">
+              <span class="book__tag">RL</span>
+              <span class="book__art"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="15" y="5" width="18" height="11" rx="3"/><rect x="15" y="32" width="18" height="11" rx="3"/><path d="M33 10.5c7 0 9 5 9 13.5s-2 13.5-9 13.5"/><path d="M15 37.5c-7 0-9-5-9-13.5s2-13.5 9-13.5"/><path d="M36.5 34.5 33 37.5l3.5 3M11.5 7.5l3.5 3-3.5 3"/><circle cx="24" cy="10.5" r="1.6" fill="currentColor"/><path d="M20 37.5h8" /></svg></span>
+              <span class="book__title">Deep Reinforcement Learning Hands‑On</span>
+              <span class="book__by">Maxim Lapan</span>
+              <span class="book__banner">Deep RL in PyTorch: cross-entropy, DQN, policy gradients, actor-critic.<span>github.com<b aria-hidden="true">↗</b></span></span>
+            </a>
+          </li>
+          <li>
+            <a class="book" href="https://www.amazon.com/Computer-Graphics-3rd-Alan-Watt/dp/0201398559">
+              <span class="book__tag">Graphics</span>
+              <span class="book__art"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5 41 14v20L24 43 7 34V14z"/><path d="M7 14l17 9 17-9M24 23v20"/><path d="M24 23 41 14v20L24 43z" fill="currentColor" fill-opacity=".14" stroke="none"/><path d="M7 14 24 5l17 9" opacity=".5"/><circle cx="44" cy="5" r="2"/><path d="M41 8l-3 3" opacity=".5"/></svg></span>
+              <span class="book__title">3D Computer Graphics</span>
+              <span class="book__by">Alan Watt</span>
+              <span class="book__banner">Modelling and rendering in 3D: transformations, shading, ray tracing, textures.<span>amazon.com<b aria-hidden="true">↗</b></span></span>
+            </a>
+          </li>
         </ul>
     </main>
 
